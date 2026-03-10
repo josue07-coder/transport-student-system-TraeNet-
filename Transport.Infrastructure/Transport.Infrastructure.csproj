@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+    <Folder Include="Persistence\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Security\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Transport.Application\Transport.Application.csproj" />
+    <ProjectReference Include="..\Transport.Domain\Transport.Domain.csproj" />
+    <ProjectReference Include="..\Transport.Shared\Transport.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
