@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transport.Domain.Entities
+namespace Transport.Domain.Enums
 {
-    internal class DriverLicenses
+    public enum DocumentType
     {
+        Passport,
+        Cedula
     }
 }

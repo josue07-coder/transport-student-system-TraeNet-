@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Transport.Domain.Enums;
 
 namespace Transport.Domain.Entities
 {
@@ -11,11 +7,14 @@ namespace Transport.Domain.Entities
         public Guid Id { get; set; }
 
         public string PlateNumber { get; set; }
-
         public string Brand { get; set; }
-
+        public String Model { get; set; }
         public int Capacity { get; set; }
 
-        public ICollection<RouteAssignment> RouteAssignments { get; set; }
+        public VehicleStatus Status { get; set; }
+
+        public ICollection<RouteAssignment> RouteAssignments { get; set; } = new List<RouteAssignment>();
+        public ICollection<VehicleAssignment> vehicleAssignments { get; set; } = new List<VehicleAssignment>();
+
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Transport.Domain.Enums
 {
-    internal enum Gender
+    public enum Gender
     {
-        Male = 1,
-        Female = 2
+        Male,
+        Female 
     }
 }

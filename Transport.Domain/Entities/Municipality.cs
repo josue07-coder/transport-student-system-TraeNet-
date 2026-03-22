@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Transport.Domain.Entities
 {
-    public class AuditLogs
+    public class Municipality
     {
         public Guid Id { get; set; }
-        public string Action { get; set; }
-        public int UserId { get; set; }
-        public DateTime Timestamp { get; set; }
-        public string Details { get; set; }
+        public string Name { get; set; }
+        public String Description { get; set; }
+        public ICollection<Sector> Sectors { get; set; }
     }
 }

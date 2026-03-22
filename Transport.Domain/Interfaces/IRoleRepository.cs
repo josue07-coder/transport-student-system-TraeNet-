@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transport.Domain.Entities
+namespace Transport.Domain.Interfaces
 {
-    internal class StudentRouteAssignments
+    internal class IRoleRepository
     {
     }
 }

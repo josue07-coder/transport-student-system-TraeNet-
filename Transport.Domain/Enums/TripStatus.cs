@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Transport.Domain.Enums
 {
-    internal enum TripStatus
+    public enum TripStatus
     {
-        Scheduled,
-        InProgress,
-        Completed,
-        Cancelled
+        Programado,
+        En_Curso,
+        Completado,
+        Cancelado
     }
 }

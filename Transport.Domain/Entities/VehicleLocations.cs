@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Transport.Domain.Entities
 {
-    internal class VehicleLocations
+    public class VehicleLocations
     {
     }
 }
