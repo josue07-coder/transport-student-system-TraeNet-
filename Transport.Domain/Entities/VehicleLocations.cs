@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
-    public class VehicleLocations
+    public class VehicleLocations: BaseEntity
     {
     }
 }

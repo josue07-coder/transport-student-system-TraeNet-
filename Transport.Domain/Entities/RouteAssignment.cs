@@ -1,10 +1,9 @@
-﻿
+﻿using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
-    public class RouteAssignment
+    public class RouteAssignment: BaseEntity
     {
-        public Guid Id { get; set; }
 
         public int RouteId { get; set; }
         public Route Route { get; set; }
@@ -23,4 +22,4 @@ namespace Transport.Domain.Entities
     }
 
 }
-}
+

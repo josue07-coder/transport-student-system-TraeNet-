@@ -1,8 +1,8 @@
-﻿
+﻿using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
-    public class VehicleAssignment
+    public class VehicleAssignment: BaseEntity
     {
         public Guid Id { get; set; }
 

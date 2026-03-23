@@ -1,12 +1,12 @@
-﻿
+﻿using Transport.Domain.ValueObjects;
+using Transport.Shared.Common;
 namespace Transport.Domain.Entities
 {
-    public class Stop
+    public class Stop: BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        public Address Address { get; set; }
+        public Coordinates Coordinates { get; set; }
 
         public Guid SectorId { get; set; }
         public Sector Sector { get; set; }

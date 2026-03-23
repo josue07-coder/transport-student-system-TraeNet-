@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Transport.Domain.Entities;
 
 namespace Transport.Domain.Interfaces
 {
-    internal class IRoleRepository
+    public interface IRoleRepository
     {
+        Task<Role> GetRoleByIdAsync(Guid id);
+        Task<User> GetRoleByNameAsync(string email);
+        Task<IEnumerable<User>> GetAllUsersAsync();
+        Task AddUserAsync(User user);
     }
 }

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
-    public class Grade
+    public class Grade: BaseEntity
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public ICollection<Student> Students { get; set; }

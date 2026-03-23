@@ -1,10 +1,9 @@
-﻿
+﻿using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
-    public class AuditLog
+    public class AuditLog: BaseEntity
     {
-        public Guid Id { get; set; }
         public string Action { get; set; }
 
         public int UserId { get; set; }

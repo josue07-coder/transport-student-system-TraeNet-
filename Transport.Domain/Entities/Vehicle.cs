@@ -1,15 +1,16 @@
 ﻿using Transport.Domain.Enums;
+using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
-    public class Vehicle
+    public class Vehicle: BaseEntity
     {
-        public Guid Id { get; set; }
-
+       
         public string PlateNumber { get; set; }
         public string Brand { get; set; }
         public String Model { get; set; }
         public int Capacity { get; set; }
+        public string? PhotoUrl { get; set; }
 
         public VehicleStatus Status { get; set; }
 

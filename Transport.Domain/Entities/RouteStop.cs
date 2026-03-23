@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
-    public class RouteStop
+    public class RouteStop: BaseEntity
     {
-        public Guid Id { get; set; }
-
         public Guid RouteId { get; set; }
         public Route Route { get; set; }
 

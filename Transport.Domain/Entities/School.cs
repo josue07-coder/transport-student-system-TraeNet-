@@ -1,12 +1,17 @@
-﻿
+﻿using Transport.Domain.ValueObjects;
+using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
     public class School
     {
-        public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Address { get; set; }
+        public string DirectorName { get; set; }
+        public string ContactEmail { get; set; }
+        public String ContactPhone { get; set; }
+        public String Description { get; set; }
+        public Address Address { get; set; }
+        public string? ProfileImageUrl { get; set; }
 
         public Guid SectorId { get; set; }
         public Sector Sector { get; set; }

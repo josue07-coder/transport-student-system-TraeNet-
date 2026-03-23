@@ -1,10 +1,9 @@
-﻿
+﻿using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
     public class SchoolDistrict
     {
-        public Guid Id { get; set; }
 
         public string Name { get; set; }
 

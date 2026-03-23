@@ -6,15 +6,12 @@ namespace Transport.Domain.ValueObjects
     {
         public string Street { get; }
 
-        public string Sector { get; }
+        public Guid SectorId { get; }
 
-        public string City { get; }
-
-        public Address(string street, string sector, string city)
+        public Address(string street, Guid sectorId)
         {
             Street = street;
-            Sector = sector;
-            City = city;
+            SectorId = sectorId;
         }
     }
 }

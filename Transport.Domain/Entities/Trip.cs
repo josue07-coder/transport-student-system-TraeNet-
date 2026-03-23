@@ -1,11 +1,10 @@
 ﻿using Transport.Domain.Enums;
+using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
-    public class Trip
+    public class Trip: BaseEntity
     {
-        public Guid Id { get; set; }
-
         public Guid RouteAssignmentId { get; set; }
         public RouteAssignment RouteAssignment { get; set; }
 
