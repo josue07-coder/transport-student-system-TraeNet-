@@ -10,39 +10,45 @@ namespace Transport.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("drivers");
 
-            builder.HasKey(x => x.Id);
+            builder.HasKey(d => d.Id);
 
             // 🔹 Campos simples
-            builder.Property(x => x.FirstName)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(x => x.LastName)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(x => x.Email)
+            builder.Property(d => d.FirstName)
                 .IsRequired()
                 .HasMaxLength(150);
 
-            builder.HasIndex(x => x.Email)
+            builder.Property(d => d.LastName)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            builder.Property(d => d.Email)
+                .IsRequired()
+                .HasMaxLength(150);
+
+            builder.HasIndex(d => d.Email)
                 .IsUnique();
 
-            builder.Property(x => x.PhoneNumber)
+            builder.Property(d => d.PhoneNumber)
+                .IsRequired()
                 .HasMaxLength(20);
 
-            builder.Property(x => x.DocumentNumber)
+            builder.Property(d => d.DocumentNumber)
                 .IsRequired()
                 .HasMaxLength(50);
+
+            builder.HasIndex(d => d.DocumentNumber)
+                .IsUnique();
 
             builder.Property(x => x.PhotoUrl)
                 .HasMaxLength(500);
 
             // 🔹 Enums (se guardan como int por defecto)
             builder.Property(x => x.DocumentType)
+                .HasConversion<string>() 
                 .IsRequired();
 
             builder.Property(x => x.Gender)
+                .HasConversion<string>()
                 .IsRequired();
 
             // 🔹 ValueObject: LicenseNumber
@@ -71,13 +77,13 @@ namespace Transport.Infrastructure.Persistence.Configurations
             });
 
             // 🔹 Relación: Driver → RouteAssignments (1:N)
-            builder.HasMany(x => x.RouteAssignments)
+            builder.HasMany(d => d.RouteAssignments)
                 .WithOne(r => r.Driver)
                 .HasForeignKey(r => r.DriverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // 🔹 Relación: Driver → VehicleAssignments (1:N)
-            builder.HasMany(x => x.vehicleAssignments)
+            builder.HasMany(d => d.VehicleAssignments)
                 .WithOne(v => v.Driver)
                 .HasForeignKey(v => v.DriverId)
                 .OnDelete(DeleteBehavior.Restrict);
