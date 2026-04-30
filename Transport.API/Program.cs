@@ -1,27 +1,43 @@
 using Microsoft.EntityFrameworkCore;
-using Transport.Infrastructure.Persistence;
-using Transport.Infrastructure.Repositories;
+using MediatR;
+using FluentValidation;
+using Transport.Infrastructure.Persistence.Context;
+using Transport.Infrastructure.Persistence.Repositories;
 using Transport.Application.Interfaces;
-using Transport.Application.UseCases.Users;
+using Transport.Application.Features.Students.Commands.CreateStudent;
+using Transport.Application.Features.Students.Commands.AssignStudentToRoute;
+using Transport.Application.Features.Students.Commands.CreateStudent;
+using Transport.Application.Features.Students.Commands.AssignStudentToRoute;
+using Transport.Application.Features.Students.Commands.CreateStudent;
+using Transport.Application.Features.Students.Commands.AssignStudentToRoute;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+//  DbContext
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<CreateUserUseCase>();
+//  MediatR
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(CreateStudentCommand).Assembly));
 
+//  FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<CreateStudentCommand>();
 
+//  Repositories
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IRouteAssignmentRepository, RouteAssignmentRepository>();
+
+//  Controllers
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+//  Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//  Middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

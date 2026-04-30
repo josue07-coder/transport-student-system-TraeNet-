@@ -1,24 +1,39 @@
-﻿using Transport.Domain.Enums;
+﻿using Transport.Domain.Common;
+using Transport.Domain.Exceptions;
 using Transport.Domain.ValueObjects;
-using Transport.Shared.Common;
 
 namespace Transport.Domain.Entities
 {
-    public class Driver: BaseEntity
+    public class Driver : BaseEntity
     {
-        public DocumentType DocumentType { get; set; }
-        public string DocumentNumber { get; set; }
-        public LicenseNumber LicenseNumber { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public Address Address { get; set; }
-        public string PhoneNumber { get; set; }
-        public string? PhotoUrl { get; set; }
+        public string FirstName { get; private set; }
+        public string LastName { get; private set; }
+        public LicenseNumber LicenseNumber { get; private set; }
 
-        public Gender Gender { get; set; }
+        private Driver() { } // EF Core
 
-        public ICollection<RouteAssignment> RouteAssignments { get; set; } = new List<RouteAssignment>();
-        public ICollection<VehicleAssignment> VehicleAssignments { get; set; } = new List<VehicleAssignment>();
+        public Driver(string firstName, string lastName, LicenseNumber license)
+        {
+            SetName(firstName, lastName);
+
+            LicenseNumber = license ?? throw new DomainException("License number is required");
+        }
+
+        public void SetName(string firstName, string lastName)
+        {
+            if (string.IsNullOrWhiteSpace(firstName))
+                throw new DomainException("First name is required");
+
+            if (string.IsNullOrWhiteSpace(lastName))
+                throw new DomainException("Last name is required");
+
+            FirstName = firstName;
+            LastName = lastName;
+        }
+
+        public void UpdateLicense(LicenseNumber license)
+        {
+            LicenseNumber = license ?? throw new DomainException("License number is required");
+        }
     }
 }

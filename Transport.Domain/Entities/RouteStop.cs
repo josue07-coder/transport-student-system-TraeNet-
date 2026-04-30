@@ -1,15 +1,33 @@
-﻿using Transport.Shared.Common;
+﻿using Transport.Domain.Common;
+using Transport.Domain.Exceptions;
 
 namespace Transport.Domain.Entities
 {
-    public class RouteStop: BaseEntity
+    public class RouteStop : BaseEntity
     {
-        public Guid RouteId { get; set; }
-        public Route Route { get; set; }
+        public Guid StopId { get; private set; }
+        public int Order { get; private set; }
 
-        public Guid StopId { get; set; }
-        public Stop Stop { get; set; }
+        private RouteStop() { } // EF Core
 
-        public int StopOrder { get; set; }
+        public RouteStop(Guid stopId, int order)
+        {
+            if (stopId == Guid.Empty)
+                throw new DomainException("Stop is required");
+
+            if (order <= 0)
+                throw new DomainException("Order must be greater than zero");
+
+            StopId = stopId;
+            Order = order;
+        }
+
+        public void UpdateOrder(int newOrder)
+        {
+            if (newOrder <= 0)
+                throw new DomainException("Order must be greater than zero");
+
+            Order = newOrder;
+        }
     }
 }

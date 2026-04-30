@@ -8,8 +8,8 @@ namespace Transport.Domain.Enums
 {
     public enum VehicleStatus
     {
-        Active,
-        Maintenance,
-        Inactive
+        Active = 1,
+        Inactive = 2,
+        Maintenance = 3
     }
 }

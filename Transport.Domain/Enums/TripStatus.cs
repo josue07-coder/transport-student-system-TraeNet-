@@ -8,9 +8,9 @@ namespace Transport.Domain.Enums
 {
     public enum TripStatus
     {
-        Programado,
-        En_Curso,
-        Completado,
-        Cancelado
+        Pending = 1,
+        InProgress = 2,
+        Completed = 3,
+        Cancelled = 4
     }
 }

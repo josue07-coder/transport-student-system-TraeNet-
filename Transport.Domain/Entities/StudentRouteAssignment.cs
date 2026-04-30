@@ -1,16 +1,16 @@
-﻿using Transport.Shared.Common;
+﻿
 
 namespace Transport.Domain.Entities
 {
-    public class StudentRouteAssignment: BaseEntity
+    public class StudentRouteAssignment
     {
-        public Guid StudentId { get; set; }
-        public Student Student { get; set; }
+        public Guid StudentId { get; private set; }
+        public Guid RouteAssignmentId { get; private set; }
 
-        public Guid RouteAssignmentId { get; set; }
-        public RouteAssignment RouteAssignment { get; set; }
-
-        public Guid StopId { get; set; }
-        public Stop Stop { get; set; }
+        public StudentRouteAssignment(Guid studentId, Guid routeAssignmentId)
+        {
+            StudentId = studentId;
+            RouteAssignmentId = routeAssignmentId;
+        }
     }
 }

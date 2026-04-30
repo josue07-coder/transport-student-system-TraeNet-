@@ -1,0 +1,8 @@
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\Transport.API.csproj.AssemblyReference.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\Transport.API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\Transport.API.AssemblyInfoInputs.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\Transport.API.AssemblyInfo.cs
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\Transport.API.csproj.CoreCompileInputs.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\Transport.API.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\Transport.API.sourcelink.json

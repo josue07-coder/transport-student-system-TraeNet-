@@ -1,0 +1,6 @@
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Application\obj\Debug\net8.0\Transport.Application.csproj.AssemblyReference.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Application\obj\Debug\net8.0\Transport.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Application\obj\Debug\net8.0\Transport.Application.AssemblyInfoInputs.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Application\obj\Debug\net8.0\Transport.Application.AssemblyInfo.cs
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Application\obj\Debug\net8.0\Transport.Application.csproj.CoreCompileInputs.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Application\obj\Debug\net8.0\Transport.Application.sourcelink.json

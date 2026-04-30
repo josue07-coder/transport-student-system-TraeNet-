@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\Transport.Domain\Transport.Domain.csproj" />
+    <ProjectReference Include="..\Transport.Shared\Transport.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Transport.Domain\Transport.Domain.csproj" />
-    <ProjectReference Include="..\Transport.Shared\Transport.Shared.csproj" />
+    <PackageReference Include="AutoMapper" Version="16.1.1" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="MediatR" Version="14.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.25" />
   </ItemGroup>
 
 </Project>

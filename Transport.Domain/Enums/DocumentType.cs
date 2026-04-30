@@ -8,7 +8,7 @@ namespace Transport.Domain.Enums
 {
     public enum DocumentType
     {
-        Passport,
-        Cedula
+        Cedula = 1,
+        Pasport = 2,
     }
 }
