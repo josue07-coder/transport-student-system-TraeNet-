@@ -1,21 +1,16 @@
-using Microsoft.EntityFrameworkCore;
-using MediatR;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Transport.Infrastructure.Persistence.Context;
 using Transport.Infrastructure.Persistence.Repositories;
 using Transport.Application.Interfaces;
 using Transport.Application.Features.Students.Commands.CreateStudent;
-using Transport.Application.Features.Students.Commands.AssignStudentToRoute;
-using Transport.Application.Features.Students.Commands.CreateStudent;
-using Transport.Application.Features.Students.Commands.AssignStudentToRoute;
-using Transport.Application.Features.Students.Commands.CreateStudent;
-using Transport.Application.Features.Students.Commands.AssignStudentToRoute;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 //  DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //  MediatR
 builder.Services.AddMediatR(cfg =>

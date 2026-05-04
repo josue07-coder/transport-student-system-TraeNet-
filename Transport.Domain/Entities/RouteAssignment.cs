@@ -21,16 +21,16 @@ namespace Transport.Domain.Entities
         public RouteAssignment(Guid routeId, Guid vehicleId, Guid driverId, int capacity)
         {
             if (routeId == Guid.Empty)
-                throw new DomainException("Route is required");
+                throw new DomainException("La ruta es obligatoria");
 
             if (vehicleId == Guid.Empty)
-                throw new DomainException("Vehicle is required");
+                throw new DomainException("El vehiculo es obligatorio");
 
             if (driverId == Guid.Empty)
-                throw new DomainException("Driver is required");
+                throw new DomainException("El conductor es obligatorio");
 
             if (capacity <= 0)
-                throw new DomainException("Vehicle capacity must be greater than zero");
+                throw new DomainException("La capacidad del vehículo debe ser mayor que 0");
 
             RouteId = routeId;
             VehicleId = vehicleId;
@@ -41,13 +41,13 @@ namespace Transport.Domain.Entities
         public void AssignStudent(Guid studentId)
         {
             if (studentId == Guid.Empty)
-                throw new DomainException("Student is required");
+                throw new DomainException("El estudiante es obligatorio");
 
             if (_students.Count >= VehicleCapacity)
-                throw new DomainException("Vehicle capacity exceeded");
+                throw new DomainException("Capacidad del vehiculo excedida");
 
             if (_students.Any(s => s.StudentId == studentId))
-                throw new DomainException("Student already assigned");
+                throw new DomainException("El estudiante ya esta asignado");
 
             _students.Add(new StudentRouteAssignment(studentId, Id));
         }
@@ -57,7 +57,7 @@ namespace Transport.Domain.Entities
             var student = _students.FirstOrDefault(s => s.StudentId == studentId);
 
             if (student == null)
-                throw new DomainException("Student not found in this route");
+                throw new DomainException("El estudiante no se encuentra en esta ruta");
 
             _students.Remove(student);
         }
@@ -65,10 +65,10 @@ namespace Transport.Domain.Entities
         public Trip StartTrip()
         {
             if (!_students.Any())
-                throw new DomainException("Cannot start trip without students");
+                throw new DomainException("No se puede iniciar el viaje sin estdiantes");
 
             if (_trips.Any(t => t.IsActive))
-                throw new DomainException("There is already an active trip");
+                throw new DomainException("Ya hay un viaje activo");
 
             var trip = new Trip(Id);
             _trips.Add(trip);
@@ -81,7 +81,7 @@ namespace Transport.Domain.Entities
             var trip = _trips.FirstOrDefault(t => t.Id == tripId);
 
             if (trip == null)
-                throw new DomainException("Trip not found");
+                throw new DomainException("Viaje no encontrado");
 
             trip.End();
         }

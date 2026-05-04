@@ -15,14 +15,15 @@ namespace Transport.Domain.Entities
 
         public Stop(string name, Address address, Coordinates coordinates, Guid sectorId)
         {
-            SetName(name);
-
-            Address = address ?? throw new DomainException("Address is required");
-            Coordinates = coordinates ?? throw new DomainException("Coordinates are required");
+            if (string.IsNullOrWhiteSpace(name))
+                throw new DomainException("EL nombre de la parada es obligatorio");
 
             if (sectorId == Guid.Empty)
-                throw new DomainException("Sector is required");
+                throw new DomainException("El sector es obligatorio");
 
+            Name = name;
+            Address = address ?? throw new DomainException("La direccion es obligatorio");
+            Coordinates = coordinates ?? throw new DomainException("Las coordenadas son obligatorias");
             SectorId = sectorId;
         }
 

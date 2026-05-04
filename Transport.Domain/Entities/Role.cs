@@ -8,25 +8,23 @@ namespace Transport.Domain.Entities
         public string Name { get; private set; }
         public string Description { get; private set; }
 
-        private Role() { } // EF Core
+        private readonly List<User> _users = new();
+        public IReadOnlyCollection<User> Users => _users.AsReadOnly();
 
-        public Role(string name, string? description = null)
-        {
-            SetName(name);
-            Description = description ?? string.Empty;
-        }
+        private Role() { } // EF
 
-        public void SetName(string name)
+        public Role(string name, string description)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new DomainException("Role name is required");
 
             Name = name;
+            Description = description;
         }
 
-        public void UpdateDescription(string? description)
+        public void UpdateDescription(string description)
         {
-            Description = description ?? string.Empty;
+            Description = description;
         }
     }
 }

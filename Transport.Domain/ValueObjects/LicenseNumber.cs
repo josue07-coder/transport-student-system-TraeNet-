@@ -11,6 +11,8 @@ namespace Transport.Domain.ValueObjects
     {
         public string Value { get; }
 
+        private LicenseNumber() { }
+
         public LicenseNumber(string value)
         {
             if (string.IsNullOrWhiteSpace(value))

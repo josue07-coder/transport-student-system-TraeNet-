@@ -17,6 +17,7 @@ namespace Transport.Domain.ValueObjects
             Latitude = lat;
             Longitude = lng;
         }
+        private Coordinates() { }
 
         public static Coordinates Create(double lat, double lng)
         {

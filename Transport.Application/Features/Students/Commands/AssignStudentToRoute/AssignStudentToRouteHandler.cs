@@ -20,10 +20,10 @@ namespace Transport.Application.Features.Students.Commands.AssignStudentToRoute
         public async Task<Unit> Handle(AssignStudentToRouteCommand request, CancellationToken cancellationToken)
         {
             var student = await _studentRepository.GetByIdAsync(request.StudentId)
-                ?? throw new DomainException("Student not found");
+                ?? throw new DomainException("No se encotro el estudiante");
 
             var route = await _routeRepository.GetByIdAsync(request.RouteAssignmentId)
-                ?? throw new DomainException("Route not found");
+                ?? throw new DomainException("No se encontro la ruta");
 
             route.AssignStudent(student.Id);
 

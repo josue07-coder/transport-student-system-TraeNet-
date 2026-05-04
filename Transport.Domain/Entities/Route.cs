@@ -25,17 +25,17 @@ namespace Transport.Domain.Entities
             SetName(name);
 
             if (schoolId == Guid.Empty)
-                throw new DomainException("School is required");
+                throw new DomainException("La escuela es obligatoria.");
 
             SchoolId = schoolId;
-            OperatingHours = operatingHours ?? throw new DomainException("Operating hours are required");
+            OperatingHours = operatingHours ?? throw new DomainException("El horario es obligatorio");
             Status = RouteStatus.Inactive;
         }
 
         public void SetName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new DomainException("Route name is required");
+                throw new DomainException("El nombre de ruta es obligatorio");
 
             Name = name;
         }
@@ -43,18 +43,18 @@ namespace Transport.Domain.Entities
         public void UpdateOperatingHours(TimeRange operatingHours)
         {
             if (Status == RouteStatus.Active)
-                throw new DomainException("Cannot change schedule while route is active");
+                throw new DomainException("No se puede cambiar el horario mientras la ruta está activa");
 
-            OperatingHours = operatingHours ?? throw new DomainException("Operating hours are required");
+            OperatingHours = operatingHours ?? throw new DomainException("El horario es obligatorio");
         }
 
         public void AddStop(RouteStop stop)
         {
             if (stop == null)
-                throw new DomainException("Stop is required");
+                throw new DomainException("La parada es obligatoria");
 
             if (_stops.Any(s => s.Equals(stop)))
-                throw new DomainException("Stop already exists in route");
+                throw new DomainException("La parada ya existe en la ruta");
 
             _stops.Add(stop);
         }
@@ -64,21 +64,21 @@ namespace Transport.Domain.Entities
             var stop = _stops.FirstOrDefault(s => s.Id == stopId);
 
             if (stop == null)
-                throw new DomainException("Stop not found");
+                throw new DomainException("Parada no encontrada");
 
             if (Status == RouteStatus.Active)
-                throw new DomainException("Cannot remove stops from an active route");
+                throw new DomainException("No se pueden eliminar paradas de una ruta activa");
 
             _stops.Remove(stop);
         }
 
-        public void Assign(Guid driverId, Guid vehicleId)
+        public void Assign(Guid driverId, Guid vehicleId, int capacity)
         {
             if (Status != RouteStatus.Active)
-                throw new DomainException("Route must be active to assign");
+                throw new DomainException("La ruta debe estar activa para asignar");
 
             if (driverId == Guid.Empty || vehicleId == Guid.Empty)
-                throw new DomainException("Driver and Vehicle are required");
+                throw new DomainException("El conductor y el vehiculo son obligatorios");
 
             _assignments.Add(new RouteAssignment(Id, driverId, vehicleId, capacity));
         }
@@ -86,7 +86,7 @@ namespace Transport.Domain.Entities
         public void Activate()
         {
             if (!_stops.Any())
-                throw new DomainException("Route must have at least one stop");
+                throw new DomainException("La ruta debe tener al menos una parada");
 
             Status = RouteStatus.Active;
         }

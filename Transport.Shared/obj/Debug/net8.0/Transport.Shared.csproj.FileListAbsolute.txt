@@ -11,3 +11,5 @@ C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Tra
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Shared\obj\Debug\net8.0\refint\Transport.Shared.dll
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Shared\obj\Debug\net8.0\Transport.Shared.pdb
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Shared\obj\Debug\net8.0\ref\Transport.Shared.dll
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Shared\bin\Debug\net8.0\Transport.Shared.runtimeconfig.json
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Shared\obj\Debug\net8.0\Transport.Shared.genruntimeconfig.cache

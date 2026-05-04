@@ -9,6 +9,9 @@ namespace Transport.Domain.Entities
         public string Code { get; private set; }
         public string Description { get; private set; }
 
+        private readonly List<Sector> _sectors = new();
+        public IReadOnlyCollection<Sector> Sectors => _sectors.AsReadOnly();
+
         private SchoolDistrict() { } // EF Core
 
         public SchoolDistrict(string name, string code, string? description = null)

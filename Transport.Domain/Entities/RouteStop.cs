@@ -5,21 +5,27 @@ namespace Transport.Domain.Entities
 {
     public class RouteStop : BaseEntity
     {
+        public Guid RouteId { get; private set; }   
         public Guid StopId { get; private set; }
-        public int Order { get; private set; }
+
+        public int StopOrder { get; private set; }
 
         private RouteStop() { } // EF Core
 
-        public RouteStop(Guid stopId, int order)
+        public RouteStop(Guid routeId, Guid stopId, int order)
         {
+            if (routeId == Guid.Empty)
+                throw new DomainException("La ruta es obligatorio");
+
             if (stopId == Guid.Empty)
-                throw new DomainException("Stop is required");
+                throw new DomainException("La parada es obligatorio");
 
             if (order <= 0)
-                throw new DomainException("Order must be greater than zero");
+                throw new DomainException("El orden debe ser mayor que 0");
 
+            RouteId = routeId;
             StopId = stopId;
-            Order = order;
+            StopOrder = order;
         }
 
         public void UpdateOrder(int newOrder)
@@ -27,7 +33,7 @@ namespace Transport.Domain.Entities
             if (newOrder <= 0)
                 throw new DomainException("Order must be greater than zero");
 
-            Order = newOrder;
+            StopOrder = newOrder;
         }
     }
 }

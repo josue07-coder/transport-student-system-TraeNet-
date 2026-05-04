@@ -7,16 +7,16 @@ namespace Transport.Application.Features.Students.Commands.CreateStudent
         public CreateStudentValidator()
         {
             RuleFor(x => x.FirstName)
-                .NotEmpty().WithMessage("First name is required");
+                .NotEmpty().WithMessage("El nombre es obligatorio");
 
             RuleFor(x => x.LastName)
-                .NotEmpty().WithMessage("Last name is required");
+                .NotEmpty().WithMessage("Apellidos obligatorios");
 
             RuleFor(x => x.Code)
-                .NotEmpty().WithMessage("Student code is required");
+                .NotEmpty().WithMessage("El codigo del estudiante es obligatorio");
 
             RuleFor(x => x.SchoolId)
-                .NotEmpty().WithMessage("School is required");
+                .NotEmpty().WithMessage("La escuela es obligatoria");
         }
     }
 }

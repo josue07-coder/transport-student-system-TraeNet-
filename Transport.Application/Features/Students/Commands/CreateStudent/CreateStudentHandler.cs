@@ -19,7 +19,7 @@ namespace Transport.Application.Features.Students.Commands.CreateStudent
         {
             //  Regla de negocio adicional
             if (await _repository.ExistsByCodeAsync(request.Code))
-                throw new DomainException("Student with this code already exists");
+                throw new DomainException("El estudiante con este codigo ya existe");
 
             var student = new Student(
                 request.FirstName,

@@ -21,7 +21,9 @@ namespace Transport.Infrastructure.Persistence.Repositories
 
         public async Task<Student?> GetByIdAsync(Guid id)
         {
-            return await _context.Students.FindAsync(id);
+            return await _context.Students
+                .Include(s => s.Assignments)
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<List<Student>> GetAllAsync()

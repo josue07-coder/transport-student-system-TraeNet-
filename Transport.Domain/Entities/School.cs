@@ -4,7 +4,7 @@ using Transport.Domain.ValueObjects;
 
 namespace Transport.Domain.Entities
 {
-    public class School : BaseEntity
+    public class School : BaseEntity, IActivatable
     {
         public string Name { get; private set; }
         public string DirectorName { get; private set; }
@@ -13,6 +13,7 @@ namespace Transport.Domain.Entities
         public string Description { get; private set; }
         public Address Address { get; private set; }
         public string? ProfileImageUrl { get; private set; }
+        public bool IsActive { get; private set; } = true;
 
         public Guid SectorId { get; private set; }
 
@@ -82,6 +83,10 @@ namespace Transport.Domain.Entities
                 throw new DomainException("Sector is required");
 
             SectorId = sectorId;
+        }
+        public void Deactivate()
+        {
+            IsActive = false;
         }
     }
 }

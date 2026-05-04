@@ -24,6 +24,11 @@ namespace Transport.Infrastructure.Persistence.Configurations
                   .HasColumnName("StudentCode")
                   .IsRequired();
             });
+            builder.Property(x => x.PhotoUrl)
+                .HasMaxLength(300);
+
+            builder.Property(x => x.IsActive)
+                .IsRequired();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Transport.Domain.Entities
         public void SetPlateNumber(string plate)
         {
             if (string.IsNullOrWhiteSpace(plate))
-                throw new DomainException("Plate number is required");
+                throw new DomainException("El numero de placa es obligatorio");
 
             PlateNumber = plate;
         }
@@ -30,7 +30,7 @@ namespace Transport.Domain.Entities
         public void SetCapacity(int capacity)
         {
             if (capacity <= 0)
-                throw new DomainException("Capacity must be greater than 0");
+                throw new DomainException("La capacidad debe ser mayor que 0");
 
             Capacity = capacity;
         }
@@ -43,7 +43,7 @@ namespace Transport.Domain.Entities
         public void Deactivate()
         {
             if (Status == VehicleStatus.Inactive)
-                throw new DomainException("Vehicle is already inactive");
+                throw new DomainException("El vehiculo ya esta inhactivo");
 
             Status = VehicleStatus.Inactive;
         }
