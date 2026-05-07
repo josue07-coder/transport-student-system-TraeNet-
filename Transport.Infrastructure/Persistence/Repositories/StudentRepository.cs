@@ -7,9 +7,9 @@ namespace Transport.Infrastructure.Persistence.Repositories
 {
     public class StudentRepository : IStudentRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
 
-        public StudentRepository(ApplicationDbContext context)
+        public StudentRepository(AppDbContext context)
         {
             _context = context;
         }

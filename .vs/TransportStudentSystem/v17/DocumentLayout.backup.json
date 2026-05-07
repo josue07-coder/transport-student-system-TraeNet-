@@ -3,16 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.infrastructure\\persistence\\configurations\\driverconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|solutionrelative:transport.infrastructure\\persistence\\configurations\\driverconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.domain\\entities\\sector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|solutionrelative:transport.domain\\entities\\sector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.infrastructure\\persistence\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|solutionrelative:transport.infrastructure\\persistence\\context\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{301CBAF8-48E5-4FB9-932D-BB3C2F3F24B8}|Transport.API\\Transport.API.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.api\\controllers\\gradescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{301CBAF8-48E5-4FB9-932D-BB3C2F3F24B8}|Transport.API\\Transport.API.csproj|solutionrelative:transport.api\\controllers\\gradescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.application\\interfaces\\istudentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|solutionrelative:transport.application\\interfaces\\istudentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{301CBAF8-48E5-4FB9-932D-BB3C2F3F24B8}|Transport.API\\Transport.API.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.api\\controllers\\guardianscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{301CBAF8-48E5-4FB9-932D-BB3C2F3F24B8}|Transport.API\\Transport.API.csproj|solutionrelative:transport.api\\controllers\\guardianscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{301CBAF8-48E5-4FB9-932D-BB3C2F3F24B8}|Transport.API\\Transport.API.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.api\\controllers\\schoolscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{301CBAF8-48E5-4FB9-932D-BB3C2F3F24B8}|Transport.API\\Transport.API.csproj|solutionrelative:transport.api\\controllers\\schoolscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{301CBAF8-48E5-4FB9-932D-BB3C2F3F24B8}|Transport.API\\Transport.API.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.api\\controllers\\studentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{301CBAF8-48E5-4FB9-932D-BB3C2F3F24B8}|Transport.API\\Transport.API.csproj|solutionrelative:transport.api\\controllers\\studentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.application\\features\\schools\\queries\\getallschoolshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|solutionrelative:transport.application\\features\\schools\\queries\\getallschoolshandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -43,41 +55,77 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "DriverConfiguration.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Configurations\\DriverConfiguration.cs",
-              "RelativeDocumentMoniker": "Transport.Infrastructure\\Persistence\\Configurations\\DriverConfiguration.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Configurations\\DriverConfiguration.cs",
-              "RelativeToolTip": "Transport.Infrastructure\\Persistence\\Configurations\\DriverConfiguration.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAPAAAAAAAAAA==",
+              "Title": "Sector.cs",
+              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Sector.cs",
+              "RelativeDocumentMoniker": "Transport.Domain\\Entities\\Sector.cs",
+              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Sector.cs",
+              "RelativeToolTip": "Transport.Domain\\Entities\\Sector.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAkwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T18:20:37.474Z",
+              "WhenOpened": "2026-05-06T06:09:59.046Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "IStudentRepository.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Interfaces\\IStudentRepository.cs",
-              "RelativeDocumentMoniker": "Transport.Application\\Interfaces\\IStudentRepository.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Interfaces\\IStudentRepository.cs",
-              "RelativeToolTip": "Transport.Application\\Interfaces\\IStudentRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "GuardiansController.cs",
+              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.API\\Controllers\\GuardiansController.cs",
+              "RelativeDocumentMoniker": "Transport.API\\Controllers\\GuardiansController.cs",
+              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.API\\Controllers\\GuardiansController.cs",
+              "RelativeToolTip": "Transport.API\\Controllers\\GuardiansController.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T18:15:12.455Z",
+              "WhenOpened": "2026-05-06T06:02:45.224Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Context\\ApplicationDbContext.cs",
-              "RelativeDocumentMoniker": "Transport.Infrastructure\\Persistence\\Context\\ApplicationDbContext.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Context\\ApplicationDbContext.cs",
-              "RelativeToolTip": "Transport.Infrastructure\\Persistence\\Context\\ApplicationDbContext.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAcwCUAAAALAAAAAAAAAA==",
+              "Title": "GradesController.cs",
+              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.API\\Controllers\\GradesController.cs",
+              "RelativeDocumentMoniker": "Transport.API\\Controllers\\GradesController.cs",
+              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.API\\Controllers\\GradesController.cs",
+              "RelativeToolTip": "Transport.API\\Controllers\\GradesController.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAxwAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-04T16:04:58.118Z",
+              "WhenOpened": "2026-05-06T05:58:42.452Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SchoolsController.cs",
+              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.API\\Controllers\\SchoolsController.cs",
+              "RelativeDocumentMoniker": "Transport.API\\Controllers\\SchoolsController.cs",
+              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.API\\Controllers\\SchoolsController.cs",
+              "RelativeToolTip": "Transport.API\\Controllers\\SchoolsController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAACAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-06T05:57:11.604Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "StudentsController.cs",
+              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.API\\Controllers\\StudentsController.cs",
+              "RelativeDocumentMoniker": "Transport.API\\Controllers\\StudentsController.cs",
+              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.API\\Controllers\\StudentsController.cs",
+              "RelativeToolTip": "Transport.API\\Controllers\\StudentsController.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T23:41:04.573Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "GetAllSchoolsHandler.cs",
+              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Schools\\Queries\\GetAllSchoolsHandler.cs",
+              "RelativeDocumentMoniker": "Transport.Application\\Features\\Schools\\Queries\\GetAllSchoolsHandler.cs",
+              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Schools\\Queries\\GetAllSchoolsHandler.cs",
+              "RelativeToolTip": "Transport.Application\\Features\\Schools\\Queries\\GetAllSchoolsHandler.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAzwCAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-04T22:11:42.954Z"
             }
           ]
         }

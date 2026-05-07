@@ -10,7 +10,7 @@ using Transport.Infrastructure.Persistence.Context;
 
 namespace Transport.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -36,10 +36,10 @@ namespace Transport.Infrastructure.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<Guid?>("GradeId")
+                    b.Property<Guid>("GradeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("GuardianId")
+                    b.Property<Guid>("GuardianId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
@@ -595,15 +595,17 @@ namespace Transport.Infrastructure.Migrations
 
             modelBuilder.Entity("Student", b =>
                 {
-                    b.HasOne("Transport.Domain.Entities.Grade", null)
+                    b.HasOne("Transport.Domain.Entities.Grade", "Grade")
                         .WithMany("Students")
                         .HasForeignKey("GradeId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("Transport.Domain.Entities.Guardian", null)
+                    b.HasOne("Transport.Domain.Entities.Guardian", "Guardian")
                         .WithMany("Students")
                         .HasForeignKey("GuardianId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.OwnsOne("Transport.Domain.ValueObjects.StudentCode", "StudentCode", b1 =>
                         {
@@ -622,6 +624,10 @@ namespace Transport.Infrastructure.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("StudentId");
                         });
+
+                    b.Navigation("Grade");
+
+                    b.Navigation("Guardian");
 
                     b.Navigation("StudentCode")
                         .IsRequired();

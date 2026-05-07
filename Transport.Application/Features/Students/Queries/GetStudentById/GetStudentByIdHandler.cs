@@ -6,7 +6,7 @@ using Transport.Domain.Exceptions;
 
 namespace Transport.Application.Features.Students.Queries.GetStudentById
 {
-    public class GetStudentByIdHandler : IRequestHandler<GetStudentByIdQuery, StudentDto>
+    public class GetStudentByIdHandler : IRequestHandler<GetStudentByIdQuery, StudentResponseDto>
     {
         private readonly IStudentRepository _repository;
 
@@ -15,17 +15,18 @@ namespace Transport.Application.Features.Students.Queries.GetStudentById
             _repository = repository;
         }
 
-        public async Task<StudentDto> Handle(GetStudentByIdQuery request, CancellationToken cancellationToken)
+        public async Task<StudentResponseDto> Handle(GetStudentByIdQuery request, CancellationToken cancellationToken)
         {
             var student = await _repository.GetByIdAsync(request.Id)
                 ?? throw new DomainException("Student not found");
 
-            return new StudentDto
+            return new StudentResponseDto
             {
                 Id = student.Id,
                 FullName = $"{student.FirstName} {student.LastName}",
-                Code = student.StudentCode.Value,
-                SchoolId = student.SchoolId
+                SchoolId = student.SchoolId,
+                GradeId = student.GradeId,
+                GuardianId = student.GuardianId
             };
         }
     }

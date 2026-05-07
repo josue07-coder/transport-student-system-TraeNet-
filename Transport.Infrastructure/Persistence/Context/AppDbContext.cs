@@ -5,9 +5,9 @@ using Transport.Domain.Entities;
 
 namespace Transport.Infrastructure.Persistence.Context
 {
-    public class ApplicationDbContext: DbContext
+    public class AppDbContext: DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
@@ -43,7 +43,7 @@ namespace Transport.Infrastructure.Persistence.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
             //  GLOBAL FILTER: IsActive
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

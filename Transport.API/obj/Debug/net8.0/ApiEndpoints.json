@@ -1,0 +1,143 @@
+[
+  {
+    "ContainingType": "Transport.API.Controllers.GradesController",
+    "Method": "Create",
+    "RelativePath": "api/Grades",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.Grades.Commands.CreateGrade.CreateGradeCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.GradesController",
+    "Method": "GetAll",
+    "RelativePath": "api/Grades",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.GuardiansController",
+    "Method": "Create",
+    "RelativePath": "api/Guardians",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.Guardians.Commands.CreateGuardian.CreateGuardianCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.GuardiansController",
+    "Method": "GetAll",
+    "RelativePath": "api/Guardians",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.SchoolsController",
+    "Method": "Create",
+    "RelativePath": "api/Schools",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.Schools.Commands.CreateSchool.CreateSchoolCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.SchoolsController",
+    "Method": "GetAll",
+    "RelativePath": "api/Schools",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.StudentsController",
+    "Method": "Create",
+    "RelativePath": "api/Students",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.Students.Commands.CreateStudent.CreateStudentCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.StudentsController",
+    "Method": "GetAll",
+    "RelativePath": "api/Students",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.StudentsController",
+    "Method": "Update",
+    "RelativePath": "api/Students/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "command",
+        "Type": "UpdateStudentCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.StudentsController",
+    "Method": "Delete",
+    "RelativePath": "api/Students/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

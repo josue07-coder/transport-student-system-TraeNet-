@@ -7,9 +7,9 @@ namespace Transport.Infrastructure.Persistence.Repositories
 {
     public class RouteAssignmentRepository : IRouteAssignmentRepository
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
 
-        public RouteAssignmentRepository(ApplicationDbContext context)
+        public RouteAssignmentRepository(AppDbContext context)
         {
             _context = context;
         }

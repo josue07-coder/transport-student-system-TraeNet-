@@ -11,7 +11,7 @@ using Transport.Infrastructure.Persistence.Context;
 
 namespace Transport.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20260504182446_InitialFullModel")]
     partial class InitialFullModel
     {

@@ -1,28 +1,30 @@
 ﻿using MediatR;
 using Transport.Application.Features.Students.DTOs;
+using Transport.Application.Features.Students.Queries.GetStudents;
 using Transport.Application.Interfaces;
 
-namespace Transport.Application.Features.Students.Queries.GetStudents
+namespace Transport.Application.Features.Students.Queries.GetAllStudents
 {
-    public class GetStudentsHandler : IRequestHandler<GetStudentsQuery, List<StudentDto>>
+    public class GetAllStudentsHandler : IRequestHandler<GetAllStudentsQuery, List<StudentResponseDto>>
     {
-        private readonly IStudentRepository _repository;
+        private readonly IStudentRepository _repo;
 
-        public GetStudentsHandler(IStudentRepository repository)
+        public GetAllStudentsHandler(IStudentRepository repo)
         {
-            _repository = repository;
+            _repo = repo;
         }
 
-        public async Task<List<StudentDto>> Handle(GetStudentsQuery request, CancellationToken cancellationToken)
+        public async Task<List<StudentResponseDto>> Handle(GetAllStudentsQuery request, CancellationToken cancellationToken)
         {
-            var students = await _repository.GetAllAsync();
+            var students = await _repo.GetAllAsync();
 
-            return students.Select(s => new StudentDto
+            return students.Select(s => new StudentResponseDto
             {
                 Id = s.Id,
                 FullName = $"{s.FirstName} {s.LastName}",
-                Code = s.StudentCode.Value,
-                SchoolId = s.SchoolId
+                SchoolId = s.SchoolId,
+                GradeId = s.GradeId,
+                GuardianId = s.GuardianId
             }).ToList();
         }
     }

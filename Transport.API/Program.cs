@@ -1,42 +1,20 @@
-using FluentValidation;
-using Microsoft.EntityFrameworkCore;
-using Transport.Infrastructure.Persistence.Context;
-using Transport.Infrastructure.Persistence.Repositories;
-using Transport.Application.Interfaces;
-using Transport.Application.Features.Students.Commands.CreateStudent;
-
+using Transport.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//  DbContext
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//  Extensions
+builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddMediatRServices();
+builder.Services.AddSwaggerDocs();
 
-//  MediatR
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(CreateStudentCommand).Assembly));
-
-//  FluentValidation
-builder.Services.AddValidatorsFromAssemblyContaining<CreateStudentCommand>();
-
-//  Repositories
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
-builder.Services.AddScoped<IRouteAssignmentRepository, RouteAssignmentRepository>();
-
-//  Controllers
 builder.Services.AddControllers();
-
-//  Swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-//  Middleware
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerDocs();
 }
 
 app.UseHttpsRedirection();

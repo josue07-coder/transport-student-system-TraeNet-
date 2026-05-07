@@ -22,4 +22,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.25" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mappings\" />
+  </ItemGroup>
+
 </Project>

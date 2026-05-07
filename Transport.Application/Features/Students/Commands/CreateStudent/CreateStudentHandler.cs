@@ -1,37 +1,34 @@
 ﻿using MediatR;
-using Transport.Domain.Entities;
-using Transport.Domain.Exceptions;
-using Transport.Domain.ValueObjects;
+using Transport.Application.Features.Students.Commands.CreateStudent;
 using Transport.Application.Interfaces;
+using Transport.Domain.ValueObjects;
 
-namespace Transport.Application.Features.Students.Commands.CreateStudent
+public class CreateStudentHandler : IRequestHandler<CreateStudentCommand, Guid>
 {
-    public class CreateStudentHandler : IRequestHandler<CreateStudentCommand, Guid>
+    private readonly IStudentRepository _repo;
+
+    public CreateStudentHandler(IStudentRepository repo)
     {
-        private readonly IStudentRepository _repository;
+        _repo = repo;
+    }
 
-        public CreateStudentHandler(IStudentRepository repository)
-        {
-            _repository = repository;
-        }
+    public async Task<Guid> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
+    {
+        //  Generar código automáticamente
+        var code = StudentCode.Create($"STU-{Guid.NewGuid().ToString().Substring(0, 8)}");
 
-        public async Task<Guid> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
-        {
-            //  Regla de negocio adicional
-            if (await _repository.ExistsByCodeAsync(request.Code))
-                throw new DomainException("El estudiante con este codigo ya existe");
+        var student = new Student(
+            request.FirstName,
+            request.LastName,
+            code,
+            request.SchoolId,
+            request.GradeId,
+            request.GuardianId
+        );
 
-            var student = new Student(
-                request.FirstName,
-                request.LastName,
-                StudentCode.Create(request.Code),
-                request.SchoolId
-            );
+        await _repo.AddAsync(student);
+        await _repo.SaveChangesAsync();
 
-            await _repository.AddAsync(student);
-            await _repository.SaveChangesAsync();
-
-            return student.Id;
-        }
+        return student.Id;
     }
 }

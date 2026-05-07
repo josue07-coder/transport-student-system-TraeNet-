@@ -12,11 +12,11 @@ namespace Transport.Application.Features.Students.Commands.CreateStudent
             RuleFor(x => x.LastName)
                 .NotEmpty().WithMessage("Apellidos obligatorios");
 
-            RuleFor(x => x.Code)
-                .NotEmpty().WithMessage("El codigo del estudiante es obligatorio");
-
             RuleFor(x => x.SchoolId)
                 .NotEmpty().WithMessage("La escuela es obligatoria");
+
+            RuleFor(x => x.GradeId)
+                .NotEmpty().WithMessage("El grado es obligatorio");
         }
     }
 }
