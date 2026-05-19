@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Transport.Infrastructure.Persistence.Context;
 
@@ -11,9 +12,11 @@ using Transport.Infrastructure.Persistence.Context;
 namespace Transport.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260511005439_UpdateGuardianModel")]
+    partial class UpdateGuardianModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,11 +142,6 @@ namespace Transport.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -182,7 +180,10 @@ namespace Transport.Infrastructure.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<Guid>("SectorId")
+                    b.Property<Guid?>("SectorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SectorId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -194,6 +195,8 @@ namespace Transport.Infrastructure.Migrations
                         .IsUnique();
 
                     b.HasIndex("SectorId");
+
+                    b.HasIndex("SectorId1");
 
                     b.ToTable("Guardians");
                 });
@@ -333,7 +336,6 @@ namespace Transport.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -426,7 +428,10 @@ namespace Transport.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("SchoolDistrictId")
+                    b.Property<Guid?>("SchoolDistrictId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SchoolDistrictId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -435,6 +440,8 @@ namespace Transport.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolDistrictId");
+
+                    b.HasIndex("SchoolDistrictId1");
 
                     b.HasIndex("Name", "City");
 
@@ -672,11 +679,44 @@ namespace Transport.Infrastructure.Migrations
 
             modelBuilder.Entity("Transport.Domain.Entities.Guardian", b =>
                 {
+                    b.HasOne("Transport.Domain.Entities.Sector", "Sector")
+                        .WithMany()
+                        .HasForeignKey("SectorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Transport.Domain.Entities.Sector", null)
                         .WithMany("Guardians")
-                        .HasForeignKey("SectorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasForeignKey("SectorId1");
+
+                    b.OwnsOne("Address", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("GuardianId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("City");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("Street");
+
+                            b1.HasKey("GuardianId");
+
+                            b1.ToTable("Guardians");
+
+                            b1.WithOwner()
+                                .HasForeignKey("GuardianId");
+                        });
+
+                    b.Navigation("Address")
                         .IsRequired();
+
+                    b.Navigation("Sector");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.Route", b =>
@@ -823,13 +863,49 @@ namespace Transport.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Transport.Domain.Entities.SchoolDistrict", b =>
+                {
+                    b.OwnsOne("Address", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("SchoolDistrictId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("City");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("Street");
+
+                            b1.HasKey("SchoolDistrictId");
+
+                            b1.ToTable("SchoolDistricts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SchoolDistrictId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Transport.Domain.Entities.Sector", b =>
                 {
                     b.HasOne("Transport.Domain.Entities.SchoolDistrict", null)
-                        .WithMany("Sectors")
+                        .WithMany()
                         .HasForeignKey("SchoolDistrictId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Transport.Domain.Entities.SchoolDistrict", "SchoolDistrict")
+                        .WithMany("Sectors")
+                        .HasForeignKey("SchoolDistrictId1");
+
+                    b.Navigation("SchoolDistrict");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.Stop", b =>

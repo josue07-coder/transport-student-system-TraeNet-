@@ -32,6 +32,7 @@ namespace Transport.Infrastructure.Persistence.Configurations
 
             //  Description
             builder.Property(x => x.Description)
+                .IsRequired(false)
                 .HasMaxLength(500);
 
             //  Profile Image

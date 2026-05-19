@@ -17,14 +17,14 @@ namespace Transport.Application.Features.Guardians.Commands.CreateGuardian
         public async Task<Guid> Handle(CreateGuardianCommand request, CancellationToken cancellationToken)
         {
             var guardian = new Guardian(
-                documentType: DocumentType.Cedula, //  puedes mejorar luego
-                documentNumber: Guid.NewGuid().ToString(),
-                firstName: request.FirstName,
-                lastName: request.LastName,
-                phone: request.Phone,
-                address: request.Address,
-                gender: Gender.Male, // temporal
-                sectorId: request.SectorId
+                 request.DocumentType,
+                 request.DocumentNumber,
+                 request.FirstName,
+                 request.LastName,
+                 request.Phone,
+                 Address.Create(request.Street, request.City),
+                 request.Gender,
+                 request.SectorId
             );
 
             await _repo.AddAsync(guardian);

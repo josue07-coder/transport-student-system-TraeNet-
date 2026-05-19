@@ -1,4 +1,5 @@
 using Transport.API.Extensions;
+using Transport.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerDocs();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

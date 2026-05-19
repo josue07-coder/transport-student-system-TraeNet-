@@ -11,7 +11,7 @@ namespace Transport.Infrastructure.Persistence.Configurations
             //  Primary Key
             builder.HasKey(x => x.Id);
 
-            // 📌 Name
+            //  Name
             builder.Property(x => x.Name)
                 .IsRequired()
                 .HasMaxLength(150);
@@ -31,9 +31,22 @@ namespace Transport.Infrastructure.Persistence.Configurations
 
             //  SchoolDistrict → Sectors
             builder.HasMany(x => x.Sectors)
-                .WithOne()
-                .HasForeignKey("SchoolDistrictId")
+                .WithOne(x => x.SchoolDistrict)
+                .HasForeignKey(x => x.SchoolDistrictId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.OwnsOne(x => x.Address, address =>
+            {
+                address.Property(a => a.Street)
+                    .HasColumnName("Street")
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                address.Property(a => a.City)
+                    .HasColumnName("City")
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
         }
     }
 }

@@ -38,9 +38,18 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.Property(x => x.Address)
-                .IsRequired()
-                .HasMaxLength(200);
+            builder.OwnsOne(x => x.Address, address =>
+            {
+                address.Property(a => a.Street)
+                    .HasColumnName("Street")
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                address.Property(a => a.City)
+                    .HasColumnName("City")
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
 
             //  Photo
             builder.Property(x => x.PhotoUrl)
@@ -53,17 +62,19 @@ namespace Transport.Infrastructure.Persistence.Configurations
 
             //  Sector
             builder.Property(x => x.SectorId)
-                .IsRequired();
+                .IsRequired(false);
 
-            builder.HasOne<Sector>()
-                .WithMany(s => s.Guardians)
-                .HasForeignKey(x => x.SectorId)
-                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.Sector)
+               .WithMany(s => s.Guardians)
+               .HasForeignKey(x => x.SectorId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             //  Guardian → Students
             builder.HasMany(x => x.Students)
-                .WithOne()
+                .WithOne(x => x.Guardian)
+                .HasForeignKey(x => x.GuardianId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             builder.Property(x => x.IsActive)
                  .IsRequired();
         }

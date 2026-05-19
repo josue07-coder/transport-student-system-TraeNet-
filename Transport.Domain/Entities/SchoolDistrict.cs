@@ -8,16 +8,18 @@ namespace Transport.Domain.Entities
         public string Name { get; private set; }
         public string Code { get; private set; }
         public string Description { get; private set; }
+        public Address Address { get; private set; }
 
         private readonly List<Sector> _sectors = new();
         public IReadOnlyCollection<Sector> Sectors => _sectors.AsReadOnly();
 
         private SchoolDistrict() { } // EF Core
 
-        public SchoolDistrict(string name, string code, string? description = null)
+        public SchoolDistrict(string name, string code, Address address, string? description = null)
         {
             SetName(name);
             SetCode(code);
+            Address = address ?? throw new DomainException("Address is required");
             Description = description ?? string.Empty;
         }
 
@@ -40,6 +42,10 @@ namespace Transport.Domain.Entities
         public void UpdateDescription(string? description)
         {
             Description = description ?? string.Empty;
+        }
+        public void UpdateAddress(Address address)
+        {
+            Address = address ?? throw new DomainException("Address is required");
         }
     }
 }

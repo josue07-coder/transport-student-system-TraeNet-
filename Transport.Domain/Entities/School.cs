@@ -10,7 +10,7 @@ namespace Transport.Domain.Entities
         public string DirectorName { get; private set; }
         public Email ContactEmail { get; private set; }
         public PhoneNumber ContactPhone { get; private set; }
-        public string Description { get; private set; }
+        public string? Description { get; private set; }
         public Address Address { get; private set; }
         public string? ProfileImageUrl { get; private set; }
         public bool IsActive { get; private set; } = true;
@@ -40,7 +40,7 @@ namespace Transport.Domain.Entities
                 throw new DomainException("Sector is required");
 
             SectorId = sectorId;
-            Description = description;
+            Description = description ?? string.Empty; ;
             ProfileImageUrl = profileImageUrl;
         }
 

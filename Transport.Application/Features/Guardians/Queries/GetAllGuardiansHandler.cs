@@ -1,8 +1,9 @@
-﻿using MediatR;
+using MediatR;
+using Transport.Application.Common.Pagination;
 using Transport.Application.Features.Guardians.DTOs;
 using Transport.Application.Interfaces;
 
-public class GetAllGuardiansHandler : IRequestHandler<GetAllGuardiansQuery, List<GuardianResponseDto>>
+public class GetAllGuardiansHandler : IRequestHandler<GetAllGuardiansQuery, PaginatedResponse<GuardianResponseDto>>
 {
     private readonly IGuardianRepository _repo;
 
@@ -11,16 +12,21 @@ public class GetAllGuardiansHandler : IRequestHandler<GetAllGuardiansQuery, List
         _repo = repo;
     }
 
-    public async Task<List<GuardianResponseDto>> Handle(GetAllGuardiansQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponse<GuardianResponseDto>> Handle(GetAllGuardiansQuery request, CancellationToken cancellationToken)
     {
-        var guardians = await _repo.GetAllAsync();
-
-        return guardians.Select(g => new GuardianResponseDto
+        var guardians = await _repo.GetPagedAsync(request.PageNumber, request.PageSize);
+        var items = guardians.Items.Select(g => new GuardianResponseDto
         {
             Id = g.Id,
             FullName = $"{g.FirstName} {g.LastName}",
             Phone = g.Phone,
-            Address = g.Address
-        }).ToList();
+            Address = $"{g.Address.Street}, {g.Address.City}"
+        });
+
+        return new PaginatedResponse<GuardianResponseDto>(
+            items,
+            guardians.TotalCount,
+            guardians.PageNumber,
+            guardians.PageSize);
     }
 }

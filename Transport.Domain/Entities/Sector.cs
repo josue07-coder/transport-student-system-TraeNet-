@@ -12,7 +12,8 @@ namespace Transport.Domain.Entities
         private readonly List<School> _schools = new();
         public IReadOnlyCollection<School> Schools => _schools;
 
-        public Guid SchoolDistrictId { get; private set; }
+        public Guid? SchoolDistrictId { get; private set; }
+        public SchoolDistrict? SchoolDistrict { get; private set; }
         public ICollection<Stop> Stops { get; private set; } = new List<Stop>();
 
         private readonly List<Guardian> _guardians = new();
@@ -20,21 +21,20 @@ namespace Transport.Domain.Entities
 
         private Sector() { } // EF Core
 
-        public Sector(string name, string city, string province, Guid schoolDistrictId)
+        public Sector(string name, string province, string city, Guid? schoolDistrictId = null)
         {
-            SetName(name);
-
-            if (string.IsNullOrWhiteSpace(city))
-                throw new DomainException("La cuidad es requerida");
+            if (string.IsNullOrWhiteSpace(name))
+                throw new DomainException("Name is required");
 
             if (string.IsNullOrWhiteSpace(province))
                 throw new DomainException("Province is required");
 
-            if (schoolDistrictId == Guid.Empty)
-                throw new DomainException("School district is required");
+            if (string.IsNullOrWhiteSpace(city))
+                throw new DomainException("City is required");
 
-            City = city;
+            Name = name;
             Province = province;
+            City = city;
             SchoolDistrictId = schoolDistrictId;
         }
 
@@ -58,12 +58,10 @@ namespace Transport.Domain.Entities
             Province = province;
         }
 
-        public void ChangeDistrict(Guid schoolDistrictId)
+        public void ChangeSchoolDistrict(Guid? schoolDistrictId)
         {
-            if (schoolDistrictId == Guid.Empty)
-                throw new DomainException("School district is required");
-
             SchoolDistrictId = schoolDistrictId;
         }
+
     }
 }

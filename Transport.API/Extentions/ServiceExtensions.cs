@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using FluentValidation;
+using MediatR;
+using Transport.Application;
+using Transport.Application.Common.Behaviors;
 using Transport.Application.Interfaces;
 using Transport.Infrastructure.Persistence.Repositories;
 using Transport.Infrastructure.Repositories;
-
 
 namespace Transport.API.Extensions
 {
@@ -15,6 +17,7 @@ namespace Transport.API.Extensions
             services.AddScoped<ISchoolRepository, SchoolRepository>();
             services.AddScoped<IGradeRepository, GradeRepository>();
             services.AddScoped<IGuardianRepository, GuardianRepository>();
+            services.AddScoped<ISectorRepository, SectorRepository>();
 
             return services;
         }
@@ -22,7 +25,10 @@ namespace Transport.API.Extensions
         public static IServiceCollection AddMediatRServices(this IServiceCollection services)
         {
             services.AddMediatR(cfg =>
-                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+                cfg.RegisterServicesFromAssembly(typeof(AssemblyReference).Assembly));
+
+            services.AddValidatorsFromAssembly(typeof(AssemblyReference).Assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
         }

@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Transport.Application.Common.Pagination;
 using Transport.Application.Interfaces;
 using Transport.Domain.Entities;
-using Transport.Infrastructure.Persistence;
 using Transport.Infrastructure.Persistence.Context;
 
 namespace Transport.Infrastructure.Repositories
@@ -24,9 +24,40 @@ namespace Transport.Infrastructure.Repositories
         {
             return await _context.Grades.FindAsync(id);
         }
+
         public async Task<List<Grade>> GetAllAsync()
         {
             return await _context.Grades.ToListAsync();
+        }
+
+        public async Task<PaginatedResponse<Grade>> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            var query = _context.Grades.AsQueryable();
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PaginatedResponse<Grade>(items, totalCount, pageNumber, pageSize);
+        }
+
+        public async Task<List<Grade>> GetBySchoolAsync(Guid schoolId)
+        {
+            return await _context.Grades
+                .Where(g => g.SchoolId == schoolId)
+                .ToListAsync();
+        }
+
+        public async Task<bool> HasStudentsAsync(Guid gradeId)
+        {
+            return await _context.Students
+                .AnyAsync(s => s.GradeId == gradeId);
+        }
+
+        public void Delete(Grade grade)
+        {
+            _context.Grades.Remove(grade);
         }
 
         public async Task SaveChangesAsync()

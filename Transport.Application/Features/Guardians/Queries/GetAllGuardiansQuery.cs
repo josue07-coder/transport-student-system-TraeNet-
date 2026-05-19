@@ -1,6 +1,7 @@
-﻿using MediatR;
+using MediatR;
+using Transport.Application.Common.Pagination;
 using Transport.Application.Features.Guardians.DTOs;
 
-public class GetAllGuardiansQuery : IRequest<List<GuardianResponseDto>>
+public class GetAllGuardiansQuery : PaginationRequest, IRequest<PaginatedResponse<GuardianResponseDto>>
 {
 }

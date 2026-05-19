@@ -29,10 +29,19 @@ namespace Transport.Infrastructure.Persistence.Configurations
 
             builder.Property(x => x.IsActive)
                 .IsRequired();
+
+            builder.Property(x => x.SchoolId)
+                .IsRequired();
+
+            builder.HasOne(s => s.School)
+                .WithMany()
+                .HasForeignKey(x => x.SchoolId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasOne(s => s.Grade)
                  .WithMany(g => g.Students)
                  .HasForeignKey(s => s.GradeId)
-                  .OnDelete(DeleteBehavior.Restrict);
+                 .OnDelete(DeleteBehavior.Restrict);
             //  GuardianId
             builder.Property(x => x.GuardianId)
                 .IsRequired();

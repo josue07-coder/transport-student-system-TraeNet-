@@ -1,8 +1,13 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Students.Commands.CreateStudent;
 using Transport.Application.Features.Students.Commands.DeleteStudent;
+using Transport.Application.Features.Students.Queries.GetStudentByCode;
+using Transport.Application.Features.Students.Queries.GetStudentById;
 using Transport.Application.Features.Students.Queries.GetStudents;
+using Transport.Application.Features.Students.Queries.GetStudentsByGrade;
+using Transport.Application.Features.Students.Queries.GetStudentsByGuardian;
+using Transport.Application.Features.Students.Queries.GetStudentsBySchool;
 
 namespace Transport.API.Controllers
 {
@@ -17,7 +22,6 @@ namespace Transport.API.Controllers
             _mediator = mediator;
         }
 
-        //  POST: api/students
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStudentCommand command)
         {
@@ -25,25 +29,58 @@ namespace Transport.API.Controllers
             return Ok(new { Id = id });
         }
 
-        //  GET: api/students
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] GetAllStudentsQuery query)
         {
-            var result = await _mediator.Send(new GetAllStudentsQuery());
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var result = await _mediator.Send(new GetStudentByIdQuery(id));
+            return Ok(result);
+        }
+
+        [HttpGet("code/{code}")]
+        public async Task<IActionResult> GetByCode(string code)
+        {
+            var result = await _mediator.Send(new GetStudentByCodeQuery(code));
+            return Ok(result);
+        }
+
+        [HttpGet("by-grade/{gradeId}")]
+        public async Task<IActionResult> GetByGrade(Guid gradeId)
+        {
+            var result = await _mediator.Send(new GetStudentsByGradeQuery(gradeId));
+            return Ok(result);
+        }
+
+        [HttpGet("by-school/{schoolId}")]
+        public async Task<IActionResult> GetBySchool(Guid schoolId)
+        {
+            var result = await _mediator.Send(new GetStudentsBySchoolQuery(schoolId));
+            return Ok(result);
+        }
+
+        [HttpGet("by-guardian/{guardianId}")]
+        public async Task<IActionResult> GetByGuardian(Guid guardianId)
+        {
+            var result = await _mediator.Send(new GetStudentsByGuardianQuery(guardianId));
+            return Ok(result);
+        }
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, UpdateStudentCommand command)
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateStudentCommand command)
         {
             if (id != command.Id)
                 return BadRequest();
 
             await _mediator.Send(command);
-
             return NoContent();
         }
 
-        //  DELETE: api/students/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

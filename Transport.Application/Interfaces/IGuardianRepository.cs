@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Transport.Application.Common.Pagination;
 using Transport.Domain.Entities;
 
 namespace Transport.Application.Interfaces
@@ -11,7 +7,9 @@ namespace Transport.Application.Interfaces
     {
         Task AddAsync(Guardian guardian);
         Task<Guardian?> GetByIdAsync(Guid id);
+        Task<Guardian?> GetByDocumentAsync(string documentNumber);
         Task<List<Guardian>> GetAllAsync();
+        Task<PaginatedResponse<Guardian>> GetPagedAsync(int pageNumber, int pageSize);
         Task SaveChangesAsync();
     }
 }

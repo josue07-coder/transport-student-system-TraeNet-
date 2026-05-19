@@ -1,9 +1,3 @@
-C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.csproj.AssemblyReference.cache
-C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.AssemblyInfoInputs.cache
-C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.AssemblyInfo.cs
-C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.csproj.CoreCompileInputs.cache
-C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.sourcelink.json
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\bin\Debug\net8.0\Transport.Infrastructure.deps.json
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\bin\Debug\net8.0\Transport.Infrastructure.runtimeconfig.json
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\bin\Debug\net8.0\Transport.Infrastructure.dll
@@ -14,6 +8,12 @@ C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Tra
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\bin\Debug\net8.0\Transport.Application.pdb
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\bin\Debug\net8.0\Transport.Domain.pdb
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\bin\Debug\net8.0\Transport.Shared.pdb
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.AssemblyInfo.cs
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.sourcelink.json
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transpor.47BEF674.Up2Date
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\Transport.Infrastructure.dll
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.Infrastructure\obj\Debug\net8.0\refint\Transport.Infrastructure.dll

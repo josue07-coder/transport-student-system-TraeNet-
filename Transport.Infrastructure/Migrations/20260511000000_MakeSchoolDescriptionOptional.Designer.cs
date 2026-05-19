@@ -12,8 +12,8 @@ using Transport.Infrastructure.Persistence.Context;
 namespace Transport.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260504190738_AddGradeToStudent")]
-    partial class AddGradeToStudent
+    [Migration("20260511000000_MakeSchoolDescriptionOptional")]
+    partial class MakeSchoolDescriptionOptional
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -336,7 +336,6 @@ namespace Transport.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -429,7 +428,10 @@ namespace Transport.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("SchoolDistrictId")
+                    b.Property<Guid?>("SchoolDistrictId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SchoolDistrictId1")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -438,6 +440,8 @@ namespace Transport.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SchoolDistrictId");
+
+                    b.HasIndex("SchoolDistrictId1");
 
                     b.HasIndex("Name", "City");
 
@@ -826,13 +830,49 @@ namespace Transport.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Transport.Domain.Entities.SchoolDistrict", b =>
+                {
+                    b.OwnsOne("Address", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("SchoolDistrictId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("City");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("Street");
+
+                            b1.HasKey("SchoolDistrictId");
+
+                            b1.ToTable("SchoolDistricts");
+
+                            b1.WithOwner()
+                                .HasForeignKey("SchoolDistrictId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Transport.Domain.Entities.Sector", b =>
                 {
                     b.HasOne("Transport.Domain.Entities.SchoolDistrict", null)
-                        .WithMany("Sectors")
+                        .WithMany()
                         .HasForeignKey("SchoolDistrictId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Transport.Domain.Entities.SchoolDistrict", "SchoolDistrict")
+                        .WithMany("Sectors")
+                        .HasForeignKey("SchoolDistrictId1");
+
+                    b.Navigation("SchoolDistrict");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.Stop", b =>

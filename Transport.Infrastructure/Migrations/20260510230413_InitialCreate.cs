@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Transport.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialFullModel : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,6 +70,8 @@ namespace Transport.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Street = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -127,7 +129,8 @@ namespace Transport.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Province = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    SchoolDistrictId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SchoolDistrictId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SchoolDistrictId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -140,6 +143,11 @@ namespace Transport.Infrastructure.Migrations
                         principalTable: "SchoolDistricts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Sectors_SchoolDistricts_SchoolDistrictId1",
+                        column: x => x.SchoolDistrictId1,
+                        principalTable: "SchoolDistricts",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -341,10 +349,10 @@ namespace Transport.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     SchoolId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GradeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GuardianId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PhotoUrl = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    GradeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    GuardianId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -469,6 +477,11 @@ namespace Transport.Infrastructure.Migrations
                 name: "IX_Sectors_SchoolDistrictId",
                 table: "Sectors",
                 column: "SchoolDistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Sectors_SchoolDistrictId1",
+                table: "Sectors",
+                column: "SchoolDistrictId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stops_SectorId",

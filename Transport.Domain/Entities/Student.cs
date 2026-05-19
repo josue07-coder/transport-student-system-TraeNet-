@@ -18,6 +18,7 @@ public class Student : BaseEntity, IActivatable
     public bool IsActive { get; private set; } = true;
 
     
+    public School? School { get; private set; }
     public Grade Grade { get; private set; }
     public Guardian Guardian { get; private set; }
 

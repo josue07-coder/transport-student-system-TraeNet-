@@ -28,10 +28,10 @@ namespace Transport.Infrastructure.Persistence.Configurations
 
             //  SchoolDistrict
             builder.Property(x => x.SchoolDistrictId)
-                .IsRequired();
+                .IsRequired(false);
 
-            builder.HasOne<SchoolDistrict>()
-                .WithMany(d => d.Sectors)
+            builder.HasOne(x => x.SchoolDistrict)
+                .WithMany(x => x.Sectors)
                 .HasForeignKey(x => x.SchoolDistrictId)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -45,6 +45,12 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.HasMany(x => x.Stops)
                 .WithOne()
                 .HasForeignKey("SectorId")
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //  Sector → Guardians
+            builder.HasMany(x => x.Guardians)
+                .WithOne(x => x.Sector)
+                .HasForeignKey(x => x.SectorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             //  Índice útil (opcional pero pro)
