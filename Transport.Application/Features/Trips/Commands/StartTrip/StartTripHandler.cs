@@ -24,7 +24,8 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
                 throw new DomainException("Ya hay un viaje activo para esta asignación");
 
             var trip = assignment.StartTrip();
-            await _assignmentRepository.SaveChangesAsync();
+            await _tripRepository.AddAsync(trip);
+            await _tripRepository.SaveChangesAsync();
 
             return trip.Id;
         }

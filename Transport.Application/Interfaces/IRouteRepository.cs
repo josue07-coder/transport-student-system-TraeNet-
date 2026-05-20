@@ -7,6 +7,7 @@ namespace Transport.Application.Interfaces
     public interface IRouteRepository
     {
         Task AddAsync(Route route);
+        void AddRouteStop(RouteStop routeStop);
         Task<Route?> GetByIdAsync(Guid id);
         Task<Route?> GetByIdWithStopsAsync(Guid id);
         Task<PaginatedResponse<Route>> GetPagedAsync(int pageNumber, int pageSize);

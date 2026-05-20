@@ -21,6 +21,11 @@ namespace Transport.Infrastructure.Persistence.Repositories
             await _context.Routes.AddAsync(route);
         }
 
+        public void AddRouteStop(RouteStop routeStop)
+        {
+            _context.RouteStops.Add(routeStop);
+        }
+
         public async Task<Route?> GetByIdAsync(Guid id)
         {
             return await _context.Routes.FindAsync(id);

@@ -24,7 +24,10 @@ namespace Transport.Application.Features.Routes.Commands.AddStopToRoute
             if (!await _stopRepository.ExistsAsync(request.StopId))
                 throw new DomainException("Parada no encontrada");
 
-            route.AddStop(new RouteStop(route.Id, request.StopId, request.StopOrder));
+            var routeStop = new RouteStop(route.Id, request.StopId, request.StopOrder);
+            route.AddStop(routeStop);
+            _repository.AddRouteStop(routeStop);
+
             await _repository.SaveChangesAsync();
 
             return Unit.Value;
