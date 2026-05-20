@@ -32,6 +32,7 @@ namespace Transport.API.Extensions
             services.AddScoped<ITripRepository, TripRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddHttpContextAccessor();
@@ -43,7 +44,13 @@ namespace Transport.API.Extensions
 
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var key = configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured");
+            var jwtKey = GetRequiredJwtSetting(configuration, "Jwt:Key");
+            var issuer = GetRequiredJwtSetting(configuration, "Jwt:Issuer");
+            var audience = GetRequiredJwtSetting(configuration, "Jwt:Audience");
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+            {
+                KeyId = "TransportStudentSystemJwtKey"
+            };
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -54,9 +61,9 @@ namespace Transport.API.Extensions
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = configuration["Jwt:Issuer"],
-                        ValidAudience = configuration["Jwt:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key))
+                        ValidIssuer = issuer,
+                        ValidAudience = audience,
+                        IssuerSigningKey = securityKey
                     };
                 });
 
@@ -72,6 +79,19 @@ namespace Transport.API.Extensions
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             return services;
+        }
+
+        private static string GetRequiredJwtSetting(IConfiguration configuration, string key)
+        {
+            var value = configuration[key]?.Trim();
+
+            if (string.IsNullOrWhiteSpace(value))
+                throw new InvalidOperationException($"{key} is not configured");
+
+            if (key == "Jwt:Key" && Encoding.UTF8.GetByteCount(value) < 32)
+                throw new InvalidOperationException("Jwt:Key must be at least 32 bytes for HMAC SHA256");
+
+            return value;
         }
     }
 }

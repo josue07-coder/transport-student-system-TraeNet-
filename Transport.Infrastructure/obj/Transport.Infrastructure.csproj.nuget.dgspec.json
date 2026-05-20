@@ -35,9 +35,6 @@
             "projectReferences": {
               "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj": {
                 "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj"
-              },
-              "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj": {
-                "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj"
               }
             }
           }
@@ -217,9 +214,6 @@
               },
               "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj": {
                 "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj"
-              },
-              "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj": {
-                "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj"
               }
             }
           }

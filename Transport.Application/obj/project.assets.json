@@ -3789,8 +3789,7 @@
       "MediatR >= 14.1.0",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.26",
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.25",
-      "Transport.Domain >= 1.0.0",
-      "Transport.Shared >= 1.0.0"
+      "Transport.Domain >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -3828,9 +3827,6 @@
           "projectReferences": {
             "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj": {
               "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj"
-            },
-            "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj": {
-              "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj"
             }
           }
         }

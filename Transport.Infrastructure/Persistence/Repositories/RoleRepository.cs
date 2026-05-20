@@ -14,6 +14,27 @@ namespace Transport.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
+        public async Task<List<Role>> GetAllAsync()
+        {
+            return await _context.Roles
+                .OrderBy(role => role.Name)
+                .ToListAsync();
+        }
+
+        public async Task<Role?> GetByIdAsync(Guid id)
+        {
+            return await _context.Roles
+                .FirstOrDefaultAsync(role => role.Id == id);
+        }
+
+        public async Task<Role?> GetByIdWithPermissionsAsync(Guid id)
+        {
+            return await _context.Roles
+                .Include(role => role.RolePermissions)
+                    .ThenInclude(rolePermission => rolePermission.Permission)
+                .FirstOrDefaultAsync(role => role.Id == id);
+        }
+
         public async Task<Role?> GetByNameAsync(string name)
         {
             return await _context.Roles

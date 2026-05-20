@@ -38,9 +38,6 @@
               },
               "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Transport.Infrastructure.csproj": {
                 "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Transport.Infrastructure.csproj"
-              },
-              "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj": {
-                "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj"
               }
             }
           }
@@ -142,9 +139,6 @@
             "projectReferences": {
               "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj": {
                 "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj"
-              },
-              "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj": {
-                "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj"
               }
             }
           }
@@ -324,9 +318,6 @@
               },
               "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj": {
                 "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Transport.Domain.csproj"
-              },
-              "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj": {
-                "projectPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Shared\\Transport.Shared.csproj"
               }
             }
           }

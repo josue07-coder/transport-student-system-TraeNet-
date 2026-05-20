@@ -15,8 +15,7 @@
           "Microsoft.EntityFrameworkCore.Tools": "8.0.25",
           "System.IdentityModel.Tokens.Jwt": "7.1.2",
           "Transport.Application": "1.0.0",
-          "Transport.Domain": "1.0.0",
-          "Transport.Shared": "1.0.0"
+          "Transport.Domain": "1.0.0"
         },
         "runtime": {
           "Transport.Infrastructure.dll": {}
@@ -945,8 +944,7 @@
           "FluentValidation": "12.1.1",
           "MediatR": "14.1.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.25",
-          "Transport.Domain": "1.0.0",
-          "Transport.Shared": "1.0.0"
+          "Transport.Domain": "1.0.0"
         },
         "runtime": {
           "Transport.Application.dll": {

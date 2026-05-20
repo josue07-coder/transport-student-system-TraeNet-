@@ -19,9 +19,9 @@ namespace Transport.Infrastructure.Security
 
         public string GenerateToken(User user, string roleName)
         {
-            var key = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured");
-            var issuer = _configuration["Jwt:Issuer"];
-            var audience = _configuration["Jwt:Audience"];
+            var jwtKey = GetRequiredJwtSetting("Jwt:Key");
+            var issuer = GetRequiredJwtSetting("Jwt:Issuer");
+            var audience = GetRequiredJwtSetting("Jwt:Audience");
             var expiresInMinutes = int.TryParse(_configuration["Jwt:ExpiresInMinutes"], out var value) ? value : 60;
 
             var claims = new List<Claim>
@@ -33,8 +33,14 @@ namespace Transport.Infrastructure.Security
                 new(ClaimTypes.Role, roleName)
             };
 
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-            var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+            claims.AddRange(user.Role.RolePermissions
+                .Select(rolePermission => new Claim("permission", rolePermission.Permission.Name)));
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+            {
+                KeyId = "TransportStudentSystemJwtKey"
+            };
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: issuer,
@@ -44,6 +50,19 @@ namespace Transport.Infrastructure.Security
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private string GetRequiredJwtSetting(string key)
+        {
+            var value = _configuration[key]?.Trim();
+
+            if (string.IsNullOrWhiteSpace(value))
+                throw new InvalidOperationException($"{key} is not configured");
+
+            if (key == "Jwt:Key" && Encoding.UTF8.GetByteCount(value) < 32)
+                throw new InvalidOperationException("Jwt:Key must be at least 32 bytes for HMAC SHA256");
+
+            return value;
         }
     }
 }

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Transport.Domain\Transport.Domain.csproj" />
-    <ProjectReference Include="..\Transport.Shared\Transport.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

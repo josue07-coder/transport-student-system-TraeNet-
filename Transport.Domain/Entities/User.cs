@@ -84,6 +84,14 @@ namespace Transport.Domain.Entities
             ProfileImageUrl = imageUrl;
         }
 
+        public void ChangeRole(Guid roleId)
+        {
+            if (roleId == Guid.Empty)
+                throw new DomainException("Role is required");
+
+            RoleId = roleId;
+        }
+
         public void ChangePassword(string newPasswordHash)
         {
             if (string.IsNullOrWhiteSpace(newPasswordHash))
@@ -100,6 +108,11 @@ namespace Transport.Domain.Entities
         public void Deactivate()
         {
             IsActive = false;
+        }
+
+        public void Activate()
+        {
+            IsActive = true;
         }
     }
 }

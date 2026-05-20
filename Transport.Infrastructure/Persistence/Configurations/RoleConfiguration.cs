@@ -26,6 +26,11 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .WithOne(x => x.Role)
                 .HasForeignKey(x => x.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.RolePermissions)
+                .WithOne(x => x.Role)
+                .HasForeignKey(x => x.RoleId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

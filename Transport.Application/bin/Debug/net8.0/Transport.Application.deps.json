@@ -12,8 +12,7 @@
           "MediatR": "14.1.0",
           "Microsoft.EntityFrameworkCore.Design": "8.0.26",
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.25",
-          "Transport.Domain": "1.0.0",
-          "Transport.Shared": "1.0.0"
+          "Transport.Domain": "1.0.0"
         },
         "runtime": {
           "Transport.Application.dll": {}
