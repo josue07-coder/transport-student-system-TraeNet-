@@ -10,11 +10,11 @@ namespace Transport.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(x => new { x.StudentId, x.RouteAssignmentId });
 
-            builder.HasOne<Student>()
+            builder.HasOne(x => x.Student)
                 .WithMany(s => s.Assignments)
                 .HasForeignKey(x => x.StudentId);
 
-            builder.HasOne<RouteAssignment>()
+            builder.HasOne(x => x.RouteAssignment)
                 .WithMany(r => r.Students)
                 .HasForeignKey(x => x.RouteAssignmentId);
         }

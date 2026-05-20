@@ -14,6 +14,7 @@ namespace Transport.Application.Interfaces
         Task<List<Student>> GetBySchoolAsync(Guid schoolId);
         Task<List<Student>> GetByGuardianAsync(Guid guardianId);
         Task<bool> ExistsByCodeAsync(string code);
+        Task<bool> ExistsAsync(Guid id);
         Task SaveChangesAsync();
     }
 }

@@ -12,19 +12,19 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.HasKey(x => x.Id);
 
             //  Route
-            builder.HasOne<Route>()
+            builder.HasOne(x => x.Route)
                 .WithMany(r => r.Assignments)
                 .HasForeignKey(x => x.RouteId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             //  Vehicle
-            builder.HasOne<Vehicle>()
+            builder.HasOne(x => x.Vehicle)
                 .WithMany()
                 .HasForeignKey(x => x.VehicleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             //  Driver
-            builder.HasOne<Driver>()
+            builder.HasOne(x => x.Driver)
                 .WithMany()
                 .HasForeignKey(x => x.DriverId)
                 .OnDelete(DeleteBehavior.Restrict);
@@ -35,13 +35,13 @@ namespace Transport.Infrastructure.Persistence.Configurations
 
             // Students (StudentRouteAssignment)
             builder.HasMany(x => x.Students)
-                .WithOne()
+                .WithOne(x => x.RouteAssignment)
                 .HasForeignKey(x => x.RouteAssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             //  Trips
             builder.HasMany(x => x.Trips)
-                .WithOne()
+                .WithOne(x => x.RouteAssignment)
                 .HasForeignKey(x => x.RouteAssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

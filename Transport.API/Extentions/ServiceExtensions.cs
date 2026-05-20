@@ -18,6 +18,12 @@ namespace Transport.API.Extensions
             services.AddScoped<IGradeRepository, GradeRepository>();
             services.AddScoped<IGuardianRepository, GuardianRepository>();
             services.AddScoped<ISectorRepository, SectorRepository>();
+            services.AddScoped<IRouteAssignmentRepository, RouteAssignmentRepository>();
+            services.AddScoped<IVehicleRepository, VehicleRepository>();
+            services.AddScoped<IDriverRepository, DriverRepository>();
+            services.AddScoped<IStopRepository, StopRepository>();
+            services.AddScoped<IRouteRepository, RouteRepository>();
+            services.AddScoped<ITripRepository, TripRepository>();
 
             return services;
         }

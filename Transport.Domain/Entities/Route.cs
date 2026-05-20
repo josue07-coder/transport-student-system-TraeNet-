@@ -48,13 +48,27 @@ namespace Transport.Domain.Entities
             OperatingHours = operatingHours ?? throw new DomainException("El horario es obligatorio");
         }
 
+        public void ChangeSchool(Guid schoolId)
+        {
+            if (schoolId == Guid.Empty)
+                throw new DomainException("La escuela es obligatoria.");
+
+            if (Status == RouteStatus.Active)
+                throw new DomainException("No se puede cambiar la escuela mientras la ruta está activa");
+
+            SchoolId = schoolId;
+        }
+
         public void AddStop(RouteStop stop)
         {
             if (stop == null)
                 throw new DomainException("La parada es obligatoria");
 
-            if (_stops.Any(s => s.Equals(stop)))
+            if (_stops.Any(s => s.StopId == stop.StopId))
                 throw new DomainException("La parada ya existe en la ruta");
+
+            if (_stops.Any(s => s.StopOrder == stop.StopOrder))
+                throw new DomainException("Ya existe una parada con ese orden en la ruta");
 
             _stops.Add(stop);
         }
@@ -70,6 +84,33 @@ namespace Transport.Domain.Entities
                 throw new DomainException("No se pueden eliminar paradas de una ruta activa");
 
             _stops.Remove(stop);
+        }
+
+        public void RemoveStopByStopId(Guid stopId)
+        {
+            var stop = _stops.FirstOrDefault(s => s.StopId == stopId);
+
+            if (stop == null)
+                throw new DomainException("Parada no encontrada");
+
+            if (Status == RouteStatus.Active)
+                throw new DomainException("No se pueden eliminar paradas de una ruta activa");
+
+            _stops.Remove(stop);
+        }
+
+        public void UpdateStopOrder(Guid stopId, int newOrder)
+        {
+            if (Status == RouteStatus.Active)
+                throw new DomainException("No se puede cambiar el orden de paradas en una ruta activa");
+
+            if (_stops.Any(s => s.StopId != stopId && s.StopOrder == newOrder))
+                throw new DomainException("Ya existe una parada con ese orden en la ruta");
+
+            var stop = _stops.FirstOrDefault(s => s.StopId == stopId)
+                ?? throw new DomainException("Parada no encontrada");
+
+            stop.UpdateOrder(newOrder);
         }
 
         public void Assign(Guid driverId, Guid vehicleId, int capacity)

@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.infrastructure\\persistence\\repositories\\routeassignmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|solutionrelative:transport.infrastructure\\persistence\\repositories\\routeassignmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}|Elementos de la soluci\u00F3n{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}|C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\AGENTS.md||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}|Elementos de la soluci\u00F3n{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}|solutionrelative:AGENTS.md||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
@@ -63,19 +67,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "RouteAssignmentRepository.cs",
+              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Repositories\\RouteAssignmentRepository.cs",
+              "RelativeDocumentMoniker": "Transport.Infrastructure\\Persistence\\Repositories\\RouteAssignmentRepository.cs",
+              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Repositories\\RouteAssignmentRepository.cs",
+              "RelativeToolTip": "Transport.Infrastructure\\Persistence\\Repositories\\RouteAssignmentRepository.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-19T23:13:16.068Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "AGENTS.md",
               "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\AGENTS.md",
               "RelativeDocumentMoniker": "AGENTS.md",
               "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\AGENTS.md",
               "RelativeToolTip": "AGENTS.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
               "WhenOpened": "2026-05-19T18:46:54.423Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "CreateStudentHandler.cs",
               "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Students\\Commands\\CreateStudent\\CreateStudentHandler.cs",
               "RelativeDocumentMoniker": "Transport.Application\\Features\\Students\\Commands\\CreateStudent\\CreateStudentHandler.cs",
@@ -88,7 +105,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "StudentCode.cs",
               "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\ValueObjects\\StudentCode.cs",
               "RelativeDocumentMoniker": "Transport.Domain\\ValueObjects\\StudentCode.cs",
@@ -101,12 +118,12 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "Student.cs",
               "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Student.cs",
               "RelativeDocumentMoniker": "Transport.Domain\\Entities\\Student.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Student.cs*",
-              "RelativeToolTip": "Transport.Domain\\Entities\\Student.cs*",
+              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Student.cs",
+              "RelativeToolTip": "Transport.Domain\\Entities\\Student.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-19T17:47:33.262Z",
@@ -114,7 +131,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "SectorConfiguration.cs",
               "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Configurations\\SectorConfiguration.cs",
               "RelativeDocumentMoniker": "Transport.Infrastructure\\Persistence\\Configurations\\SectorConfiguration.cs",
@@ -127,7 +144,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "GuardianConfiguration.cs",
               "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Configurations\\GuardianConfiguration.cs",
               "RelativeDocumentMoniker": "Transport.Infrastructure\\Persistence\\Configurations\\GuardianConfiguration.cs",
@@ -140,7 +157,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Sector.cs",
               "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Sector.cs",
               "RelativeDocumentMoniker": "Transport.Domain\\Entities\\Sector.cs",
@@ -153,7 +170,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "CreateGuardianHandler.cs",
               "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Guardians\\Commands\\CreateGuardian\\CreateGuardianHandler.cs",
               "RelativeDocumentMoniker": "Transport.Application\\Features\\Guardians\\Commands\\CreateGuardian\\CreateGuardianHandler.cs",

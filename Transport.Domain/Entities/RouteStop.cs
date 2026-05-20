@@ -10,6 +10,9 @@ namespace Transport.Domain.Entities
 
         public int StopOrder { get; private set; }
 
+        public Route Route { get; private set; } = null!;
+        public Stop Stop { get; private set; } = null!;
+
         private RouteStop() { } // EF Core
 
         public RouteStop(Guid routeId, Guid stopId, int order)

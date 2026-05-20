@@ -7,6 +7,7 @@ namespace Transport.Domain.Entities
     public class Trip : BaseEntity
     {
         public Guid RouteAssignmentId { get; private set; }
+        public RouteAssignment RouteAssignment { get; private set; } = null!;
 
         public DateTime? StartTime { get; private set; }
         public DateTime? EndTime { get; private set; }
@@ -42,6 +43,19 @@ namespace Transport.Domain.Entities
 
             EndTime = DateTime.UtcNow;
             Status = TripStatus.Completed;
+        }
+
+        public void Cancel()
+        {
+            // Regla actual: el dominio permite cancelar viajes Pending e InProgress.
+            if (Status == TripStatus.Completed)
+                throw new DomainException("No se puede cancelar un viaje completado");
+
+            if (Status == TripStatus.Cancelled)
+                throw new DomainException("El viaje ya está cancelado");
+
+            EndTime = DateTime.UtcNow;
+            Status = TripStatus.Cancelled;
         }
     }
 }

@@ -12,10 +12,6 @@ namespace Transport.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Guardians_Sectors_SectorId1",
-                table: "Guardians");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_Sectors_SchoolDistricts_SchoolDistrictId1",
                 table: "Sectors");
 
@@ -23,17 +19,9 @@ namespace Transport.Infrastructure.Migrations
                 name: "IX_Sectors_SchoolDistrictId1",
                 table: "Sectors");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Guardians_SectorId1",
-                table: "Guardians");
-
             migrationBuilder.DropColumn(
                 name: "SchoolDistrictId1",
                 table: "Sectors");
-
-            migrationBuilder.DropColumn(
-                name: "SectorId1",
-                table: "Guardians");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Students_SchoolId",

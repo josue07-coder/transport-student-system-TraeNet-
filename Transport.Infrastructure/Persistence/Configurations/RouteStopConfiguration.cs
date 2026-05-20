@@ -12,13 +12,13 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.HasKey(x => x.Id);
 
             //  Relación con Route
-            builder.HasOne<Route>()
+            builder.HasOne(x => x.Route)
                 .WithMany(r => r.Stops)
                 .HasForeignKey(x => x.RouteId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Relación con Stop
-            builder.HasOne<Stop>()
+            builder.HasOne(x => x.Stop)
                 .WithMany()
                 .HasForeignKey(x => x.StopId)
                 .OnDelete(DeleteBehavior.Restrict);

@@ -80,6 +80,15 @@ namespace Transport.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("DocumentNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -101,6 +110,9 @@ namespace Transport.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DocumentNumber")
+                        .IsUnique();
 
                     b.ToTable("Drivers");
                 });
@@ -250,6 +262,8 @@ namespace Transport.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SchoolId");
 
                     b.ToTable("Routes");
                 });
@@ -603,7 +617,7 @@ namespace Transport.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Transport.Domain.Entities.School", null)
+                    b.HasOne("Transport.Domain.Entities.School", "School")
                         .WithMany()
                         .HasForeignKey("SchoolId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -631,12 +645,76 @@ namespace Transport.Infrastructure.Migrations
 
                     b.Navigation("Guardian");
 
+                    b.Navigation("School");
+
                     b.Navigation("StudentCode")
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.Driver", b =>
                 {
+                    b.OwnsOne("Address", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("DriverId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("City");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("Street");
+
+                            b1.HasKey("DriverId");
+
+                            b1.ToTable("Drivers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DriverId");
+                        });
+
+                    b.OwnsOne("Transport.Domain.ValueObjects.Email", "Email", b1 =>
+                        {
+                            b1.Property<Guid>("DriverId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("DriverId");
+
+                            b1.ToTable("Drivers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DriverId");
+                        });
+
+                    b.OwnsOne("Transport.Domain.ValueObjects.PhoneNumber", "Phone", b1 =>
+                        {
+                            b1.Property<Guid>("DriverId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Phone");
+
+                            b1.HasKey("DriverId");
+
+                            b1.ToTable("Drivers");
+
+                            b1.WithOwner()
+                                .HasForeignKey("DriverId");
+                        });
+
                     b.OwnsOne("Transport.Domain.ValueObjects.LicenseNumber", "LicenseNumber", b1 =>
                         {
                             b1.Property<Guid>("DriverId")
@@ -659,7 +737,15 @@ namespace Transport.Infrastructure.Migrations
                                 .HasForeignKey("DriverId");
                         });
 
+                    b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("Email");
+
                     b.Navigation("LicenseNumber")
+                        .IsRequired();
+
+                    b.Navigation("Phone")
                         .IsRequired();
                 });
 
@@ -712,6 +798,12 @@ namespace Transport.Infrastructure.Migrations
 
             modelBuilder.Entity("Transport.Domain.Entities.Route", b =>
                 {
+                    b.HasOne("Transport.Domain.Entities.School", null)
+                        .WithMany()
+                        .HasForeignKey("SchoolId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.OwnsOne("Transport.Domain.ValueObjects.TimeRange", "OperatingHours", b1 =>
                         {
                             b1.Property<Guid>("RouteId")
@@ -739,38 +831,48 @@ namespace Transport.Infrastructure.Migrations
 
             modelBuilder.Entity("Transport.Domain.Entities.RouteAssignment", b =>
                 {
-                    b.HasOne("Transport.Domain.Entities.Driver", null)
+                    b.HasOne("Transport.Domain.Entities.Driver", "Driver")
                         .WithMany()
                         .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Transport.Domain.Entities.Route", null)
+                    b.HasOne("Transport.Domain.Entities.Route", "Route")
                         .WithMany("Assignments")
                         .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Transport.Domain.Entities.Vehicle", null)
+                    b.HasOne("Transport.Domain.Entities.Vehicle", "Vehicle")
                         .WithMany()
                         .HasForeignKey("VehicleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Driver");
+
+                    b.Navigation("Route");
+
+                    b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.RouteStop", b =>
                 {
-                    b.HasOne("Transport.Domain.Entities.Route", null)
+                    b.HasOne("Transport.Domain.Entities.Route", "Route")
                         .WithMany("Stops")
                         .HasForeignKey("RouteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Transport.Domain.Entities.Stop", null)
+                    b.HasOne("Transport.Domain.Entities.Stop", "Stop")
                         .WithMany()
                         .HasForeignKey("StopId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Route");
+
+                    b.Navigation("Stop");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.School", b =>
@@ -958,26 +1060,32 @@ namespace Transport.Infrastructure.Migrations
 
             modelBuilder.Entity("Transport.Domain.Entities.StudentRouteAssignment", b =>
                 {
-                    b.HasOne("Transport.Domain.Entities.RouteAssignment", null)
+                    b.HasOne("Transport.Domain.Entities.RouteAssignment", "RouteAssignment")
                         .WithMany("Students")
                         .HasForeignKey("RouteAssignmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Student", null)
+                    b.HasOne("Student", "Student")
                         .WithMany("Assignments")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("RouteAssignment");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.Trip", b =>
                 {
-                    b.HasOne("Transport.Domain.Entities.RouteAssignment", null)
+                    b.HasOne("Transport.Domain.Entities.RouteAssignment", "RouteAssignment")
                         .WithMany("Trips")
                         .HasForeignKey("RouteAssignmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("RouteAssignment");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.User", b =>

@@ -20,6 +20,11 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.Property(x => x.SchoolId)
                 .IsRequired();
 
+            builder.HasOne<School>()
+                .WithMany()
+                .HasForeignKey(x => x.SchoolId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             //  Status (enum)
             builder.Property(x => x.Status)
                 .IsRequired()
@@ -37,15 +42,9 @@ namespace Transport.Infrastructure.Persistence.Configurations
                   .IsRequired();
             });
 
-            // Route → Stops
-            builder.HasMany(x => x.Stops)
-                .WithOne()
-                .HasForeignKey(x => x.RouteId)
-                .OnDelete(DeleteBehavior.Cascade);
-
             //  Route → Assignments
             builder.HasMany(x => x.Assignments)
-                .WithOne()
+                .WithOne(x => x.Route)
                 .HasForeignKey(x => x.RouteId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

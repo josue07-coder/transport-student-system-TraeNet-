@@ -41,12 +41,6 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .HasForeignKey("SectorId")
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //  Sector → Stops
-            builder.HasMany(x => x.Stops)
-                .WithOne()
-                .HasForeignKey("SectorId")
-                .OnDelete(DeleteBehavior.Restrict);
-
             //  Sector → Guardians
             builder.HasMany(x => x.Guardians)
                 .WithOne(x => x.Sector)

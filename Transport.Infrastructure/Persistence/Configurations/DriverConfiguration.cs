@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Transport.Domain.Entities;
 
@@ -8,20 +8,27 @@ namespace Transport.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Driver> builder)
         {
-            //  Primary Key
             builder.HasKey(x => x.Id);
 
-            //  FirstName
             builder.Property(x => x.FirstName)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            //  LastName
             builder.Property(x => x.LastName)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            //  LicenseNumber (ValueObject)
+            builder.Property(x => x.DocumentType)
+                .IsRequired()
+                .HasConversion<string>();
+
+            builder.Property(x => x.DocumentNumber)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            builder.HasIndex(x => x.DocumentNumber)
+                .IsUnique();
+
             builder.OwnsOne(x => x.LicenseNumber, license =>
             {
                 license.Property(l => l.Value)
@@ -29,20 +36,51 @@ namespace Transport.Infrastructure.Persistence.Configurations
                     .IsRequired()
                     .HasMaxLength(50);
 
-                //  Índice único CORRECTO
                 license.HasIndex(l => l.Value)
                     .IsUnique();
             });
 
-            //  Forzar required del ValueObject
             builder.Navigation(x => x.LicenseNumber)
                 .IsRequired();
 
-            //  Photo
+            builder.OwnsOne(x => x.Phone, phone =>
+            {
+                phone.Property(p => p.Value)
+                    .HasColumnName("Phone")
+                    .IsRequired()
+                    .HasMaxLength(50);
+            });
+
+            builder.Navigation(x => x.Phone)
+                .IsRequired();
+
+            builder.OwnsOne(x => x.Email, email =>
+            {
+                email.Property(e => e.Value)
+                    .HasColumnName("Email")
+                    .IsRequired(false)
+                    .HasMaxLength(150);
+            });
+
+            builder.OwnsOne(x => x.Address, address =>
+            {
+                address.Property(a => a.Street)
+                    .HasColumnName("Street")
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                address.Property(a => a.City)
+                    .HasColumnName("City")
+                    .IsRequired()
+                    .HasMaxLength(100);
+            });
+
+            builder.Navigation(x => x.Address)
+                .IsRequired();
+
             builder.Property(x => x.PhotoUrl)
                 .HasMaxLength(300);
 
-            //  Soft delete
             builder.Property(x => x.IsActive)
                 .IsRequired();
         }

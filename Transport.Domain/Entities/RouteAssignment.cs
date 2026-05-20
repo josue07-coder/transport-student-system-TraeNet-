@@ -10,6 +10,10 @@ namespace Transport.Domain.Entities
         public Guid DriverId { get; private set; }
         public int VehicleCapacity { get; private set; }
 
+        public Route Route { get; private set; } = null!;
+        public Vehicle Vehicle { get; private set; } = null!;
+        public Driver Driver { get; private set; } = null!;
+
         private readonly List<StudentRouteAssignment> _students = new();
         public IReadOnlyCollection<StudentRouteAssignment> Students => _students.AsReadOnly();
 
@@ -31,6 +35,32 @@ namespace Transport.Domain.Entities
 
             if (capacity <= 0)
                 throw new DomainException("La capacidad del vehículo debe ser mayor que 0");
+
+            RouteId = routeId;
+            VehicleId = vehicleId;
+            DriverId = driverId;
+            VehicleCapacity = capacity;
+        }
+
+        public void Update(Guid routeId, Guid vehicleId, Guid driverId, int capacity)
+        {
+            if (_trips.Any())
+                throw new DomainException("No se puede actualizar una asignación con viajes asociados");
+
+            if (routeId == Guid.Empty)
+                throw new DomainException("La ruta es obligatoria");
+
+            if (vehicleId == Guid.Empty)
+                throw new DomainException("El vehiculo es obligatorio");
+
+            if (driverId == Guid.Empty)
+                throw new DomainException("El conductor es obligatorio");
+
+            if (capacity <= 0)
+                throw new DomainException("La capacidad del vehículo debe ser mayor que 0");
+
+            if (_students.Count > capacity)
+                throw new DomainException("La nueva capacidad no puede ser menor que la cantidad de estudiantes asignados");
 
             RouteId = routeId;
             VehicleId = vehicleId;
@@ -65,12 +95,13 @@ namespace Transport.Domain.Entities
         public Trip StartTrip()
         {
             if (!_students.Any())
-                throw new DomainException("No se puede iniciar el viaje sin estdiantes");
+                throw new DomainException("No se puede iniciar el viaje sin estudiantes");
 
             if (_trips.Any(t => t.IsActive))
                 throw new DomainException("Ya hay un viaje activo");
 
             var trip = new Trip(Id);
+            trip.Start();
             _trips.Add(trip);
 
             return trip;

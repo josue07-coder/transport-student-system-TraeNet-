@@ -12,7 +12,7 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.HasKey(x => x.Id);
 
             // Relación con RouteAssignment
-            builder.HasOne<RouteAssignment>()
+            builder.HasOne(x => x.RouteAssignment)
                 .WithMany(r => r.Trips)
                 .HasForeignKey(x => x.RouteAssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
