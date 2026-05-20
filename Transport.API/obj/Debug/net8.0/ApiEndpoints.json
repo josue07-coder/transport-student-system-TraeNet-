@@ -1,5 +1,37 @@
 [
   {
+    "ContainingType": "Transport.API.Controllers.AuthController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/auth/forgot-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.Auth.Commands.ForgotPassword.ForgotPasswordCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.AuthController",
+    "Method": "Login",
+    "RelativePath": "api/auth/login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.Auth.Commands.Login.LoginCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Transport.API.Controllers.DriversController",
     "Method": "Create",
     "RelativePath": "api/Drivers",
@@ -328,6 +360,64 @@
       {
         "Name": "documentNumber",
         "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.MeController",
+    "Method": "GetMe",
+    "RelativePath": "api/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.MeController",
+    "Method": "ChangePassword",
+    "RelativePath": "api/me/change-password",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.Me.Commands.ChangePassword.ChangePasswordCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.MeController",
+    "Method": "UpdatePhoto",
+    "RelativePath": "api/me/photo",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.Me.Commands.UpdateProfilePhoto.UpdateProfilePhotoCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.MeController",
+    "Method": "UpdateProfile",
+    "RelativePath": "api/me/profile",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.Me.Commands.UpdateMeProfile.UpdateMeProfileCommand",
         "IsRequired": true
       }
     ],

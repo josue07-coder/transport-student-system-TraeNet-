@@ -1,21 +1,38 @@
-﻿using MediatR;
+using MediatR;
 using Transport.Application.Interfaces;
 using Transport.Domain.Entities;
 using Transport.Domain.Enums;
+using Transport.Domain.Exceptions;
 
 namespace Transport.Application.Features.Guardians.Commands.CreateGuardian
 {
     public class CreateGuardianHandler : IRequestHandler<CreateGuardianCommand, Guid>
     {
-        private readonly IGuardianRepository _repo;
+        private readonly IGuardianRepository _guardianRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
+        private readonly IPasswordHasherService _passwordHasher;
 
-        public CreateGuardianHandler(IGuardianRepository repo)
+        public CreateGuardianHandler(
+            IGuardianRepository guardianRepository,
+            IUserRepository userRepository,
+            IRoleRepository roleRepository,
+            IPasswordHasherService passwordHasher)
         {
-            _repo = repo;
+            _guardianRepository = guardianRepository;
+            _userRepository = userRepository;
+            _roleRepository = roleRepository;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<Guid> Handle(CreateGuardianCommand request, CancellationToken cancellationToken)
         {
+            if (await _userRepository.ExistsByUsernameAsync(request.DocumentNumber))
+                throw new DomainException("Ya existe un usuario con este documento");
+
+            var role = await _roleRepository.GetByNameAsync("Guardian")
+                ?? throw new DomainException("Rol Guardian no encontrado");
+
             var guardian = new Guardian(
                  request.DocumentType,
                  request.DocumentNumber,
@@ -27,8 +44,17 @@ namespace Transport.Application.Features.Guardians.Commands.CreateGuardian
                  request.SectorId
             );
 
-            await _repo.AddAsync(guardian);
-            await _repo.SaveChangesAsync();
+            var user = new User(
+                request.DocumentNumber,
+                $"{request.FirstName} {request.LastName}",
+                $"{request.DocumentNumber}@guardian.local",
+                _passwordHasher.HashPassword(request.DocumentNumber),
+                role.Id,
+                guardianId: guardian.Id);
+
+            await _guardianRepository.AddAsync(guardian);
+            await _userRepository.AddAsync(user);
+            await _guardianRepository.SaveChangesAsync();
 
             return guardian.Id;
         }

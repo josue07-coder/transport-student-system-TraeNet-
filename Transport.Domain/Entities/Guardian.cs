@@ -113,5 +113,10 @@ namespace Transport.Domain.Entities
         {
             IsActive = false;
         }
+
+        public void UpdatePhoto(string? photoUrl)
+        {
+            PhotoUrl = photoUrl;
+        }
     }
 }

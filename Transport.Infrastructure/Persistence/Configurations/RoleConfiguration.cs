@@ -23,7 +23,7 @@ namespace Transport.Infrastructure.Persistence.Configurations
 
             //  Role → Users
             builder.HasMany(x => x.Users)
-                .WithOne()
+                .WithOne(x => x.Role)
                 .HasForeignKey(x => x.RoleId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
