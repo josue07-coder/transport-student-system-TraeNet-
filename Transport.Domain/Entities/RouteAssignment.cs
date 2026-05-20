@@ -8,11 +8,13 @@ namespace Transport.Domain.Entities
         public Guid RouteId { get; private set; }
         public Guid VehicleId { get; private set; }
         public Guid DriverId { get; private set; }
+        public Guid? TransportAssistantId { get; private set; }
         public int VehicleCapacity { get; private set; }
 
         public Route Route { get; private set; } = null!;
         public Vehicle Vehicle { get; private set; } = null!;
         public Driver Driver { get; private set; } = null!;
+        public TransportAssistant? TransportAssistant { get; private set; }
 
         private readonly List<StudentRouteAssignment> _students = new();
         public IReadOnlyCollection<StudentRouteAssignment> Students => _students.AsReadOnly();
@@ -22,7 +24,7 @@ namespace Transport.Domain.Entities
 
         private RouteAssignment() { } // EF Core
 
-        public RouteAssignment(Guid routeId, Guid vehicleId, Guid driverId, int capacity)
+        public RouteAssignment(Guid routeId, Guid vehicleId, Guid driverId, int capacity, Guid? transportAssistantId = null)
         {
             if (routeId == Guid.Empty)
                 throw new DomainException("La ruta es obligatoria");
@@ -39,10 +41,11 @@ namespace Transport.Domain.Entities
             RouteId = routeId;
             VehicleId = vehicleId;
             DriverId = driverId;
+            TransportAssistantId = transportAssistantId;
             VehicleCapacity = capacity;
         }
 
-        public void Update(Guid routeId, Guid vehicleId, Guid driverId, int capacity)
+        public void Update(Guid routeId, Guid vehicleId, Guid driverId, int capacity, Guid? transportAssistantId = null)
         {
             if (_trips.Any())
                 throw new DomainException("No se puede actualizar una asignación con viajes asociados");
@@ -65,6 +68,7 @@ namespace Transport.Domain.Entities
             RouteId = routeId;
             VehicleId = vehicleId;
             DriverId = driverId;
+            TransportAssistantId = transportAssistantId;
             VehicleCapacity = capacity;
         }
 

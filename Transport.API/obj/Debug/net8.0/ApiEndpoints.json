@@ -1176,6 +1176,128 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "Transport.API.Controllers.TransportAssistantsController",
+    "Method": "Create",
+    "RelativePath": "api/transport-assistants",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.TransportAssistants.Commands.CreateTransportAssistant.CreateTransportAssistantCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.TransportAssistantsController",
+    "Method": "GetAll",
+    "RelativePath": "api/transport-assistants",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.TransportAssistantsController",
+    "Method": "GetById",
+    "RelativePath": "api/transport-assistants/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.TransportAssistantsController",
+    "Method": "Update",
+    "RelativePath": "api/transport-assistants/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "command",
+        "Type": "Transport.Application.Features.TransportAssistants.Commands.UpdateTransportAssistant.UpdateTransportAssistantCommand",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.TransportAssistantsController",
+    "Method": "Delete",
+    "RelativePath": "api/transport-assistants/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.TransportAssistantsController",
+    "Method": "GetByActive",
+    "RelativePath": "api/transport-assistants/by-active/{isActive}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "isActive",
+        "Type": "System.Boolean",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.TransportAssistantsController",
+    "Method": "GetByDocument",
+    "RelativePath": "api/transport-assistants/document/{documentNumber}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "documentNumber",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Transport.API.Controllers.TripsController",
     "Method": "GetAll",
     "RelativePath": "api/trips",

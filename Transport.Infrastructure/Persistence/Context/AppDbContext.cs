@@ -26,6 +26,7 @@ namespace Transport.Infrastructure.Persistence.Context
         //  Operación
         public DbSet<Vehicle> Vehicles => Set<Vehicle>();
         public DbSet<Driver> Drivers => Set<Driver>();
+        public DbSet<TransportAssistant> TransportAssistants => Set<TransportAssistant>();
 
         //  Geografía
         public DbSet<Stop> Stops => Set<Stop>();

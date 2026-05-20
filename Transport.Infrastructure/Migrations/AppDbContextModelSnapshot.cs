@@ -283,6 +283,9 @@ namespace Transport.Infrastructure.Migrations
                     b.Property<Guid>("RouteId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("TransportAssistantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -297,6 +300,8 @@ namespace Transport.Infrastructure.Migrations
                     b.HasIndex("DriverId");
 
                     b.HasIndex("RouteId");
+
+                    b.HasIndex("TransportAssistantId");
 
                     b.HasIndex("VehicleId");
 
@@ -491,6 +496,52 @@ namespace Transport.Infrastructure.Migrations
                     b.HasIndex("RouteAssignmentId");
 
                     b.ToTable("StudentRouteAssignments");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.TransportAssistant", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DocumentNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocumentNumber")
+                        .IsUnique();
+
+                    b.ToTable("TransportAssistants");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.Trip", b =>
@@ -843,6 +894,11 @@ namespace Transport.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Transport.Domain.Entities.TransportAssistant", "TransportAssistant")
+                        .WithMany()
+                        .HasForeignKey("TransportAssistantId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Transport.Domain.Entities.Vehicle", "Vehicle")
                         .WithMany()
                         .HasForeignKey("VehicleId")
@@ -852,6 +908,8 @@ namespace Transport.Infrastructure.Migrations
                     b.Navigation("Driver");
 
                     b.Navigation("Route");
+
+                    b.Navigation("TransportAssistant");
 
                     b.Navigation("Vehicle");
                 });
@@ -1075,6 +1133,79 @@ namespace Transport.Infrastructure.Migrations
                     b.Navigation("RouteAssignment");
 
                     b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.TransportAssistant", b =>
+                {
+                    b.OwnsOne("Address", "Address", b1 =>
+                        {
+                            b1.Property<Guid>("TransportAssistantId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)")
+                                .HasColumnName("City");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(200)
+                                .HasColumnType("nvarchar(200)")
+                                .HasColumnName("Street");
+
+                            b1.HasKey("TransportAssistantId");
+
+                            b1.ToTable("TransportAssistants");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TransportAssistantId");
+                        });
+
+                    b.OwnsOne("Transport.Domain.ValueObjects.Email", "Email", b1 =>
+                        {
+                            b1.Property<Guid>("TransportAssistantId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Value")
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("TransportAssistantId");
+
+                            b1.ToTable("TransportAssistants");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TransportAssistantId");
+                        });
+
+                    b.OwnsOne("Transport.Domain.ValueObjects.PhoneNumber", "Phone", b1 =>
+                        {
+                            b1.Property<Guid>("TransportAssistantId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Phone");
+
+                            b1.HasKey("TransportAssistantId");
+
+                            b1.ToTable("TransportAssistants");
+
+                            b1.WithOwner()
+                                .HasForeignKey("TransportAssistantId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("Email");
+
+                    b.Navigation("Phone")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.Trip", b =>

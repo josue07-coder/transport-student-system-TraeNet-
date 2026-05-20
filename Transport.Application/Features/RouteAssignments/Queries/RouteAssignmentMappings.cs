@@ -17,6 +17,8 @@ namespace Transport.Application.Features.RouteAssignments.Queries
                 LicenseNumber = assignment.Driver?.LicenseNumber?.Value ?? string.Empty,
                 VehicleId = assignment.VehicleId,
                 PlateNumber = assignment.Vehicle?.PlateNumber ?? string.Empty,
+                TransportAssistantId = assignment.TransportAssistantId,
+                TransportAssistantName = assignment.TransportAssistant == null ? null : $"{assignment.TransportAssistant.FirstName} {assignment.TransportAssistant.LastName}",
                 VehicleCapacity = assignment.VehicleCapacity,
                 AssignedStudentsCount = assignment.Students.Count,
                 TripsCount = assignment.Trips.Count
@@ -35,6 +37,8 @@ namespace Transport.Application.Features.RouteAssignments.Queries
                 LicenseNumber = assignment.Driver?.LicenseNumber?.Value ?? string.Empty,
                 VehicleId = assignment.VehicleId,
                 PlateNumber = assignment.Vehicle?.PlateNumber ?? string.Empty,
+                TransportAssistantId = assignment.TransportAssistantId,
+                TransportAssistantName = assignment.TransportAssistant == null ? null : $"{assignment.TransportAssistant.FirstName} {assignment.TransportAssistant.LastName}",
                 VehicleCapacity = assignment.VehicleCapacity,
                 TripsCount = assignment.Trips.Count,
                 Students = assignment.Students

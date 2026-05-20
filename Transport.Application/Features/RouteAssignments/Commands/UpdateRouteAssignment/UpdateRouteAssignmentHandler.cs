@@ -10,17 +10,20 @@ namespace Transport.Application.Features.RouteAssignments.Commands.UpdateRouteAs
         private readonly IRouteRepository _routeRepository;
         private readonly IDriverRepository _driverRepository;
         private readonly IVehicleRepository _vehicleRepository;
+        private readonly ITransportAssistantRepository _transportAssistantRepository;
 
         public UpdateRouteAssignmentHandler(
             IRouteAssignmentRepository assignmentRepository,
             IRouteRepository routeRepository,
             IDriverRepository driverRepository,
-            IVehicleRepository vehicleRepository)
+            IVehicleRepository vehicleRepository,
+            ITransportAssistantRepository transportAssistantRepository)
         {
             _assignmentRepository = assignmentRepository;
             _routeRepository = routeRepository;
             _driverRepository = driverRepository;
             _vehicleRepository = vehicleRepository;
+            _transportAssistantRepository = transportAssistantRepository;
         }
 
         public async Task<Unit> Handle(UpdateRouteAssignmentCommand request, CancellationToken cancellationToken)
@@ -37,7 +40,10 @@ namespace Transport.Application.Features.RouteAssignments.Commands.UpdateRouteAs
             if (!await _vehicleRepository.ExistsAsync(request.VehicleId))
                 throw new DomainException("Vehiculo no encontrado");
 
-            assignment.Update(request.RouteId, request.VehicleId, request.DriverId, request.VehicleCapacity);
+            if (request.TransportAssistantId.HasValue && !await _transportAssistantRepository.ExistsAsync(request.TransportAssistantId.Value))
+                throw new DomainException("Asistente de transporte no encontrado");
+
+            assignment.Update(request.RouteId, request.VehicleId, request.DriverId, request.VehicleCapacity, request.TransportAssistantId);
             await _assignmentRepository.SaveChangesAsync();
 
             return Unit.Value;

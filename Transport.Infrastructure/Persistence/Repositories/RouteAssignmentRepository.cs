@@ -81,6 +81,7 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .Include(x => x.Route)
                 .Include(x => x.Driver)
                 .Include(x => x.Vehicle)
+                .Include(x => x.TransportAssistant)
                 .Include(x => x.Students)
                     .ThenInclude(studentAssignment => studentAssignment.Student)
                 .Include(x => x.Trips)

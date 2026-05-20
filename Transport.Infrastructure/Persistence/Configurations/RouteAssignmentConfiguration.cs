@@ -29,6 +29,12 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.DriverId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            //  Transport Assistant optional
+            builder.HasOne(x => x.TransportAssistant)
+                .WithMany()
+                .HasForeignKey(x => x.TransportAssistantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             //  Capacity
             builder.Property(x => x.VehicleCapacity)
                 .IsRequired();

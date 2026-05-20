@@ -10,6 +10,8 @@ namespace Transport.Application.Features.RouteAssignments.DTOs
         public string LicenseNumber { get; set; } = string.Empty;
         public Guid VehicleId { get; set; }
         public string PlateNumber { get; set; } = string.Empty;
+        public Guid? TransportAssistantId { get; set; }
+        public string? TransportAssistantName { get; set; }
         public int VehicleCapacity { get; set; }
         public int AssignedStudentsCount { get; set; }
         public int TripsCount { get; set; }

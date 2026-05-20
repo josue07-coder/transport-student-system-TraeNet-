@@ -11,17 +11,20 @@ namespace Transport.Application.Features.RouteAssignments.Commands.CreateRouteAs
         private readonly IRouteRepository _routeRepository;
         private readonly IDriverRepository _driverRepository;
         private readonly IVehicleRepository _vehicleRepository;
+        private readonly ITransportAssistantRepository _transportAssistantRepository;
 
         public CreateRouteAssignmentHandler(
             IRouteAssignmentRepository assignmentRepository,
             IRouteRepository routeRepository,
             IDriverRepository driverRepository,
-            IVehicleRepository vehicleRepository)
+            IVehicleRepository vehicleRepository,
+            ITransportAssistantRepository transportAssistantRepository)
         {
             _assignmentRepository = assignmentRepository;
             _routeRepository = routeRepository;
             _driverRepository = driverRepository;
             _vehicleRepository = vehicleRepository;
+            _transportAssistantRepository = transportAssistantRepository;
         }
 
         public async Task<Guid> Handle(CreateRouteAssignmentCommand request, CancellationToken cancellationToken)
@@ -35,11 +38,15 @@ namespace Transport.Application.Features.RouteAssignments.Commands.CreateRouteAs
             if (!await _vehicleRepository.ExistsAsync(request.VehicleId))
                 throw new DomainException("Vehiculo no encontrado");
 
+            if (request.TransportAssistantId.HasValue && !await _transportAssistantRepository.ExistsAsync(request.TransportAssistantId.Value))
+                throw new DomainException("Asistente de transporte no encontrado");
+
             var assignment = new RouteAssignment(
                 request.RouteId,
                 request.VehicleId,
                 request.DriverId,
-                request.VehicleCapacity);
+                request.VehicleCapacity,
+                request.TransportAssistantId);
 
             await _assignmentRepository.AddAsync(assignment);
             await _assignmentRepository.SaveChangesAsync();

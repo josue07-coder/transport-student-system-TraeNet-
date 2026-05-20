@@ -157,3 +157,4 @@ C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Tra
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\Transport.API.pdb
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\Transport.API.genruntimeconfig.cache
 C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\ref\Transport.API.dll
+C:\Users\HOLA\ProyectoFinalTesi\.vs\ProyectoFinalTesi\TransportStudentSystem\Transport.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
