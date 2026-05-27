@@ -8,11 +8,16 @@ namespace Transport.Application.Features.Roles.Commands.AssignPermissionToRole
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
+        private readonly IAuditService _auditService;
 
-        public AssignPermissionToRoleHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository)
+        public AssignPermissionToRoleHandler(
+            IRoleRepository roleRepository,
+            IPermissionRepository permissionRepository,
+            IAuditService auditService)
         {
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
+            _auditService = auditService;
         }
 
         public async Task<Unit> Handle(AssignPermissionToRoleCommand request, CancellationToken cancellationToken)
@@ -25,6 +30,8 @@ namespace Transport.Application.Features.Roles.Commands.AssignPermissionToRole
 
             role.AssignPermission(request.PermissionId);
             await _roleRepository.SaveChangesAsync();
+
+            await _auditService.LogAsync("Assigned", "RolePermission", role.Id.ToString(), null, $"{{\"PermissionId\":\"{request.PermissionId}\"}}");
 
             return Unit.Value;
         }

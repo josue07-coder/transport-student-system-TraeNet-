@@ -12,8 +12,8 @@ namespace Transport.Application.Features.Vehicles.Validators
             RuleFor(x => x.PlateNumber).NotEmpty().MaximumLength(20);
             RuleFor(x => x.Capacity).GreaterThan(0);
             RuleFor(x => x.Status)
-                .Must(status => status == VehicleStatus.Active || status == VehicleStatus.Inactive)
-                .WithMessage("Solo se permite actualizar el vehiculo a Active o Inactive.");
+                .Must(status => status == VehicleStatus.Active || status == VehicleStatus.Inactive || status == VehicleStatus.Maintenance)
+                .WithMessage("Solo se permite actualizar el vehículo a Active, Inactive o Maintenance.");
         }
     }
 }

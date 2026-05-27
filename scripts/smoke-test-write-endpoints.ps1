@@ -300,6 +300,15 @@ try {
         stopOrder = 1
     }
 
+    Invoke-Step -Group "TRANSPORT" -Label "PUT /api/routes/{id} (activate for assignment rules)" -Method "PUT" -Path "api/routes/$routeId" -Body @{
+        id = $routeId
+        name = "Smoke Route $stamp"
+        schoolId = $schoolId
+        startTime = $today.AddHours(7).ToString("o")
+        endTime = $today.AddHours(8).ToString("o")
+        status = 2
+    }
+
     $assignmentId = Invoke-Step -Group "ROUTE_ASSIGNMENTS" -Label "POST /api/route-assignments" -Method "POST" -Path "api/route-assignments" -ReturnId -Body @{
         routeId = $routeId
         driverId = $driverId

@@ -10,15 +10,18 @@ namespace Transport.Application.Features.Auth.Commands.Login
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasherService _passwordHasher;
         private readonly IJwtTokenService _jwtTokenService;
+        private readonly IAuditService _auditService;
 
         public LoginHandler(
             IUserRepository userRepository,
             IPasswordHasherService passwordHasher,
-            IJwtTokenService jwtTokenService)
+            IJwtTokenService jwtTokenService,
+            IAuditService auditService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
             _jwtTokenService = jwtTokenService;
+            _auditService = auditService;
         }
 
         public async Task<LoginResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -37,6 +40,8 @@ namespace Transport.Application.Features.Auth.Commands.Login
 
             var roleName = user.Role.Name;
             var token = _jwtTokenService.GenerateToken(user, roleName);
+
+            await _auditService.LogAsync("Login", "User", user.Id.ToString(), null, $"{{\"Username\":\"{user.Username}\"}}");
 
             return new LoginResponseDto
             {

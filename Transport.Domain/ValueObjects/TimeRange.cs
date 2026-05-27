@@ -17,6 +17,14 @@ namespace Transport.Domain.ValueObjects
             if (end <= start)
                 throw new DomainException("End time must be greater than start time");
 
+            var duration = end - start;
+
+            if (duration < TimeSpan.FromMinutes(10))
+                throw new DomainException("La duración mínima de la ruta es de 10 minutos");
+
+            if (duration > TimeSpan.FromHours(4))
+                throw new DomainException("La duración máxima de la ruta es de 4 horas");
+
             Start = start;
             End = end;
         }

@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Students.Commands.CreateStudent;
 using Transport.Application.Features.Students.Commands.DeleteStudent;
@@ -12,6 +13,7 @@ using Transport.Application.Features.Students.Queries.GetStudentsBySchool;
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class StudentsController : ControllerBase
     {

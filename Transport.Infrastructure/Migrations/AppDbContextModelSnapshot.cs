@@ -71,6 +71,66 @@ namespace Transport.Infrastructure.Migrations
                     b.ToTable("Students");
                 });
 
+            modelBuilder.Entity("Transport.Domain.Entities.AuditLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EntityId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("EntityName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("NewValues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldValues")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserAgent")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Username")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Action");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("EntityName", "EntityId");
+
+                    b.ToTable("AuditLogs");
+                });
+
             modelBuilder.Entity("Transport.Domain.Entities.Driver", b =>
                 {
                     b.Property<Guid>("Id")
@@ -205,6 +265,186 @@ namespace Transport.Infrastructure.Migrations
                     b.HasIndex("SectorId");
 
                     b.ToTable("Guardians");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.Incident", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("AssignedToUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<Guid?>("DriverId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ReportedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ResolvedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ResolvedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("RouteAssignmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Severity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<Guid?>("TransportAssistantId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("TripId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("VehicleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignedToUserId");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("DriverId");
+
+                    b.HasIndex("ReportedByUserId");
+
+                    b.HasIndex("ResolvedByUserId");
+
+                    b.HasIndex("RouteAssignmentId");
+
+                    b.HasIndex("Severity");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("TransportAssistantId");
+
+                    b.HasIndex("TripId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.ToTable("Incidents");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.IncidentComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("IncidentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("IncidentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("IncidentComments");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.Notification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RelatedEntityId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RelatedEntityType")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("IsRead");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("RelatedEntityType", "RelatedEntityId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.Permission", b =>
@@ -729,6 +969,57 @@ namespace Transport.Infrastructure.Migrations
                     b.ToTable("Vehicles");
                 });
 
+            modelBuilder.Entity("Transport.Domain.Entities.VehicleLocation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Heading")
+                        .HasColumnType("decimal(6,2)");
+
+                    b.Property<decimal>("Latitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<decimal>("Longitude")
+                        .HasColumnType("decimal(9,6)");
+
+                    b.Property<DateTime>("RecordedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("ReportedByUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal?>("Speed")
+                        .HasColumnType("decimal(8,2)");
+
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("VehicleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecordedAt");
+
+                    b.HasIndex("ReportedByUserId");
+
+                    b.HasIndex("TripId");
+
+                    b.HasIndex("VehicleId");
+
+                    b.HasIndex("TripId", "RecordedAt");
+
+                    b.ToTable("VehicleLocations");
+                });
+
             modelBuilder.Entity("Student", b =>
                 {
                     b.HasOne("Transport.Domain.Entities.Grade", "Grade")
@@ -920,6 +1211,96 @@ namespace Transport.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Sector");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.Incident", b =>
+                {
+                    b.HasOne("Transport.Domain.Entities.User", "AssignedToUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Transport.Domain.Entities.Driver", "Driver")
+                        .WithMany()
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Transport.Domain.Entities.User", "ReportedByUser")
+                        .WithMany()
+                        .HasForeignKey("ReportedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Transport.Domain.Entities.User", "ResolvedByUser")
+                        .WithMany()
+                        .HasForeignKey("ResolvedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Transport.Domain.Entities.RouteAssignment", "RouteAssignment")
+                        .WithMany()
+                        .HasForeignKey("RouteAssignmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Transport.Domain.Entities.TransportAssistant", "TransportAssistant")
+                        .WithMany()
+                        .HasForeignKey("TransportAssistantId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Transport.Domain.Entities.Trip", "Trip")
+                        .WithMany()
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Transport.Domain.Entities.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("AssignedToUser");
+
+                    b.Navigation("Driver");
+
+                    b.Navigation("ReportedByUser");
+
+                    b.Navigation("ResolvedByUser");
+
+                    b.Navigation("RouteAssignment");
+
+                    b.Navigation("TransportAssistant");
+
+                    b.Navigation("Trip");
+
+                    b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.IncidentComment", b =>
+                {
+                    b.HasOne("Transport.Domain.Entities.Incident", "Incident")
+                        .WithMany("Comments")
+                        .HasForeignKey("IncidentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Transport.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Incident");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.Notification", b =>
+                {
+                    b.HasOne("Transport.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.RolePermission", b =>
@@ -1345,6 +1726,32 @@ namespace Transport.Infrastructure.Migrations
                     b.Navigation("TransportAssistant");
                 });
 
+            modelBuilder.Entity("Transport.Domain.Entities.VehicleLocation", b =>
+                {
+                    b.HasOne("Transport.Domain.Entities.User", "ReportedByUser")
+                        .WithMany()
+                        .HasForeignKey("ReportedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Transport.Domain.Entities.Trip", "Trip")
+                        .WithMany()
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Transport.Domain.Entities.Vehicle", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ReportedByUser");
+
+                    b.Navigation("Trip");
+
+                    b.Navigation("Vehicle");
+                });
+
             modelBuilder.Entity("Student", b =>
                 {
                     b.Navigation("Assignments");
@@ -1358,6 +1765,11 @@ namespace Transport.Infrastructure.Migrations
             modelBuilder.Entity("Transport.Domain.Entities.Guardian", b =>
                 {
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.Incident", b =>
+                {
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.Permission", b =>

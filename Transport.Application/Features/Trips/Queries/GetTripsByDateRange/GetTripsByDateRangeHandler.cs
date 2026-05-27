@@ -8,10 +8,12 @@ namespace Transport.Application.Features.Trips.Queries.GetTripsByDateRange
     public class GetTripsByDateRangeHandler : IRequestHandler<GetTripsByDateRangeQuery, List<TripResponseDto>>
     {
         private readonly ITripRepository _repository;
+        private readonly IVisibilityService _visibilityService;
 
-        public GetTripsByDateRangeHandler(ITripRepository repository)
+        public GetTripsByDateRangeHandler(ITripRepository repository, IVisibilityService visibilityService)
         {
             _repository = repository;
+            _visibilityService = visibilityService;
         }
 
         public async Task<List<TripResponseDto>> Handle(GetTripsByDateRangeQuery request, CancellationToken cancellationToken)
@@ -20,6 +22,7 @@ namespace Transport.Application.Features.Trips.Queries.GetTripsByDateRange
                 throw new DomainException("La fecha final no puede ser menor que la fecha inicial");
 
             var trips = await _repository.GetByDateRangeAsync(request.StartDate, request.EndDate);
+            trips = await _visibilityService.FilterTripsAsync(trips);
             return trips.Select(TripMappings.ToResponseDto).ToList();
         }
     }

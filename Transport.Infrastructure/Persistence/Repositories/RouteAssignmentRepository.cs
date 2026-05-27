@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Transport.Application.Common.Pagination;
 using Transport.Application.Interfaces;
 using Transport.Domain.Entities;
+using Transport.Domain.Enums;
+using Transport.Domain.ValueObjects;
 using Transport.Infrastructure.Persistence.Context;
 
 namespace Transport.Infrastructure.Persistence.Repositories
@@ -52,6 +54,21 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<RouteAssignment>> GetByTransportAssistantAsync(Guid transportAssistantId)
+        {
+            return await AssignmentQuery()
+                .Where(assignment => assignment.TransportAssistantId == transportAssistantId)
+                .ToListAsync();
+        }
+
+        public async Task<List<RouteAssignment>> GetByGuardianAsync(Guid guardianId)
+        {
+            return await AssignmentQuery()
+                .Where(assignment => assignment.Students.Any(studentAssignment =>
+                    studentAssignment.Student.GuardianId == guardianId))
+                .ToListAsync();
+        }
+
         public async Task<List<RouteAssignment>> GetByVehicleAsync(Guid vehicleId)
         {
             return await AssignmentQuery()
@@ -63,6 +80,55 @@ namespace Transport.Infrastructure.Persistence.Repositories
         {
             return await _context.Trips
                 .AnyAsync(trip => trip.RouteAssignmentId == id);
+        }
+
+        public async Task<bool> HasDriverScheduleConflictAsync(Guid driverId, Guid routeId, Guid? excludedAssignmentId = null)
+        {
+            return await HasResourceScheduleConflictAsync(
+                routeId,
+                excludedAssignmentId,
+                assignment => assignment.DriverId == driverId);
+        }
+
+        public async Task<bool> HasVehicleScheduleConflictAsync(Guid vehicleId, Guid routeId, Guid? excludedAssignmentId = null)
+        {
+            return await HasResourceScheduleConflictAsync(
+                routeId,
+                excludedAssignmentId,
+                assignment => assignment.VehicleId == vehicleId);
+        }
+
+        public async Task<bool> HasTransportAssistantScheduleConflictAsync(Guid transportAssistantId, Guid routeId, Guid? excludedAssignmentId = null)
+        {
+            return await HasResourceScheduleConflictAsync(
+                routeId,
+                excludedAssignmentId,
+                assignment => assignment.TransportAssistantId == transportAssistantId);
+        }
+
+        public async Task<bool> HasStudentScheduleConflictAsync(Guid studentId, Guid routeId, Guid? excludedAssignmentId = null)
+        {
+            var route = await _context.Routes.FirstOrDefaultAsync(item => item.Id == routeId);
+            if (route is null)
+                return false;
+
+            var assignments = await _context.RouteAssignments
+                .Include(assignment => assignment.Route)
+                .Include(assignment => assignment.Students)
+                .Where(assignment =>
+                    assignment.Route.Status == RouteStatus.Active &&
+                    assignment.Students.Any(studentAssignment => studentAssignment.StudentId == studentId))
+                .ToListAsync();
+
+            return assignments.Any(assignment =>
+                assignment.Id != excludedAssignmentId &&
+                assignment.Route.OperatingHours.Overlaps(route.OperatingHours));
+        }
+
+        public async Task<int> CountStudentsAsync(Guid id)
+        {
+            return await _context.StudentRouteAssignments
+                .CountAsync(studentAssignment => studentAssignment.RouteAssignmentId == id);
         }
 
         public void Delete(RouteAssignment assignment)
@@ -78,7 +144,9 @@ namespace Transport.Infrastructure.Persistence.Repositories
         private IQueryable<RouteAssignment> AssignmentQuery()
         {
             return _context.RouteAssignments
+                .IgnoreQueryFilters()
                 .Include(x => x.Route)
+                    .ThenInclude(route => route.Stops)
                 .Include(x => x.Driver)
                 .Include(x => x.Vehicle)
                 .Include(x => x.TransportAssistant)
@@ -86,6 +154,26 @@ namespace Transport.Infrastructure.Persistence.Repositories
                     .ThenInclude(studentAssignment => studentAssignment.Student)
                 .Include(x => x.Trips)
                 .AsQueryable();
+        }
+
+        private async Task<bool> HasResourceScheduleConflictAsync(
+            Guid routeId,
+            Guid? excludedAssignmentId,
+            Func<RouteAssignment, bool> resourcePredicate)
+        {
+            var route = await _context.Routes.FirstOrDefaultAsync(item => item.Id == routeId);
+            if (route is null)
+                return false;
+
+            var assignments = await _context.RouteAssignments
+                .Include(assignment => assignment.Route)
+                .Where(assignment => assignment.Route.Status == RouteStatus.Active)
+                .ToListAsync();
+
+            return assignments.Any(assignment =>
+                assignment.Id != excludedAssignmentId &&
+                resourcePredicate(assignment) &&
+                assignment.Route.OperatingHours.Overlaps(route.OperatingHours));
         }
     }
 }

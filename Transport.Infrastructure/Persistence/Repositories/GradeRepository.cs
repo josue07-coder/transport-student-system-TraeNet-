@@ -55,6 +55,29 @@ namespace Transport.Infrastructure.Repositories
                 .AnyAsync(s => s.GradeId == gradeId);
         }
 
+        public async Task<bool> ExistsByNameInSchoolAsync(string name, Guid schoolId, Guid? excludeId = null)
+        {
+            var normalizedName = name.Trim().ToLower();
+
+            return await _context.Grades
+                .AnyAsync(grade =>
+                    grade.SchoolId == schoolId &&
+                    grade.Name.ToLower() == normalizedName &&
+                    (!excludeId.HasValue || grade.Id != excludeId.Value));
+        }
+
+        public async Task<bool> BelongsToSchoolAsync(Guid gradeId, Guid schoolId)
+        {
+            return await _context.Grades
+                .AnyAsync(grade => grade.Id == gradeId && grade.SchoolId == schoolId);
+        }
+
+        public async Task<bool> HasActiveStudentsAsync(Guid gradeId)
+        {
+            return await _context.Students
+                .AnyAsync(student => student.GradeId == gradeId);
+        }
+
         public void Delete(Grade grade)
         {
             _context.Grades.Remove(grade);

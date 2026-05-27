@@ -9,6 +9,7 @@ namespace Transport.Application.Interfaces
         Task<Sector?> GetByIdAsync(Guid id);
         Task<List<Sector>> GetAllAsync();
         Task<PaginatedResponse<Sector>> GetPagedAsync(int pageNumber, int pageSize);
+        Task<bool> ExistsAsync(Guid id);
         Task<bool> HasSchoolsAsync(Guid sectorId);
         Task<bool> HasGuardiansAsync(Guid sectorId);
         Task<bool> HasStopsAsync(Guid sectorId);

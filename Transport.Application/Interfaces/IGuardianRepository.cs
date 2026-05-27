@@ -10,6 +10,9 @@ namespace Transport.Application.Interfaces
         Task<Guardian?> GetByDocumentAsync(string documentNumber);
         Task<List<Guardian>> GetAllAsync();
         Task<PaginatedResponse<Guardian>> GetPagedAsync(int pageNumber, int pageSize);
+        Task<bool> ExistsByDocumentAsync(string documentNumber, Guid? excludeId = null);
+        Task<bool> IsActiveAsync(Guid id);
+        Task<bool> HasActiveStudentsAsync(Guid id);
         Task SaveChangesAsync();
     }
 }

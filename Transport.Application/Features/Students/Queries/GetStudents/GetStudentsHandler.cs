@@ -9,16 +9,19 @@ namespace Transport.Application.Features.Students.Queries.GetAllStudents
     public class GetAllStudentsHandler : IRequestHandler<GetAllStudentsQuery, PaginatedResponse<StudentResponseDto>>
     {
         private readonly IStudentRepository _repo;
+        private readonly IVisibilityService _visibilityService;
 
-        public GetAllStudentsHandler(IStudentRepository repo)
+        public GetAllStudentsHandler(IStudentRepository repo, IVisibilityService visibilityService)
         {
             _repo = repo;
+            _visibilityService = visibilityService;
         }
 
         public async Task<PaginatedResponse<StudentResponseDto>> Handle(GetAllStudentsQuery request, CancellationToken cancellationToken)
         {
             var students = await _repo.GetPagedAsync(request.PageNumber, request.PageSize);
-            var items = students.Items.Select(s => new StudentResponseDto
+            var visibleStudents = await _visibilityService.FilterStudentsAsync(students.Items);
+            var items = visibleStudents.Select(s => new StudentResponseDto
             {
                 Id = s.Id,
                 FullName = $"{s.FirstName} {s.LastName}",
@@ -29,7 +32,7 @@ namespace Transport.Application.Features.Students.Queries.GetAllStudents
 
             return new PaginatedResponse<StudentResponseDto>(
                 items,
-                students.TotalCount,
+                visibleStudents.Count,
                 students.PageNumber,
                 students.PageSize);
         }

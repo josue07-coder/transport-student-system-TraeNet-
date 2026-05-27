@@ -9,15 +9,18 @@ namespace Transport.Application.Features.Me.Commands.ChangePassword
         private readonly ICurrentUserService _currentUserService;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasherService _passwordHasher;
+        private readonly IAuditService _auditService;
 
         public ChangePasswordHandler(
             ICurrentUserService currentUserService,
             IUserRepository userRepository,
-            IPasswordHasherService passwordHasher)
+            IPasswordHasherService passwordHasher,
+            IAuditService auditService)
         {
             _currentUserService = currentUserService;
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _auditService = auditService;
         }
 
         public async Task<Unit> Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
@@ -33,6 +36,8 @@ namespace Transport.Application.Features.Me.Commands.ChangePassword
 
             user.ChangePassword(_passwordHasher.HashPassword(request.NewPassword));
             await _userRepository.SaveChangesAsync();
+
+            await _auditService.LogAsync("PasswordChanged", "User", user.Id.ToString());
 
             return Unit.Value;
         }

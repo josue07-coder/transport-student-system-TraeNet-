@@ -3,52 +3,11 @@
   "WorkspaceRootPath": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.application\\features\\auth\\commands\\login\\loginhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|solutionrelative:transport.application\\features\\auth\\commands\\login\\loginhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\dotnet\\sdk\\9.0.311\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.application\\features\\auth\\commands\\login\\logincommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|solutionrelative:transport.application\\features\\auth\\commands\\login\\logincommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.domain\\entities\\transportassistant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|solutionrelative:transport.domain\\entities\\transportassistant.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.infrastructure\\persistence\\repositories\\routeassignmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|solutionrelative:transport.infrastructure\\persistence\\repositories\\routeassignmentrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}|Elementos de la soluci\u00F3n{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}|C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\AGENTS.md||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}|Elementos de la soluci\u00F3n{D107F4C8-89CC-BEA8-D3D7-CA6B7733353D}|solutionrelative:AGENTS.md||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.application\\features\\students\\commands\\createstudent\\createstudenthandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|solutionrelative:transport.application\\features\\students\\commands\\createstudent\\createstudenthandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.domain\\valueobjects\\studentcode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|solutionrelative:transport.domain\\valueobjects\\studentcode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.domain\\entities\\student.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|solutionrelative:transport.domain\\entities\\student.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.domain\\entities\\sector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|solutionrelative:transport.domain\\entities\\sector.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.infrastructure\\persistence\\configurations\\sectorconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|solutionrelative:transport.infrastructure\\persistence\\configurations\\sectorconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.infrastructure\\persistence\\configurations\\guardianconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{089A59CD-0F26-4A17-944A-CB4170EB0FC0}|Transport.Infrastructure\\Transport.Infrastructure.csproj|solutionrelative:transport.infrastructure\\persistence\\configurations\\guardianconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.application\\features\\guardians\\commands\\createguardian\\createguardianhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F6EC4851-5CA5-4718-9E09-EE059AF5E678}|Transport.Application\\Transport.Application.csproj|solutionrelative:transport.application\\features\\guardians\\commands\\createguardian\\createguardianhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|c:\\users\\hola\\proyectofinaltesi\\.vs\\proyectofinaltesi\\transportstudentsystem\\transport.domain\\entities\\driver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CB75418D-B15D-4E24-A8C5-AB26EC9C04B3}|Transport.Domain\\Transport.Domain.csproj|solutionrelative:transport.domain\\entities\\driver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -79,157 +38,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "LoginHandler.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
-              "RelativeDocumentMoniker": "Transport.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
-              "RelativeToolTip": "Transport.Application\\Features\\Auth\\Commands\\Login\\LoginHandler.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T17:13:56.169Z",
+              "Title": "Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets",
+              "DocumentMoniker": "C:\\Program Files\\dotnet\\sdk\\9.0.311\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.311\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets",
+              "ToolTip": "C:\\Program Files\\dotnet\\sdk\\9.0.311\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\Program Files\\dotnet\\sdk\\9.0.311\\Sdks\\Microsoft.NET.Sdk.StaticWebAssets\\targets\\Microsoft.NET.Sdk.StaticWebAssets.JSModules.targets",
+              "ViewState": "AgIAAIYBAAAAAAAAAAAuwKYBAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-05-24T19:39:41.357Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "LoginCommand.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Auth\\Commands\\Login\\LoginCommand.cs",
-              "RelativeDocumentMoniker": "Transport.Application\\Features\\Auth\\Commands\\Login\\LoginCommand.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Auth\\Commands\\Login\\LoginCommand.cs",
-              "RelativeToolTip": "Transport.Application\\Features\\Auth\\Commands\\Login\\LoginCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "Driver.cs",
+              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Driver.cs",
+              "RelativeDocumentMoniker": "Transport.Domain\\Entities\\Driver.cs",
+              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Driver.cs",
+              "RelativeToolTip": "Transport.Domain\\Entities\\Driver.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAiwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T17:13:54.124Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "TransportAssistant.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\TransportAssistant.cs",
-              "RelativeDocumentMoniker": "Transport.Domain\\Entities\\TransportAssistant.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\TransportAssistant.cs",
-              "RelativeToolTip": "Transport.Domain\\Entities\\TransportAssistant.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-20T15:37:08.398Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "RouteAssignmentRepository.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Repositories\\RouteAssignmentRepository.cs",
-              "RelativeDocumentMoniker": "Transport.Infrastructure\\Persistence\\Repositories\\RouteAssignmentRepository.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Repositories\\RouteAssignmentRepository.cs",
-              "RelativeToolTip": "Transport.Infrastructure\\Persistence\\Repositories\\RouteAssignmentRepository.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T23:13:16.068Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AGENTS.md",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\AGENTS.md",
-              "RelativeDocumentMoniker": "AGENTS.md",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\AGENTS.md",
-              "RelativeToolTip": "AGENTS.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAhAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2026-05-19T18:46:54.423Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "CreateStudentHandler.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Students\\Commands\\CreateStudent\\CreateStudentHandler.cs",
-              "RelativeDocumentMoniker": "Transport.Application\\Features\\Students\\Commands\\CreateStudent\\CreateStudentHandler.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Students\\Commands\\CreateStudent\\CreateStudentHandler.cs",
-              "RelativeToolTip": "Transport.Application\\Features\\Students\\Commands\\CreateStudent\\CreateStudentHandler.cs",
-              "ViewState": "AgIAAAUAAAAAAAAAAAAxwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T17:53:48.022Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "StudentCode.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\ValueObjects\\StudentCode.cs",
-              "RelativeDocumentMoniker": "Transport.Domain\\ValueObjects\\StudentCode.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\ValueObjects\\StudentCode.cs",
-              "RelativeToolTip": "Transport.Domain\\ValueObjects\\StudentCode.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T17:48:28.985Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Student.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Student.cs",
-              "RelativeDocumentMoniker": "Transport.Domain\\Entities\\Student.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Student.cs",
-              "RelativeToolTip": "Transport.Domain\\Entities\\Student.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T17:47:33.262Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "SectorConfiguration.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Configurations\\SectorConfiguration.cs",
-              "RelativeDocumentMoniker": "Transport.Infrastructure\\Persistence\\Configurations\\SectorConfiguration.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Configurations\\SectorConfiguration.cs",
-              "RelativeToolTip": "Transport.Infrastructure\\Persistence\\Configurations\\SectorConfiguration.cs",
-              "ViewState": "AgIAABkAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T17:26:38.114Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "GuardianConfiguration.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Configurations\\GuardianConfiguration.cs",
-              "RelativeDocumentMoniker": "Transport.Infrastructure\\Persistence\\Configurations\\GuardianConfiguration.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Infrastructure\\Persistence\\Configurations\\GuardianConfiguration.cs",
-              "RelativeToolTip": "Transport.Infrastructure\\Persistence\\Configurations\\GuardianConfiguration.cs",
-              "ViewState": "AgIAADQAAAAAAAAAAAAQwEMAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T17:22:19.101Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Sector.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Sector.cs",
-              "RelativeDocumentMoniker": "Transport.Domain\\Entities\\Sector.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Domain\\Entities\\Sector.cs",
-              "RelativeToolTip": "Transport.Domain\\Entities\\Sector.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T17:21:13.866Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "CreateGuardianHandler.cs",
-              "DocumentMoniker": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Guardians\\Commands\\CreateGuardian\\CreateGuardianHandler.cs",
-              "RelativeDocumentMoniker": "Transport.Application\\Features\\Guardians\\Commands\\CreateGuardian\\CreateGuardianHandler.cs",
-              "ToolTip": "C:\\Users\\HOLA\\ProyectoFinalTesi\\.vs\\ProyectoFinalTesi\\TransportStudentSystem\\Transport.Application\\Features\\Guardians\\Commands\\CreateGuardian\\CreateGuardianHandler.cs",
-              "RelativeToolTip": "Transport.Application\\Features\\Guardians\\Commands\\CreateGuardian\\CreateGuardianHandler.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-19T16:54:27.254Z",
+              "WhenOpened": "2026-05-21T03:13:04.647Z",
               "EditorCaption": ""
             }
           ]

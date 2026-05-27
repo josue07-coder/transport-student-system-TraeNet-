@@ -18,6 +18,9 @@ namespace Transport.Application.Features.Routes.Commands.DeleteRoute
             var route = await _repository.GetByIdAsync(request.Id)
                 ?? throw new DomainException("Ruta no encontrada");
 
+            if (await _repository.HasActiveTripAsync(route.Id))
+                throw new DomainException("No se puede desactivar una ruta con un viaje en progreso");
+
             route.Deactivate();
             await _repository.SaveChangesAsync();
 

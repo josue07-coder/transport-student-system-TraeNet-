@@ -62,10 +62,51 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .ToListAsync();
         }
 
+        public async Task<List<Trip>> GetByDriverAsync(Guid driverId)
+        {
+            return await TripQuery()
+                .Where(trip => trip.RouteAssignment.DriverId == driverId)
+                .ToListAsync();
+        }
+
+        public async Task<List<Trip>> GetByTransportAssistantAsync(Guid transportAssistantId)
+        {
+            return await TripQuery()
+                .Where(trip => trip.RouteAssignment.TransportAssistantId == transportAssistantId)
+                .ToListAsync();
+        }
+
+        public async Task<List<Trip>> GetByGuardianAsync(Guid guardianId)
+        {
+            return await TripQuery()
+                .Where(trip => trip.RouteAssignment.Students.Any(studentAssignment =>
+                    studentAssignment.Student.GuardianId == guardianId))
+                .ToListAsync();
+        }
+
         public async Task<Trip?> GetActiveByRouteAssignmentAsync(Guid routeAssignmentId)
         {
             return await TripQuery()
                 .FirstOrDefaultAsync(trip => trip.RouteAssignmentId == routeAssignmentId && trip.Status == TripStatus.InProgress);
+        }
+
+        public async Task<Trip?> GetByIdWithAssignmentDetailsAsync(Guid id)
+        {
+            return await TripQuery()
+                .FirstOrDefaultAsync(trip => trip.Id == id);
+        }
+
+        public async Task<bool> IsInProgressAsync(Guid id)
+        {
+            return await _context.Trips
+                .AnyAsync(trip => trip.Id == id && trip.Status == TripStatus.InProgress);
+        }
+
+        public async Task<List<Trip>> GetActiveTripsAsync()
+        {
+            return await TripQuery()
+                .Where(trip => trip.Status == TripStatus.InProgress)
+                .ToListAsync();
         }
 
         public async Task<bool> HasActiveTripAsync(Guid routeAssignmentId)
@@ -88,6 +129,11 @@ namespace Transport.Infrastructure.Persistence.Repositories
                     .ThenInclude(assignment => assignment.Driver)
                 .Include(trip => trip.RouteAssignment)
                     .ThenInclude(assignment => assignment.Vehicle)
+                .Include(trip => trip.RouteAssignment)
+                    .ThenInclude(assignment => assignment.TransportAssistant)
+                .Include(trip => trip.RouteAssignment)
+                    .ThenInclude(assignment => assignment.Students)
+                        .ThenInclude(studentAssignment => studentAssignment.Student)
                 .AsQueryable();
         }
     }

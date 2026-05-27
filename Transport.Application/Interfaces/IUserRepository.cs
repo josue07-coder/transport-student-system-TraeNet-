@@ -11,6 +11,9 @@ namespace Transport.Application.Interfaces
         Task<User?> GetByIdAsync(Guid id);
         Task<User?> GetByIdWithRoleAsync(Guid id);
         Task<User?> GetByIdWithLinkedProfilesAsync(Guid id);
+        Task<User?> GetByGuardianIdAsync(Guid guardianId);
+        Task<User?> GetByDriverIdAsync(Guid driverId);
+        Task<User?> GetByTransportAssistantIdAsync(Guid transportAssistantId);
         Task<List<User>> GetByRoleAsync(Guid roleId);
         Task<List<User>> GetByActiveAsync(bool isActive);
         Task<bool> ExistsByUsernameAsync(string username);

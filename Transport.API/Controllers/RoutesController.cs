@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Routes.Commands.AddStopToRoute;
 using Transport.Application.Features.Routes.Commands.CreateRoute;
@@ -15,6 +16,7 @@ using Transport.Domain.Enums;
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class RoutesController : ControllerBase
     {

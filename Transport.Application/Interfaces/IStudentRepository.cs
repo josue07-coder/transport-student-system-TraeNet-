@@ -7,6 +7,7 @@ namespace Transport.Application.Interfaces
     {
         Task AddAsync(Student student);
         Task<Student?> GetByIdAsync(Guid id);
+        Task<Student?> GetByIdIncludingInactiveAsync(Guid id);
         Task<Student?> GetByCodeAsync(string code);
         Task<List<Student>> GetAllAsync();
         Task<PaginatedResponse<Student>> GetPagedAsync(int pageNumber, int pageSize);
@@ -15,6 +16,8 @@ namespace Transport.Application.Interfaces
         Task<List<Student>> GetByGuardianAsync(Guid guardianId);
         Task<bool> ExistsByCodeAsync(string code);
         Task<bool> ExistsAsync(Guid id);
+        Task<bool> HasActiveRouteAssignmentAsync(Guid studentId);
+        Task<bool> HasInProgressTripAsync(Guid studentId);
         Task SaveChangesAsync();
     }
 }

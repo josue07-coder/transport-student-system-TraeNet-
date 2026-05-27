@@ -27,6 +27,9 @@ namespace Transport.Application.Features.TransportAssistants.Commands.CreateTran
 
         public async Task<Guid> Handle(CreateTransportAssistantCommand request, CancellationToken cancellationToken)
         {
+            if (await _assistantRepository.ExistsByDocumentAsync(request.DocumentNumber))
+                throw new DomainException("Ya existe un asistente de transporte con este documento");
+
             if (await _userRepository.ExistsByUsernameAsync(request.DocumentNumber))
                 throw new DomainException("Ya existe un usuario con este documento");
 

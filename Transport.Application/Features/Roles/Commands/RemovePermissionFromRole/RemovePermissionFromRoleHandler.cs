@@ -7,10 +7,12 @@ namespace Transport.Application.Features.Roles.Commands.RemovePermissionFromRole
     public class RemovePermissionFromRoleHandler : IRequestHandler<RemovePermissionFromRoleCommand, Unit>
     {
         private readonly IRoleRepository _roleRepository;
+        private readonly IAuditService _auditService;
 
-        public RemovePermissionFromRoleHandler(IRoleRepository roleRepository)
+        public RemovePermissionFromRoleHandler(IRoleRepository roleRepository, IAuditService auditService)
         {
             _roleRepository = roleRepository;
+            _auditService = auditService;
         }
 
         public async Task<Unit> Handle(RemovePermissionFromRoleCommand request, CancellationToken cancellationToken)
@@ -20,6 +22,8 @@ namespace Transport.Application.Features.Roles.Commands.RemovePermissionFromRole
 
             role.RemovePermission(request.PermissionId);
             await _roleRepository.SaveChangesAsync();
+
+            await _auditService.LogAsync("Removed", "RolePermission", role.Id.ToString(), $"{{\"PermissionId\":\"{request.PermissionId}\"}}");
 
             return Unit.Value;
         }

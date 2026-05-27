@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Transport.Application.Common.Pagination;
 using Transport.Application.Interfaces;
 using Transport.Domain.Entities;
+using Transport.Domain.Enums;
 using Transport.Infrastructure.Persistence.Context;
 
 namespace Transport.Infrastructure.Persistence.Repositories
@@ -23,6 +24,17 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<Student?> GetByIdAsync(Guid id)
         {
             return await _context.Students
+                .Include(s => s.School)
+                .Include(s => s.Grade)
+                .Include(s => s.Guardian)
+                .Include(s => s.Assignments)
+                .FirstOrDefaultAsync(s => s.Id == id);
+        }
+
+        public async Task<Student?> GetByIdIncludingInactiveAsync(Guid id)
+        {
+            return await _context.Students
+                .IgnoreQueryFilters()
                 .Include(s => s.School)
                 .Include(s => s.Grade)
                 .Include(s => s.Guardian)
@@ -87,6 +99,22 @@ namespace Transport.Infrastructure.Persistence.Repositories
         {
             return await _context.Students
                 .AnyAsync(student => student.Id == id);
+        }
+
+        public async Task<bool> HasActiveRouteAssignmentAsync(Guid studentId)
+        {
+            return await _context.StudentRouteAssignments
+                .AnyAsync(studentAssignment =>
+                    studentAssignment.StudentId == studentId &&
+                    studentAssignment.RouteAssignment.Route.Status == RouteStatus.Active);
+        }
+
+        public async Task<bool> HasInProgressTripAsync(Guid studentId)
+        {
+            return await _context.StudentRouteAssignments
+                .AnyAsync(studentAssignment =>
+                    studentAssignment.StudentId == studentId &&
+                    studentAssignment.RouteAssignment.Trips.Any(trip => trip.Status == TripStatus.InProgress));
         }
 
         public async Task SaveChangesAsync()

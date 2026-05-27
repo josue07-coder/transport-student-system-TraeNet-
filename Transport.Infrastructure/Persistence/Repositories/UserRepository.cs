@@ -75,6 +75,27 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(user => user.Id == id);
         }
 
+        public async Task<User?> GetByGuardianIdAsync(Guid guardianId)
+        {
+            return await _context.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(user => user.GuardianId == guardianId);
+        }
+
+        public async Task<User?> GetByDriverIdAsync(Guid driverId)
+        {
+            return await _context.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(user => user.DriverId == driverId);
+        }
+
+        public async Task<User?> GetByTransportAssistantIdAsync(Guid transportAssistantId)
+        {
+            return await _context.Users
+                .IgnoreQueryFilters()
+                .FirstOrDefaultAsync(user => user.TransportAssistantId == transportAssistantId);
+        }
+
         public async Task<List<User>> GetByRoleAsync(Guid roleId)
         {
             return await _context.Users

@@ -43,9 +43,17 @@ namespace Transport.Domain.Entities
         public void Deactivate()
         {
             if (Status == VehicleStatus.Inactive)
-                throw new DomainException("El vehiculo ya esta inhactivo");
+                throw new DomainException("El vehículo ya está inactivo");
 
             Status = VehicleStatus.Inactive;
+        }
+
+        public void SendToMaintenance()
+        {
+            if (Status == VehicleStatus.Maintenance)
+                throw new DomainException("El vehículo ya está en mantenimiento");
+
+            Status = VehicleStatus.Maintenance;
         }
     }
 }

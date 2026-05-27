@@ -39,6 +39,37 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
 
+        public async Task<bool> IsActiveAsync(Guid id)
+        {
+            return await _context.Routes
+                .AnyAsync(route => route.Id == id && route.Status == RouteStatus.Active);
+        }
+
+        public async Task<bool> HasStopsAsync(Guid id)
+        {
+            return await _context.RouteStops
+                .AnyAsync(routeStop => routeStop.RouteId == id);
+        }
+
+        public async Task<bool> HasActiveTripAsync(Guid routeId)
+        {
+            return await _context.Trips
+                .AnyAsync(trip =>
+                    trip.Status == TripStatus.InProgress &&
+                    trip.RouteAssignment.RouteId == routeId);
+        }
+
+        public async Task<bool> ExistsByNameForSchoolAsync(string name, Guid schoolId, Guid? excludeRouteId = null)
+        {
+            var normalizedName = name.Trim().ToLower();
+
+            return await _context.Routes
+                .AnyAsync(route =>
+                    route.SchoolId == schoolId &&
+                    route.Name.ToLower() == normalizedName &&
+                    (!excludeRouteId.HasValue || route.Id != excludeRouteId.Value));
+        }
+
         public async Task<PaginatedResponse<Route>> GetPagedAsync(int pageNumber, int pageSize)
         {
             var query = _context.Routes

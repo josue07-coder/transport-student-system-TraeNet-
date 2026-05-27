@@ -9,16 +9,20 @@ namespace Transport.Application.Features.Students.Queries.GetStudentById
     public class GetStudentByIdHandler : IRequestHandler<GetStudentByIdQuery, StudentDetailDto>
     {
         private readonly IStudentRepository _repository;
+        private readonly IVisibilityService _visibilityService;
 
-        public GetStudentByIdHandler(IStudentRepository repository)
+        public GetStudentByIdHandler(IStudentRepository repository, IVisibilityService visibilityService)
         {
             _repository = repository;
+            _visibilityService = visibilityService;
         }
 
         public async Task<StudentDetailDto> Handle(GetStudentByIdQuery request, CancellationToken cancellationToken)
         {
             var student = await _repository.GetByIdAsync(request.Id)
                 ?? throw new DomainException("Student not found");
+
+            await _visibilityService.EnsureCanViewStudentAsync(student);
 
             return new StudentDetailDto
             {

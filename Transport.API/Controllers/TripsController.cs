@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Trips.Commands.CancelTrip;
 using Transport.Application.Features.Trips.Commands.EndTrip;
@@ -14,6 +15,7 @@ using Transport.Domain.Enums;
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/trips")]
     public class TripsController : ControllerBase
     {

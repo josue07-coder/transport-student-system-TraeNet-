@@ -7,10 +7,12 @@ namespace Transport.Application.Features.RouteAssignments.Commands.DeleteRouteAs
     public class DeleteRouteAssignmentHandler : IRequestHandler<DeleteRouteAssignmentCommand, Unit>
     {
         private readonly IRouteAssignmentRepository _repository;
+        private readonly IAuditService _auditService;
 
-        public DeleteRouteAssignmentHandler(IRouteAssignmentRepository repository)
+        public DeleteRouteAssignmentHandler(IRouteAssignmentRepository repository, IAuditService auditService)
         {
             _repository = repository;
+            _auditService = auditService;
         }
 
         public async Task<Unit> Handle(DeleteRouteAssignmentCommand request, CancellationToken cancellationToken)
@@ -23,6 +25,8 @@ namespace Transport.Application.Features.RouteAssignments.Commands.DeleteRouteAs
 
             _repository.Delete(assignment);
             await _repository.SaveChangesAsync();
+
+            await _auditService.LogAsync("Deleted", "RouteAssignment", assignment.Id.ToString());
 
             return Unit.Value;
         }

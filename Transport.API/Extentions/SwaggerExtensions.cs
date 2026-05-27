@@ -42,7 +42,10 @@ namespace Transport.API.Extensions
         public static IApplicationBuilder UseSwaggerDocs(this IApplicationBuilder app)
         {
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(options =>
+            {
+                options.ConfigObject.PersistAuthorization = false;
+            });
 
             return app;
         }

@@ -57,6 +57,44 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .AnyAsync(vehicle => vehicle.Id == id);
         }
 
+        public async Task<bool> ExistsByPlateAsync(string plateNumber, Guid? excludeId = null)
+        {
+            var normalizedPlate = plateNumber.Trim().ToLower();
+
+            return await _context.Vehicles
+                .AnyAsync(vehicle =>
+                    vehicle.PlateNumber.ToLower() == normalizedPlate &&
+                    (!excludeId.HasValue || vehicle.Id != excludeId.Value));
+        }
+
+        public async Task<bool> HasInProgressTripAsync(Guid vehicleId)
+        {
+            return await _context.Trips
+                .AnyAsync(trip =>
+                    trip.Status == TripStatus.InProgress &&
+                    trip.RouteAssignment.VehicleId == vehicleId);
+        }
+
+        public async Task<bool> HasActiveRouteAssignmentAsync(Guid vehicleId)
+        {
+            return await _context.RouteAssignments
+                .AnyAsync(assignment =>
+                    assignment.VehicleId == vehicleId &&
+                    assignment.Route.Status == RouteStatus.Active);
+        }
+
+        public async Task<int> GetMaxAssignedStudentCountAsync(Guid vehicleId)
+        {
+            var counts = await _context.RouteAssignments
+                .Where(assignment =>
+                    assignment.VehicleId == vehicleId &&
+                    assignment.Route.Status == RouteStatus.Active)
+                .Select(assignment => assignment.Students.Count)
+                .ToListAsync();
+
+            return counts.Count == 0 ? 0 : counts.Max();
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

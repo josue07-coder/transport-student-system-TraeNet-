@@ -8,18 +8,21 @@ namespace Transport.Application.Features.Trips.Queries.GetAllTrips
     public class GetAllTripsHandler : IRequestHandler<GetAllTripsQuery, PaginatedResponse<TripResponseDto>>
     {
         private readonly ITripRepository _repository;
+        private readonly IVisibilityService _visibilityService;
 
-        public GetAllTripsHandler(ITripRepository repository)
+        public GetAllTripsHandler(ITripRepository repository, IVisibilityService visibilityService)
         {
             _repository = repository;
+            _visibilityService = visibilityService;
         }
 
         public async Task<PaginatedResponse<TripResponseDto>> Handle(GetAllTripsQuery request, CancellationToken cancellationToken)
         {
             var trips = await _repository.GetPagedAsync(request.PageNumber, request.PageSize);
-            var items = trips.Items.Select(TripMappings.ToResponseDto).ToList();
+            var visibleTrips = await _visibilityService.FilterTripsAsync(trips.Items);
+            var items = visibleTrips.Select(TripMappings.ToResponseDto).ToList();
 
-            return new PaginatedResponse<TripResponseDto>(items, trips.TotalCount, trips.PageNumber, trips.PageSize);
+            return new PaginatedResponse<TripResponseDto>(items, visibleTrips.Count, trips.PageNumber, trips.PageSize);
         }
     }
 }

@@ -36,10 +36,7 @@ namespace Transport.Infrastructure.Security
             claims.AddRange(user.Role.RolePermissions
                 .Select(rolePermission => new Claim("permission", rolePermission.Permission.Name)));
 
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-            {
-                KeyId = "TransportStudentSystemJwtKey"
-            };
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(

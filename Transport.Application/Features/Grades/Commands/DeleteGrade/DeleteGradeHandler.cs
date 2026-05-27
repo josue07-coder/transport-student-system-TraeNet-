@@ -18,8 +18,8 @@ namespace Transport.Application.Features.Grades.Commands.DeleteGrade
             var grade = await _repository.GetByIdAsync(request.Id)
                 ?? throw new DomainException("Grade not found");
 
-            if (await _repository.HasStudentsAsync(grade.Id))
-                throw new DomainException("No se puede eliminar el grado porque tiene estudiantes asociados");
+            if (await _repository.HasActiveStudentsAsync(grade.Id))
+                throw new DomainException("No se puede eliminar el grado porque tiene estudiantes activos asociados");
 
             _repository.Delete(grade);
             await _repository.SaveChangesAsync();

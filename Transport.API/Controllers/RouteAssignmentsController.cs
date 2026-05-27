@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.RouteAssignments.Commands.AssignStudentToRouteAssignment;
 using Transport.Application.Features.RouteAssignments.Commands.CreateRouteAssignment;
@@ -14,6 +15,7 @@ using Transport.Application.Features.RouteAssignments.Queries.GetRouteAssignment
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/route-assignments")]
     public class RouteAssignmentsController : ControllerBase
     {

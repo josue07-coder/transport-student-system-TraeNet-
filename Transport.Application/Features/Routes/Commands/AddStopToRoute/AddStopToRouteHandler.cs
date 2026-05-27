@@ -21,6 +21,9 @@ namespace Transport.Application.Features.Routes.Commands.AddStopToRoute
             var route = await _repository.GetByIdWithStopsAsync(request.RouteId)
                 ?? throw new DomainException("Ruta no encontrada");
 
+            if (await _repository.HasActiveTripAsync(route.Id))
+                throw new DomainException("No se pueden agregar paradas a una ruta con un viaje en progreso");
+
             if (!await _stopRepository.ExistsAsync(request.StopId))
                 throw new DomainException("Parada no encontrada");
 

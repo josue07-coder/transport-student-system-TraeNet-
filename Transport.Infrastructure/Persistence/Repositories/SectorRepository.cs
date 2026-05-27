@@ -42,6 +42,12 @@ namespace Transport.Infrastructure.Persistence.Repositories
             return new PaginatedResponse<Sector>(items, totalCount, pageNumber, pageSize);
         }
 
+        public async Task<bool> ExistsAsync(Guid id)
+        {
+            return await _context.Sectors
+                .AnyAsync(sector => sector.Id == id);
+        }
+
         public async Task<bool> HasSchoolsAsync(Guid sectorId)
         {
             return await _context.Schools

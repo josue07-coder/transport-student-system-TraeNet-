@@ -18,6 +18,9 @@ namespace Transport.Application.Features.Routes.Commands.UpdateRouteStopOrder
             var route = await _repository.GetByIdWithStopsAsync(request.RouteId)
                 ?? throw new DomainException("Ruta no encontrada");
 
+            if (await _repository.HasActiveTripAsync(route.Id))
+                throw new DomainException("No se puede cambiar el orden de paradas en una ruta con un viaje en progreso");
+
             route.UpdateStopOrder(request.StopId, request.StopOrder);
             await _repository.SaveChangesAsync();
 

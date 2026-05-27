@@ -51,6 +51,30 @@ namespace Transport.Infrastructure.Repositories
             return new PaginatedResponse<Guardian>(items, totalCount, pageNumber, pageSize);
         }
 
+        public async Task<bool> ExistsByDocumentAsync(string documentNumber, Guid? excludeId = null)
+        {
+            var normalizedDocument = documentNumber.Trim().ToLower();
+
+            return await _context.Guardians
+                .IgnoreQueryFilters()
+                .AnyAsync(guardian =>
+                    guardian.DocumentNumber.ToLower() == normalizedDocument &&
+                    (!excludeId.HasValue || guardian.Id != excludeId.Value));
+        }
+
+        public async Task<bool> IsActiveAsync(Guid id)
+        {
+            return await _context.Guardians
+                .IgnoreQueryFilters()
+                .AnyAsync(guardian => guardian.Id == id && guardian.IsActive);
+        }
+
+        public async Task<bool> HasActiveStudentsAsync(Guid id)
+        {
+            return await _context.Students
+                .AnyAsync(student => student.GuardianId == id);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

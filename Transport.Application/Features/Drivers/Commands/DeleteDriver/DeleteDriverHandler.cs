@@ -18,6 +18,12 @@ namespace Transport.Application.Features.Drivers.Commands.DeleteDriver
             var driver = await _repository.GetByIdAsync(request.Id)
                 ?? throw new DomainException("Conductor no encontrado");
 
+            if (await _repository.HasInProgressTripAsync(driver.Id))
+                throw new DomainException("No se puede desactivar el conductor porque tiene un viaje en progreso");
+
+            if (await _repository.HasActiveRouteAssignmentAsync(driver.Id))
+                throw new DomainException("No se puede desactivar el conductor porque está asignado a una ruta activa");
+
             driver.Deactivate();
             await _repository.SaveChangesAsync();
 

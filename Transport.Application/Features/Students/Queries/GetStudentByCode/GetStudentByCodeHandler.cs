@@ -8,16 +8,20 @@ namespace Transport.Application.Features.Students.Queries.GetStudentByCode
     public class GetStudentByCodeHandler : IRequestHandler<GetStudentByCodeQuery, StudentDetailDto>
     {
         private readonly IStudentRepository _repository;
+        private readonly IVisibilityService _visibilityService;
 
-        public GetStudentByCodeHandler(IStudentRepository repository)
+        public GetStudentByCodeHandler(IStudentRepository repository, IVisibilityService visibilityService)
         {
             _repository = repository;
+            _visibilityService = visibilityService;
         }
 
         public async Task<StudentDetailDto> Handle(GetStudentByCodeQuery request, CancellationToken cancellationToken)
         {
             var student = await _repository.GetByCodeAsync(request.Code)
                 ?? throw new DomainException("Student not found");
+
+            await _visibilityService.EnsureCanViewStudentAsync(student);
 
             return new StudentDetailDto
             {

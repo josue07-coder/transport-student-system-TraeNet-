@@ -8,11 +8,16 @@ namespace Transport.Application.Features.Auth.Commands.ForgotPassword
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasherService _passwordHasher;
+        private readonly IAuditService _auditService;
 
-        public ForgotPasswordHandler(IUserRepository userRepository, IPasswordHasherService passwordHasher)
+        public ForgotPasswordHandler(
+            IUserRepository userRepository,
+            IPasswordHasherService passwordHasher,
+            IAuditService auditService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _auditService = auditService;
         }
 
         public async Task<Unit> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
@@ -28,6 +33,8 @@ namespace Transport.Application.Features.Auth.Commands.ForgotPassword
 
             userWithProfiles.ChangePassword(_passwordHasher.HashPassword(request.NewPassword));
             await _userRepository.SaveChangesAsync();
+
+            await _auditService.LogAsync("PasswordChanged", "User", userWithProfiles.Id.ToString(), null, "{\"Reset\":\"ForgotPassword\"}");
 
             return Unit.Value;
         }

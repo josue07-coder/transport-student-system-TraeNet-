@@ -5,6 +5,9 @@ using Transport.Application.Features.Me.Commands.ChangePassword;
 using Transport.Application.Features.Me.Commands.UpdateMeProfile;
 using Transport.Application.Features.Me.Commands.UpdateProfilePhoto;
 using Transport.Application.Features.Me.Queries.GetMe;
+using Transport.Application.Features.Me.Queries.GetMyRouteAssignments;
+using Transport.Application.Features.Me.Queries.GetMyStudents;
+using Transport.Application.Features.Me.Queries.GetMyTrips;
 
 namespace Transport.API.Controllers
 {
@@ -24,6 +27,27 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> GetMe()
         {
             var result = await _mediator.Send(new GetMeQuery());
+            return Ok(result);
+        }
+
+        [HttpGet("students")]
+        public async Task<IActionResult> GetMyStudents()
+        {
+            var result = await _mediator.Send(new GetMyStudentsQuery());
+            return Ok(result);
+        }
+
+        [HttpGet("route-assignments")]
+        public async Task<IActionResult> GetMyRouteAssignments()
+        {
+            var result = await _mediator.Send(new GetMyRouteAssignmentsQuery());
+            return Ok(result);
+        }
+
+        [HttpGet("trips")]
+        public async Task<IActionResult> GetMyTrips()
+        {
+            var result = await _mediator.Send(new GetMyTripsQuery());
             return Ok(result);
         }
 

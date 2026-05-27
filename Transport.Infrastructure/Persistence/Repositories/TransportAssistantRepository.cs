@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Transport.Application.Common.Pagination;
 using Transport.Application.Interfaces;
 using Transport.Domain.Entities;
+using Transport.Domain.Enums;
 using Transport.Infrastructure.Persistence.Context;
 
 namespace Transport.Infrastructure.Persistence.Repositories
@@ -23,6 +24,13 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<TransportAssistant?> GetByIdAsync(Guid id)
         {
             return await _context.TransportAssistants
+                .FirstOrDefaultAsync(assistant => assistant.Id == id);
+        }
+
+        public async Task<TransportAssistant?> GetByIdIncludingInactiveAsync(Guid id)
+        {
+            return await _context.TransportAssistants
+                .IgnoreQueryFilters()
                 .FirstOrDefaultAsync(assistant => assistant.Id == id);
         }
 
@@ -56,6 +64,33 @@ namespace Transport.Infrastructure.Persistence.Repositories
         {
             return await _context.TransportAssistants
                 .AnyAsync(assistant => assistant.Id == id);
+        }
+
+        public async Task<bool> ExistsByDocumentAsync(string documentNumber, Guid? excludeId = null)
+        {
+            var normalizedDocument = documentNumber.Trim().ToLower();
+
+            return await _context.TransportAssistants
+                .IgnoreQueryFilters()
+                .AnyAsync(assistant =>
+                    assistant.DocumentNumber.ToLower() == normalizedDocument &&
+                    (!excludeId.HasValue || assistant.Id != excludeId.Value));
+        }
+
+        public async Task<bool> HasInProgressTripAsync(Guid id)
+        {
+            return await _context.Trips
+                .AnyAsync(trip =>
+                    trip.Status == TripStatus.InProgress &&
+                    trip.RouteAssignment.TransportAssistantId == id);
+        }
+
+        public async Task<bool> HasActiveRouteAssignmentAsync(Guid id)
+        {
+            return await _context.RouteAssignments
+                .AnyAsync(assignment =>
+                    assignment.TransportAssistantId == id &&
+                    assignment.Route.Status == RouteStatus.Active);
         }
 
         public async Task SaveChangesAsync()

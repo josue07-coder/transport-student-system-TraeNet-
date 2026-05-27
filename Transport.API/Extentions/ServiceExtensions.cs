@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Transport.Application;
 using Transport.Application.Common.Behaviors;
+using Transport.Application.Common.Security;
 using Transport.Application.Interfaces;
 using Transport.API.Services;
 using Transport.Infrastructure.Persistence.Repositories;
@@ -31,12 +32,20 @@ namespace Transport.API.Extensions
             services.AddScoped<IRouteRepository, RouteRepository>();
             services.AddScoped<ITripRepository, TripRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IIncidentRepository, IncidentRepository>();
+            services.AddScoped<IVehicleLocationRepository, VehicleLocationRepository>();
+            services.AddScoped<IReportRepository, ReportRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddHttpContextAccessor();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IVisibilityService, VisibilityService>();
+            services.AddScoped<IAuditService, AuditService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddHostedService<RoleSeederHostedService>();
 
             return services;
@@ -47,10 +56,7 @@ namespace Transport.API.Extensions
             var jwtKey = GetRequiredJwtSetting(configuration, "Jwt:Key");
             var issuer = GetRequiredJwtSetting(configuration, "Jwt:Issuer");
             var audience = GetRequiredJwtSetting(configuration, "Jwt:Audience");
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-            {
-                KeyId = "TransportStudentSystemJwtKey"
-            };
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -63,7 +69,8 @@ namespace Transport.API.Extensions
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = issuer,
                         ValidAudience = audience,
-                        IssuerSigningKey = securityKey
+                        IssuerSigningKey = securityKey,
+                        ClockSkew = TimeSpan.FromMinutes(1)
                     };
                 });
 

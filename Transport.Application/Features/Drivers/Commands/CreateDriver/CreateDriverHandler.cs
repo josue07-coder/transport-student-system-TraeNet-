@@ -27,6 +27,12 @@ namespace Transport.Application.Features.Drivers.Commands.CreateDriver
 
         public async Task<Guid> Handle(CreateDriverCommand request, CancellationToken cancellationToken)
         {
+            if (await _driverRepository.ExistsByDocumentAsync(request.DocumentNumber))
+                throw new DomainException("Ya existe un conductor con este documento");
+
+            if (await _driverRepository.ExistsByLicenseAsync(request.LicenseNumber))
+                throw new DomainException("Ya existe un conductor con esta licencia");
+
             if (await _userRepository.ExistsByUsernameAsync(request.DocumentNumber))
                 throw new DomainException("Ya existe un usuario con este documento");
 

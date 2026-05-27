@@ -41,6 +41,11 @@ namespace Transport.Infrastructure.Persistence.Context
         public DbSet<Role> Roles => Set<Role>();
         public DbSet<Permission> Permissions => Set<Permission>();
         public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
+        public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+        public DbSet<Notification> Notifications => Set<Notification>();
+        public DbSet<Incident> Incidents => Set<Incident>();
+        public DbSet<IncidentComment> IncidentComments => Set<IncidentComment>();
+        public DbSet<VehicleLocation> VehicleLocations => Set<VehicleLocation>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

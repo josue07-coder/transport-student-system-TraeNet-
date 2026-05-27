@@ -1,5 +1,100 @@
 [
   {
+    "ContainingType": "Transport.API.Controllers.AuditLogsController",
+    "Method": "GetAll",
+    "RelativePath": "api/audit-logs",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "PageNumber",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "PageSize",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.AuditLogsController",
+    "Method": "GetByAction",
+    "RelativePath": "api/audit-logs/by-action/{action}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "action",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.AuditLogsController",
+    "Method": "GetByDateRange",
+    "RelativePath": "api/audit-logs/by-date-range",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "startDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      },
+      {
+        "Name": "endDate",
+        "Type": "System.DateTime",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.AuditLogsController",
+    "Method": "GetByEntity",
+    "RelativePath": "api/audit-logs/by-entity/{entityName}/{entityId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "entityName",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "entityId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.AuditLogsController",
+    "Method": "GetByUser",
+    "RelativePath": "api/audit-logs/by-user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "Transport.API.Controllers.AuthController",
     "Method": "ForgotPassword",
     "RelativePath": "api/auth/forgot-password",
@@ -421,6 +516,36 @@
         "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.MeController",
+    "Method": "GetMyRouteAssignments",
+    "RelativePath": "api/me/route-assignments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.MeController",
+    "Method": "GetMyStudents",
+    "RelativePath": "api/me/students",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Transport.API.Controllers.MeController",
+    "Method": "GetMyTrips",
+    "RelativePath": "api/me/trips",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
