@@ -8,6 +8,7 @@ using Transport.Application.Common.Behaviors;
 using Transport.Application.Common.Security;
 using Transport.Application.Interfaces;
 using Transport.API.Services;
+using Transport.Infrastructure.Integrations;
 using Transport.Infrastructure.Persistence.Repositories;
 using Transport.Infrastructure.Repositories;
 using Transport.Infrastructure.Security;
@@ -37,6 +38,7 @@ namespace Transport.API.Extensions
             services.AddScoped<IIncidentRepository, IncidentRepository>();
             services.AddScoped<IVehicleLocationRepository, VehicleLocationRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
+            services.AddScoped<ISystemSettingRepository, SystemSettingRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
@@ -46,6 +48,13 @@ namespace Transport.API.Extensions
             services.AddScoped<IVisibilityService, VisibilityService>();
             services.AddScoped<IAuditService, AuditService>();
             services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<ISystemSettingService, SystemSettingService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISmsService, SmsService>();
+            services.AddScoped<IWhatsAppService, WhatsAppService>();
+            services.AddScoped<IPushNotificationService, PushNotificationService>();
+            services.AddScoped<IMapService, MapService>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddHostedService<RoleSeederHostedService>();
 
             return services;

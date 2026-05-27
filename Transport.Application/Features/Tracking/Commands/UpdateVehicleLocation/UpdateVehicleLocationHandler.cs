@@ -13,19 +13,22 @@ namespace Transport.Application.Features.Tracking.Commands.UpdateVehicleLocation
         private readonly IVisibilityService _visibilityService;
         private readonly ICurrentUserService _currentUserService;
         private readonly INotificationService _notificationService;
+        private readonly ISystemSettingService _systemSettingService;
 
         public UpdateVehicleLocationHandler(
             ITripRepository tripRepository,
             IVehicleLocationRepository locationRepository,
             IVisibilityService visibilityService,
             ICurrentUserService currentUserService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            ISystemSettingService systemSettingService)
         {
             _tripRepository = tripRepository;
             _locationRepository = locationRepository;
             _visibilityService = visibilityService;
             _currentUserService = currentUserService;
             _notificationService = notificationService;
+            _systemSettingService = systemSettingService;
         }
 
         public async Task<Guid> Handle(UpdateVehicleLocationCommand request, CancellationToken cancellationToken)
@@ -50,12 +53,15 @@ namespace Transport.Application.Features.Tracking.Commands.UpdateVehicleLocation
             await _locationRepository.AddAsync(location);
             await _locationRepository.SaveChangesAsync();
 
-            if (request.Speed.HasValue && request.Speed.Value > 80)
+            var speedAlertsEnabled = await _systemSettingService.GetBoolAsync("GPS.EnableSpeedAlerts", true);
+            var speedLimit = await _systemSettingService.GetDecimalAsync("GPS.SpeedLimitKmH", 80);
+
+            if (speedAlertsEnabled && request.Speed.HasValue && request.Speed.Value > speedLimit)
             {
                 await _notificationService.NotifyRoleAsync(
                     "Supervisor",
                     "Velocidad elevada",
-                    $"El vehículo de la ruta {trip.RouteAssignment.Route.Name} reportó velocidad superior a 80 km/h.",
+                    $"El vehiculo de la ruta {trip.RouteAssignment.Route.Name} reporto velocidad superior a {speedLimit} km/h.",
                     NotificationType.Security,
                     NotificationPriority.High,
                     "Trip",

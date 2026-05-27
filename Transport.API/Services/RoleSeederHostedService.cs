@@ -14,6 +14,7 @@ namespace Transport.API.Services
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             await RoleSeeder.SeedAsync(_services);
+            await SystemSettingSeeder.SeedAsync(_services);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
