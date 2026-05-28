@@ -47,6 +47,7 @@ namespace Transport.Infrastructure.Persistence.Context
         public DbSet<IncidentComment> IncidentComments => Set<IncidentComment>();
         public DbSet<VehicleLocation> VehicleLocations => Set<VehicleLocation>();
         public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
+        public DbSet<BackupRecord> BackupRecords => Set<BackupRecord>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,0 +1,14 @@
+.vs/
+**/bin/
+**/obj/
+
+# Build artifacts
+*.dll
+*.pdb
+*.exe
+*.cache
+*.user
+*.suo
+
+# Runtime/generated files
+Transport.API/backups/

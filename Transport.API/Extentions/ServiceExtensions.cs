@@ -39,6 +39,7 @@ namespace Transport.API.Extensions
             services.AddScoped<IVehicleLocationRepository, VehicleLocationRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
             services.AddScoped<ISystemSettingRepository, SystemSettingRepository>();
+            services.AddScoped<IBackupRecordRepository, BackupRecordRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
@@ -49,6 +50,7 @@ namespace Transport.API.Extensions
             services.AddScoped<IAuditService, AuditService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ISystemSettingService, SystemSettingService>();
+            services.AddScoped<IBackupService, BackupService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ISmsService, SmsService>();
             services.AddScoped<IWhatsAppService, WhatsAppService>();

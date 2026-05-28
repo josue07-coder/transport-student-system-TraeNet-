@@ -26,6 +26,8 @@ namespace Transport.Infrastructure.Security
             ("Reports.DefaultDateRangeDays", "30", "Rango por defecto para reportes", "Reports", "Integer", true),
             ("Security.PasswordMinLength", "6", "Longitud mínima de contraseña", "Security", "Integer", true),
             ("Backup.EnableAutoBackup", "false", "Activa respaldo automático", "Backup", "Boolean", true),
+            ("Backup.LocalPath", "backups", "Ruta local para archivos de backup", "Backup", "String", true),
+            ("Backup.RetentionDays", "30", "Días de retención de backups", "Backup", "Integer", true),
             ("Maps.DefaultAverageSpeedKmH", "35", "Velocidad promedio para estimaciones de mapas", "Maps", "Decimal", true),
             ("Storage.Provider", "Mock", "Proveedor de almacenamiento de archivos", "Storage", "String", true),
             ("Storage.LocalPath", "wwwroot/uploads", "Ruta local para almacenamiento de archivos", "Storage", "String", true)
