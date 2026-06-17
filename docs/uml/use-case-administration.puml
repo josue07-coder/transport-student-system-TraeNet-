@@ -1,0 +1,71 @@
+@startuml
+title Casos de uso - Administracion del sistema
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Administrador" as Admin
+actor "Supervisor" as Supervisor
+
+rectangle "Administracion y seguridad" {
+  usecase "Crear usuario administrativo" as UC_CreateUser
+  usecase "Consultar usuarios" as UC_ListUsers
+  usecase "Actualizar usuario" as UC_UpdateUser
+  usecase "Activar usuario" as UC_ActivateUser
+  usecase "Desactivar usuario" as UC_DeactivateUser
+  usecase "Restablecer contrasena\nde usuario" as UC_ResetPassword
+  usecase "Consultar roles" as UC_ListRoles
+  usecase "Actualizar rol" as UC_UpdateRole
+  usecase "Asignar permiso a rol" as UC_AssignPermission
+  usecase "Remover permiso de rol" as UC_RemovePermission
+  usecase "Consultar permisos" as UC_ListPermissions
+}
+
+rectangle "Configuracion y gobierno" {
+  usecase "Consultar configuracion general" as UC_ReadSettings
+  usecase "Crear configuracion" as UC_CreateSetting
+  usecase "Actualizar configuracion" as UC_UpdateSetting
+  usecase "Eliminar configuracion" as UC_DeleteSetting
+  usecase "Consultar auditoria" as UC_Audit
+  usecase "Consultar reportes" as UC_Reports
+  usecase "Probar integraciones externas" as UC_Integrations
+  usecase "Ejecutar backup manual" as UC_Backup
+  usecase "Consultar historial de backups" as UC_BackupHistory
+}
+
+Admin --> UC_CreateUser
+Admin --> UC_ListUsers
+Admin --> UC_UpdateUser
+Admin --> UC_ActivateUser
+Admin --> UC_DeactivateUser
+Admin --> UC_ResetPassword
+Admin --> UC_ListRoles
+Admin --> UC_UpdateRole
+Admin --> UC_AssignPermission
+Admin --> UC_RemovePermission
+Admin --> UC_ListPermissions
+Admin --> UC_ReadSettings
+Admin --> UC_CreateSetting
+Admin --> UC_UpdateSetting
+Admin --> UC_DeleteSetting
+Admin --> UC_Audit
+Admin --> UC_Reports
+Admin --> UC_Integrations
+Admin --> UC_Backup
+Admin --> UC_BackupHistory
+
+Supervisor --> UC_ListUsers
+Supervisor --> UC_UpdateUser
+Supervisor --> UC_ActivateUser
+Supervisor --> UC_DeactivateUser
+Supervisor --> UC_ResetPassword
+Supervisor --> UC_ListPermissions
+Supervisor --> UC_ReadSettings
+Supervisor --> UC_Audit
+Supervisor --> UC_Reports
+Supervisor --> UC_BackupHistory
+
+UC_CreateUser .> UC_ListRoles : <<include>>
+UC_UpdateRole .> UC_ListPermissions : <<include>>
+UC_Backup .> UC_BackupHistory : <<include>>
+@enduml

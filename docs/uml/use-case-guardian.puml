@@ -1,0 +1,61 @@
+@startuml
+title Casos de uso - Tutor
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Tutor" as Guardian
+
+rectangle "Cuenta del tutor" {
+  usecase "Iniciar sesion" as UC_Login
+  usecase "Recuperar contrasena" as UC_Forgot
+  usecase "Consultar perfil" as UC_Profile
+  usecase "Actualizar perfil" as UC_UpdateProfile
+  usecase "Cambiar contrasena" as UC_ChangePassword
+  usecase "Actualizar foto de perfil" as UC_Photo
+}
+
+rectangle "Seguimiento de estudiantes" {
+  usecase "Consultar estudiantes propios" as UC_MyStudents
+  usecase "Consultar viajes relacionados" as UC_MyTrips
+  usecase "Consultar asignaciones relacionadas" as UC_MyAssignments
+  usecase "Consultar ubicacion activa\nde sus estudiantes" as UC_MyStudentsTracking
+  usecase "Consultar pasajeros de viaje\nrelacionado" as UC_Passengers
+}
+
+rectangle "Comunicacion" {
+  usecase "Consultar notificaciones" as UC_Notifications
+  usecase "Consultar notificaciones\nno leidas" as UC_Unread
+  usecase "Marcar notificacion como leida" as UC_ReadOne
+  usecase "Marcar todas como leidas" as UC_ReadAll
+  usecase "Reportar incidente" as UC_ReportIncident
+  usecase "Consultar incidentes reportados" as UC_MyIncidents
+  usecase "Agregar comentario\na incidente" as UC_CommentIncident
+}
+
+Guardian --> UC_Login
+Guardian --> UC_Forgot
+Guardian --> UC_Profile
+Guardian --> UC_UpdateProfile
+Guardian --> UC_ChangePassword
+Guardian --> UC_Photo
+Guardian --> UC_MyStudents
+Guardian --> UC_MyTrips
+Guardian --> UC_MyAssignments
+Guardian --> UC_MyStudentsTracking
+Guardian --> UC_Passengers
+Guardian --> UC_Notifications
+Guardian --> UC_Unread
+Guardian --> UC_ReadOne
+Guardian --> UC_ReadAll
+Guardian --> UC_ReportIncident
+Guardian --> UC_MyIncidents
+Guardian --> UC_CommentIncident
+
+UC_UpdateProfile .> UC_Profile : <<include>>
+UC_ChangePassword .> UC_Login : <<include>>
+UC_Photo .> UC_Profile : <<include>>
+UC_MyStudentsTracking .> UC_MyStudents : <<include>>
+UC_MyTrips .> UC_MyStudents : <<include>>
+UC_MyAssignments .> UC_MyStudents : <<include>>
+@enduml

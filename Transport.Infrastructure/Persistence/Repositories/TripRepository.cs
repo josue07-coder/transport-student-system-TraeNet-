@@ -96,6 +96,12 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(trip => trip.Id == id);
         }
 
+        public async Task<bool> ExistsByScheduleAndDateAsync(Guid tripScheduleId, DateOnly operationDate)
+        {
+            return await _context.Trips
+                .AnyAsync(trip => trip.TripScheduleId == tripScheduleId && trip.OperationDate == operationDate);
+        }
+
         public async Task<bool> IsInProgressAsync(Guid id)
         {
             return await _context.Trips
@@ -125,6 +131,7 @@ namespace Transport.Infrastructure.Persistence.Repositories
             return _context.Trips
                 .Include(trip => trip.RouteAssignment)
                     .ThenInclude(assignment => assignment.Route)
+                        .ThenInclude(route => route.Stops)
                 .Include(trip => trip.RouteAssignment)
                     .ThenInclude(assignment => assignment.Driver)
                 .Include(trip => trip.RouteAssignment)
@@ -134,6 +141,8 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .Include(trip => trip.RouteAssignment)
                     .ThenInclude(assignment => assignment.Students)
                         .ThenInclude(studentAssignment => studentAssignment.Student)
+                            .ThenInclude(student => student.Guardian)
+                .Include(trip => trip.StudentAttendances)
                 .AsQueryable();
         }
     }

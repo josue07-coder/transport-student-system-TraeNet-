@@ -1,0 +1,60 @@
+@startuml
+title Diagrama de Actividades - Gestion de Incidencias
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam partitionBorderColor #64748B
+skinparam partitionBackgroundColor #FFFFFF
+
+|Usuario autenticado|
+start
+:Reportar incidencia;
+:Ingresar titulo, descripcion,\ntipo y severidad;
+
+|Sistema|
+:Validar datos de incidencia;
+
+if (Datos validos?) then (Si)
+  |Base de datos|
+  :Guardar incidencia abierta;
+
+  |Sistema|
+  :Auditar IncidentReported;
+  :Notificar supervisor;
+  if (Severidad critica?) then (Si)
+    :Notificar administrador;
+  endif
+
+  |Supervisor|
+  :Consultar incidencia;
+  :Asignar responsable;
+  :Marcar en progreso;
+
+  |Sistema|
+  :Guardar cambios de estado;
+  :Notificar usuarios relacionados;
+
+  |Supervisor|
+  :Resolver incidencia;
+  :Cerrar incidencia;
+
+  |Base de datos|
+  :Guardar resolucion y cierre;
+
+  |Sistema|
+  :Auditar cambios realizados;
+
+  |Usuario autenticado|
+  :Consultar estado actualizado;
+  stop
+else (No)
+  |Sistema|
+  :Devolver errores;
+
+  |Usuario autenticado|
+  :Mostrar errores;
+  stop
+endif
+@enduml

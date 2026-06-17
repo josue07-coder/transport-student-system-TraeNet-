@@ -1,0 +1,86 @@
+@startuml
+title Diagrama de Clases - Viajes y Programacion
+top to bottom direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+
+abstract class BaseEntity {
+  +Id: Guid
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime?
+}
+
+class Trip {
+  +RouteAssignmentId: Guid
+  +TripScheduleId: Guid?
+  +Direction: TripDirection?
+  +OperationDate: DateOnly?
+  +ScheduledDepartureTime: DateTime?
+  +StartTime: DateTime?
+  +EndTime: DateTime?
+  +Status: TripStatus
+}
+
+class TripSchedule {
+  +RouteAssignmentId: Guid
+  +Direction: TripDirection
+  +DepartureTime: TimeOnly
+  +ArrivalTime: TimeOnly?
+  +ValidFrom: DateOnly
+  +ValidTo: DateOnly?
+  +IsActive: bool
+}
+
+class TripStudentAttendance {
+  +TripId: Guid
+  +StudentId: Guid
+  +StudentNameSnapshot: string
+  +StudentCodeSnapshot: string
+  +Status: TripAttendanceStatus
+  +BoardedAt: DateTime?
+  +DroppedOffAt: DateTime?
+}
+
+class NonSchoolDay {
+  +Date: DateOnly
+  +SchoolId: Guid?
+  +ReasonType: NonSchoolDayReason
+  +Reason: string
+  +IsActive: bool
+}
+
+class RouteAssignment {
+  +RouteId: Guid
+  +VehicleId: Guid
+  +DriverId: Guid
+}
+
+class Student {
+  +StudentCode: StudentCode
+  +FirstName: string
+  +LastName: string
+}
+
+class School {
+  +Name: string
+}
+
+BaseEntity <|-- Trip
+BaseEntity <|-- TripSchedule
+BaseEntity <|-- NonSchoolDay
+BaseEntity <|-- RouteAssignment
+BaseEntity <|-- Student
+BaseEntity <|-- School
+
+RouteAssignment "1" <-- "0..*" Trip : genera
+TripSchedule "0..1" <-- "0..*" Trip : materializa
+Trip "1" *-- "0..*" TripStudentAttendance : pasajeros
+Student "1" <-- "0..*" TripStudentAttendance : snapshot
+RouteAssignment "1" <-- "0..*" TripSchedule : programa
+School "0..1" <-- "0..*" NonSchoolDay : aplica a
+@enduml

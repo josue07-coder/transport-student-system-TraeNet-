@@ -1,0 +1,46 @@
+@startuml
+title Diagrama de Actividades - Inicio de Sesion
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam partitionBorderColor #64748B
+skinparam partitionBackgroundColor #FFFFFF
+
+|Usuario|
+start
+:Abrir pantalla de inicio de sesion;
+:Ingresar usuario y contrasena;
+:Enviar credenciales;
+
+|Sistema|
+:Recibir solicitud de login;
+:Validar campos requeridos;
+
+if (Datos completos?) then (Si)
+  :Buscar usuario por username;
+  :Verificar usuario activo;
+  :Verificar hash de contrasena;
+
+  if (Credenciales validas?) then (Si)
+    :Generar token JWT;
+    :Registrar ultimo acceso;
+    :Registrar auditoria de login;
+
+    |Usuario|
+    :Recibir token;
+    :Redirigir al panel principal;
+    stop
+  else (No)
+    |Sistema|
+    :Preparar mensaje de error;
+  endif
+else (No)
+  :Preparar errores de validacion;
+endif
+
+|Usuario|
+:Mostrar error de autenticacion;
+stop
+@enduml

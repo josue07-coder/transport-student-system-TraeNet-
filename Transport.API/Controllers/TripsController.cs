@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Trips.Commands.CancelTrip;
 using Transport.Application.Features.Trips.Commands.EndTrip;
+using Transport.Application.Features.Trips.Commands.MarkTripNotOperating;
 using Transport.Application.Features.Trips.Commands.StartTrip;
 using Transport.Application.Features.Trips.Queries.GetActiveTripByRouteAssignment;
 using Transport.Application.Features.Trips.Queries.GetAllTrips;
@@ -10,6 +11,11 @@ using Transport.Application.Features.Trips.Queries.GetTripById;
 using Transport.Application.Features.Trips.Queries.GetTripsByDateRange;
 using Transport.Application.Features.Trips.Queries.GetTripsByRouteAssignment;
 using Transport.Application.Features.Trips.Queries.GetTripsByStatus;
+using Transport.Application.Features.TripStudentAttendances.Commands.MarkStudentAbsent;
+using Transport.Application.Features.TripStudentAttendances.Commands.MarkStudentBoarded;
+using Transport.Application.Features.TripStudentAttendances.Commands.MarkStudentDroppedOff;
+using Transport.Application.Features.TripStudentAttendances.Commands.UpdateTripStudentNotes;
+using Transport.Application.Features.TripStudentAttendances.Queries.GetTripPassengers;
 using Transport.Domain.Enums;
 
 namespace Transport.API.Controllers
@@ -40,10 +46,21 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id}/cancel")]
-        public async Task<IActionResult> Cancel(Guid id)
+        public async Task<IActionResult> Cancel(Guid id, [FromBody] CancelTripCommand command)
         {
-            await _mediator.Send(new CancelTripCommand { Id = id });
+            command.Id = id;
+            await _mediator.Send(command);
+            return NoContent();
+        }
+
+        [Authorize(Roles = "Admin,Supervisor")]
+        [HttpPut("{id}/not-operating")]
+        public async Task<IActionResult> MarkNotOperating(Guid id, [FromBody] MarkTripNotOperatingCommand command)
+        {
+            command.Id = id;
+            await _mediator.Send(command);
             return NoContent();
         }
 
@@ -59,6 +76,55 @@ namespace Transport.API.Controllers
         {
             var result = await _mediator.Send(new GetTripByIdQuery(id));
             return Ok(result);
+        }
+
+        [HttpGet("{tripId}/passengers")]
+        public async Task<IActionResult> GetPassengers(Guid tripId)
+        {
+            var result = await _mediator.Send(new GetTripPassengersQuery(tripId));
+            return Ok(result);
+        }
+
+        [HttpPut("{tripId}/students/{studentId}/boarded")]
+        public async Task<IActionResult> MarkStudentBoarded(Guid tripId, Guid studentId)
+        {
+            await _mediator.Send(new MarkStudentBoardedCommand
+            {
+                TripId = tripId,
+                StudentId = studentId
+            });
+
+            return NoContent();
+        }
+
+        [HttpPut("{tripId}/students/{studentId}/absent")]
+        public async Task<IActionResult> MarkStudentAbsent(Guid tripId, Guid studentId, [FromBody] MarkStudentAbsentCommand command)
+        {
+            command.TripId = tripId;
+            command.StudentId = studentId;
+            await _mediator.Send(command);
+            return NoContent();
+        }
+
+        [HttpPut("{tripId}/students/{studentId}/dropped-off")]
+        public async Task<IActionResult> MarkStudentDroppedOff(Guid tripId, Guid studentId)
+        {
+            await _mediator.Send(new MarkStudentDroppedOffCommand
+            {
+                TripId = tripId,
+                StudentId = studentId
+            });
+
+            return NoContent();
+        }
+
+        [HttpPut("{tripId}/students/{studentId}/notes")]
+        public async Task<IActionResult> UpdateStudentNotes(Guid tripId, Guid studentId, [FromBody] UpdateTripStudentNotesCommand command)
+        {
+            command.TripId = tripId;
+            command.StudentId = studentId;
+            await _mediator.Send(command);
+            return NoContent();
         }
 
         [HttpGet("by-route-assignment/{routeAssignmentId}")]

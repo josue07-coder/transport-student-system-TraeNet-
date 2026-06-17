@@ -1,0 +1,48 @@
+@startuml
+title Casos de Uso - Monitoreo GPS
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+}
+
+actor "Supervisor" as Supervisor
+
+rectangle "Modulo de Monitoreo GPS" {
+  rectangle "Monitoreo" {
+    usecase "Consultar viajes\nactivos" as UC1
+    usecase "Consultar ubicacion\nactual de viaje" as UC2
+    usecase "Consultar historial\nde ubicaciones" as UC3
+    usecase "Consultar ubicaciones\nde viajes activos" as UC4
+  }
+
+  rectangle "Analisis operativo" {
+    usecase "Revisar tracking\npor viaje" as UC5
+    usecase "Validar acceso a\nviaje monitoreado" as UC6
+    usecase "Consultar dashboard\noperativo" as UC7
+    usecase "Consultar reporte\nde viajes" as UC8
+  }
+}
+
+UC1 -[hidden]down- UC2
+UC2 -[hidden]down- UC3
+UC3 -[hidden]down- UC4
+UC5 -[hidden]down- UC6
+UC6 -[hidden]down- UC7
+UC7 -[hidden]down- UC8
+
+Supervisor --> UC1
+Supervisor --> UC2
+Supervisor --> UC3
+Supervisor --> UC4
+Supervisor --> UC5
+Supervisor --> UC6
+Supervisor --> UC7
+Supervisor --> UC8
+
+UC4 .> UC1 : <<include>>
+UC5 .> UC2 : <<include>>
+UC5 .> UC3 : <<include>>
+UC7 .> UC1 : <<include>>
+@enduml

@@ -1,0 +1,138 @@
+@startuml
+title Diagrama general de casos de uso - TransportStudentSystem
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Administrador" as Admin
+actor "Supervisor" as Supervisor
+actor "Conductor" as Driver
+actor "Asistente de Transporte" as Assistant
+actor "Tutor" as Guardian
+
+rectangle "TransportStudentSystem" {
+  usecase "Iniciar sesion" as UC_Login
+  usecase "Recuperar contrasena" as UC_Forgot
+  usecase "Gestionar perfil propio" as UC_Profile
+  usecase "Cambiar contrasena" as UC_Password
+  usecase "Subir foto de perfil" as UC_Photo
+  usecase "Consultar notificaciones" as UC_Notifications
+  usecase "Marcar notificaciones como leidas" as UC_ReadNotifications
+
+  usecase "Administrar usuarios,\nroles y permisos" as UC_AdminUsers
+  usecase "Administrar catalogos educativos" as UC_Education
+  usecase "Administrar recursos de transporte" as UC_TransportResources
+  usecase "Configurar rutas y paradas" as UC_Routes
+  usecase "Administrar asignaciones de ruta" as UC_Assignments
+  usecase "Programar viajes" as UC_Schedules
+  usecase "Gestionar calendario escolar" as UC_Calendar
+
+  usecase "Iniciar y finalizar viajes" as UC_TripLifecycle
+  usecase "Registrar asistencia de pasajeros" as UC_Attendance
+  usecase "Reportar incidentes" as UC_ReportIncident
+  usecase "Gestionar incidentes" as UC_ManageIncidents
+  usecase "Actualizar ubicacion GPS" as UC_UpdateGps
+  usecase "Monitorear viajes activos" as UC_Monitor
+
+  usecase "Consultar estudiantes propios" as UC_MyStudents
+  usecase "Consultar viajes relacionados" as UC_MyTrips
+  usecase "Consultar ubicacion de viaje\nde sus estudiantes" as UC_GuardianTracking
+
+  usecase "Consultar reportes" as UC_Reports
+  usecase "Consultar auditoria" as UC_Audit
+  usecase "Administrar configuracion general" as UC_Settings
+  usecase "Probar integraciones externas" as UC_Integrations
+  usecase "Administrar backups" as UC_Backups
+}
+
+Admin --> UC_Login
+Admin --> UC_Forgot
+Admin --> UC_Profile
+Admin --> UC_Password
+Admin --> UC_Photo
+Admin --> UC_Notifications
+Admin --> UC_ReadNotifications
+Admin --> UC_AdminUsers
+Admin --> UC_Education
+Admin --> UC_TransportResources
+Admin --> UC_Routes
+Admin --> UC_Assignments
+Admin --> UC_Schedules
+Admin --> UC_Calendar
+Admin --> UC_TripLifecycle
+Admin --> UC_Attendance
+Admin --> UC_ReportIncident
+Admin --> UC_ManageIncidents
+Admin --> UC_Monitor
+Admin --> UC_Reports
+Admin --> UC_Audit
+Admin --> UC_Settings
+Admin --> UC_Integrations
+Admin --> UC_Backups
+
+Supervisor --> UC_Login
+Supervisor --> UC_Forgot
+Supervisor --> UC_Profile
+Supervisor --> UC_Password
+Supervisor --> UC_Photo
+Supervisor --> UC_Notifications
+Supervisor --> UC_ReadNotifications
+Supervisor --> UC_Education
+Supervisor --> UC_TransportResources
+Supervisor --> UC_Routes
+Supervisor --> UC_Assignments
+Supervisor --> UC_Schedules
+Supervisor --> UC_Calendar
+Supervisor --> UC_TripLifecycle
+Supervisor --> UC_Attendance
+Supervisor --> UC_ReportIncident
+Supervisor --> UC_ManageIncidents
+Supervisor --> UC_Monitor
+Supervisor --> UC_Reports
+Supervisor --> UC_Audit
+Supervisor --> UC_Settings
+
+Driver --> UC_Login
+Driver --> UC_Forgot
+Driver --> UC_Profile
+Driver --> UC_Password
+Driver --> UC_Photo
+Driver --> UC_Notifications
+Driver --> UC_ReadNotifications
+Driver --> UC_TripLifecycle
+Driver --> UC_Attendance
+Driver --> UC_ReportIncident
+Driver --> UC_UpdateGps
+Driver --> UC_MyTrips
+
+Assistant --> UC_Login
+Assistant --> UC_Forgot
+Assistant --> UC_Profile
+Assistant --> UC_Password
+Assistant --> UC_Photo
+Assistant --> UC_Notifications
+Assistant --> UC_ReadNotifications
+Assistant --> UC_TripLifecycle
+Assistant --> UC_Attendance
+Assistant --> UC_ReportIncident
+Assistant --> UC_UpdateGps
+Assistant --> UC_MyTrips
+
+Guardian --> UC_Login
+Guardian --> UC_Forgot
+Guardian --> UC_Profile
+Guardian --> UC_Password
+Guardian --> UC_Photo
+Guardian --> UC_Notifications
+Guardian --> UC_ReadNotifications
+Guardian --> UC_ReportIncident
+Guardian --> UC_MyStudents
+Guardian --> UC_MyTrips
+Guardian --> UC_GuardianTracking
+
+UC_Profile .> UC_Login : <<include>>
+UC_Password .> UC_Login : <<include>>
+UC_Photo .> UC_Login : <<include>>
+UC_Monitor .> UC_UpdateGps : <<include>>
+UC_TripLifecycle .> UC_Attendance : <<include>>
+@enduml

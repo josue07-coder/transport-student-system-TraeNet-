@@ -1,0 +1,34 @@
+@startuml
+title Diagrama de Secuencia - Gestion de Notificaciones
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 18
+
+actor Usuario
+participant Frontend
+participant NotificationsController
+participant NotificationRepository
+database Database
+
+Usuario -> Frontend : Abre bandeja de notificaciones
+Frontend -> NotificationsController : GET /api/notifications
+NotificationsController -> NotificationRepository : Obtener notificaciones
+NotificationRepository -> Database : Consultar por usuario
+Database --> NotificationRepository : Lista de notificaciones
+NotificationRepository --> NotificationsController : NotificationResponseDto[]
+NotificationsController --> Frontend : 200 OK
+Frontend --> Usuario : Mostrar notificaciones
+
+Usuario -> Frontend : Marca notificacion como leida
+Frontend -> NotificationsController : PUT /api/notifications/{id}/read
+NotificationsController -> NotificationRepository : Buscar notificacion
+NotificationRepository -> Database : Consultar notificacion
+Database --> NotificationRepository : Notificacion
+NotificationRepository -> NotificationRepository : Marcar como leida
+NotificationRepository -> Database : Guardar cambios
+Database --> NotificationRepository : Confirmacion
+NotificationRepository --> NotificationsController : OK
+NotificationsController --> Frontend : 204 No Content
+Frontend --> Usuario : Actualizar estado visual
+@enduml

@@ -1,0 +1,89 @@
+@startuml
+title Diagrama de Clases - Transporte
+top to bottom direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+
+abstract class BaseEntity {
+  +Id: Guid
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime?
+}
+
+interface IActivatable {
+  +IsActive: bool
+}
+
+class Vehicle {
+  +PlateNumber: string
+  +Capacity: int
+  +Status: VehicleStatus
+}
+
+class Driver {
+  +FirstName: string
+  +LastName: string
+  +DocumentNumber: string
+  +LicenseNumber: LicenseNumber
+  +Phone: PhoneNumber
+  +Email: Email?
+  +IsActive: bool
+}
+
+class TransportAssistant {
+  +DocumentNumber: string
+  +FirstName: string
+  +LastName: string
+  +Phone: PhoneNumber
+  +Email: Email?
+  +IsActive: bool
+}
+
+class Stop {
+  +Name: string
+  +Address: Address
+  +Coordinates: Coordinates
+  +SectorId: Guid
+}
+
+class Route {
+  +Name: string
+  +SchoolId: Guid
+  +OperatingHours: TimeRange
+  +Status: RouteStatus
+}
+
+class RouteStop {
+  +RouteId: Guid
+  +StopId: Guid
+  +StopOrder: int
+}
+
+class School {
+  +Name: string
+}
+
+class Sector {
+  +Name: string
+  +City: string
+}
+
+BaseEntity <|-- Vehicle
+BaseEntity <|-- Driver
+BaseEntity <|-- TransportAssistant
+BaseEntity <|-- Stop
+BaseEntity <|-- Route
+BaseEntity <|-- RouteStop
+IActivatable <|.. Driver
+IActivatable <|.. TransportAssistant
+
+School "1" <-- "0..*" Route : pertenece a
+Route "1" *-- "0..*" RouteStop : paradas
+Stop "1" <-- "0..*" RouteStop : referencia
+Sector "1" <-- "0..*" Stop : ubica
+@enduml

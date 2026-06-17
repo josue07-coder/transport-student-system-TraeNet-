@@ -1,0 +1,38 @@
+@startuml
+title Diagrama de Secuencia - Asignacion de Ruta
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 16
+
+actor Supervisor
+participant Frontend
+participant RouteAssignmentsController
+participant AssignmentService
+participant Repositories
+database Database
+
+Supervisor -> Frontend : Selecciona ruta, vehiculo y conductor
+Supervisor -> Frontend : Selecciona asistente y estudiantes
+Frontend -> RouteAssignmentsController : POST /api/route-assignments
+RouteAssignmentsController -> AssignmentService : CreateRouteAssignmentCommand
+AssignmentService -> Repositories : Validar Route, Vehicle, Driver y Assistant
+Repositories -> Database : Consultar entidades relacionadas
+Database --> Repositories : Datos encontrados
+Repositories --> AssignmentService : Estado de recursos
+AssignmentService -> AssignmentService : Validar capacidad y conflictos
+
+alt Reglas cumplidas
+    AssignmentService -> Repositories : Crear RouteAssignment
+    Repositories -> Database : Insertar asignacion
+    Database --> Repositories : Confirmacion
+    Repositories --> AssignmentService : Id asignacion
+    AssignmentService --> RouteAssignmentsController : Id
+    RouteAssignmentsController --> Frontend : 200 OK
+    Frontend --> Supervisor : Mostrar asignacion guardada
+else Reglas no cumplidas
+    AssignmentService --> RouteAssignmentsController : DomainException
+    RouteAssignmentsController --> Frontend : Error controlado
+    Frontend --> Supervisor : Mostrar causa del rechazo
+end
+@enduml

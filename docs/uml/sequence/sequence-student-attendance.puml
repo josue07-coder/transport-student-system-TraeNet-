@@ -1,0 +1,42 @@
+@startuml
+title Diagrama de Secuencia - Registro de Asistencia de Estudiantes
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 16
+
+actor "Asistente de Transporte" as Assistant
+participant Frontend
+participant TripsController
+participant TripStudentAttendanceHandler
+participant TripStudentAttendanceRepository
+database Database
+
+Assistant -> Frontend : Consulta pasajeros del viaje
+Frontend -> TripsController : GET /api/trips/{tripId}/passengers
+TripsController -> TripStudentAttendanceHandler : GetTripPassengersQuery
+TripStudentAttendanceHandler -> TripStudentAttendanceRepository : Obtener pasajeros por viaje
+TripStudentAttendanceRepository -> Database : Consultar TripStudentAttendances
+Database --> TripStudentAttendanceRepository : Estudiantes esperados
+TripStudentAttendanceRepository --> TripStudentAttendanceHandler : Lista de pasajeros
+TripStudentAttendanceHandler --> TripsController : TripStudentAttendanceDto[]
+TripsController --> Frontend : 200 OK
+Frontend --> Assistant : Mostrar estudiantes esperados
+
+Assistant -> Frontend : Marca abordado, ausente o descendido
+Frontend -> TripsController : PUT /api/trips/{tripId}/students/{studentId}/...
+TripsController -> TripStudentAttendanceHandler : Command de asistencia
+TripStudentAttendanceHandler -> TripStudentAttendanceRepository : Buscar asistencia
+TripStudentAttendanceRepository -> Database : Consultar asistencia y viaje
+Database --> TripStudentAttendanceRepository : Datos actuales
+TripStudentAttendanceRepository --> TripStudentAttendanceHandler : Registro cargado
+TripStudentAttendanceHandler -> TripStudentAttendanceHandler : Validar estado del viaje
+TripStudentAttendanceHandler -> TripStudentAttendanceHandler : Actualizar estado de asistencia
+TripStudentAttendanceHandler -> TripStudentAttendanceRepository : Guardar cambios
+TripStudentAttendanceRepository -> Database : Actualizar registro
+Database --> TripStudentAttendanceRepository : Confirmacion
+TripStudentAttendanceRepository --> TripStudentAttendanceHandler : OK
+TripStudentAttendanceHandler --> TripsController : OK
+TripsController --> Frontend : 204 No Content
+Frontend --> Assistant : Mostrar confirmacion
+@enduml

@@ -1,0 +1,84 @@
+@startuml
+title Diagrama de Clases - Monitoreo e Incidencias
+top to bottom direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+
+abstract class BaseEntity {
+  +Id: Guid
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime?
+}
+
+class VehicleLocation {
+  +TripId: Guid
+  +VehicleId: Guid
+  +Latitude: decimal
+  +Longitude: decimal
+  +Speed: decimal?
+  +Heading: decimal?
+  +RecordedAt: DateTime
+  +ReportedByUserId: Guid?
+}
+
+class Incident {
+  +Title: string
+  +Description: string
+  +Type: IncidentType
+  +Severity: IncidentSeverity
+  +Status: IncidentStatus
+  +TripId: Guid?
+  +ReportedByUserId: Guid
+  +AssignedToUserId: Guid?
+}
+
+class IncidentComment {
+  +IncidentId: Guid
+  +UserId: Guid
+  +Comment: string
+}
+
+class Notification {
+  +UserId: Guid
+  +Title: string
+  +Message: string
+  +Type: NotificationType
+  +Priority: NotificationPriority
+  +IsRead: bool
+}
+
+class Trip {
+  +Status: TripStatus
+}
+
+class Vehicle {
+  +PlateNumber: string
+}
+
+class User {
+  +Username: string
+  +Name: string
+}
+
+BaseEntity <|-- VehicleLocation
+BaseEntity <|-- Incident
+BaseEntity <|-- IncidentComment
+BaseEntity <|-- Notification
+BaseEntity <|-- Trip
+BaseEntity <|-- Vehicle
+BaseEntity <|-- User
+
+Trip "1" <-- "0..*" VehicleLocation : ubicaciones
+Vehicle "1" <-- "0..*" VehicleLocation : reporta
+Trip "0..1" <-- "0..*" Incident : relacionado
+User "1" <-- "0..*" Incident : ReportedBy
+User "0..1" <-- "0..*" Incident : AssignedTo
+Incident "1" *-- "0..*" IncidentComment : comentarios
+User "1" <-- "0..*" IncidentComment : autor
+User "1" <-- "0..*" Notification : recibe
+@enduml

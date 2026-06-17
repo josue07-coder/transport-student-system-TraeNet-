@@ -1,0 +1,35 @@
+@startuml
+title Diagrama de Secuencia - Gestion de Incidencias
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 18
+
+actor Asistente
+participant Frontend
+participant IncidentsController
+participant IncidentService
+participant NotificationService
+database Database
+
+Asistente -> Frontend : Reporta incidencia
+Frontend -> IncidentsController : POST /api/incidents
+IncidentsController -> IncidentService : ReportIncidentCommand
+IncidentService -> IncidentService : Validar datos
+
+alt Datos validos
+    IncidentService -> Database : Guardar incidencia
+    Database --> IncidentService : Id incidencia
+    IncidentService -> NotificationService : Notificar supervisor
+    NotificationService -> Database : Crear notificacion
+    Database --> NotificationService : Confirmacion
+    NotificationService --> IncidentService : OK
+    IncidentService --> IncidentsController : Id incidencia
+    IncidentsController --> Frontend : 200 OK
+    Frontend --> Asistente : Confirmar reporte
+else Datos invalidos
+    IncidentService --> IncidentsController : Error de validacion
+    IncidentsController --> Frontend : 400 Bad Request
+    Frontend --> Asistente : Mostrar errores
+end
+@enduml

@@ -161,6 +161,26 @@ function Add-SkippedStep {
     })
 }
 
+function Invoke-ExpectedFailureStep {
+    param(
+        [string]$Group,
+        [string]$Label,
+        [string]$Method,
+        [string]$Path,
+        [object]$Body = $null
+    )
+
+    $result = Invoke-SmokeRequest -Client $script:Client -Method $Method -Path $Path -Body $Body -Token $script:Token
+    $isExpectedFailure = -not $result.Ok -and $result.StatusCode -ge 400 -and $result.StatusCode -lt 500
+    $script:Results.Add([pscustomobject]@{
+        Group = $Group
+        Endpoint = $Label
+        Ok = $isExpectedFailure
+        StatusCode = $result.StatusCode
+        Error = if ($isExpectedFailure) { $null } else { $result.Error }
+    })
+}
+
 $baseUrl = Find-ApiBaseUrl
 $script:Client = New-HttpClient -BaseUrl $baseUrl
 $script:Results = New-Object System.Collections.Generic.List[object]
@@ -339,7 +359,9 @@ try {
     }
 
     if ($tripToCancelId) {
-        Invoke-Step -Group "TRIPS" -Label "PUT /api/trips/{id}/cancel" -Method "PUT" -Path "api/trips/$tripToCancelId/cancel"
+        Invoke-ExpectedFailureStep -Group "TRIPS" -Label "PUT /api/trips/{id}/cancel (reject in-progress trip)" -Method "PUT" -Path "api/trips/$tripToCancelId/cancel" -Body @{
+            reason = "Smoke test cancellation attempt"
+        }
     }
     else {
         Add-SkippedStep -Group "TRIPS" -Label "PUT /api/trips/{id}/cancel" -Reason "POST /api/trips/start did not create a trip"

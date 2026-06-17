@@ -6,6 +6,11 @@ namespace Transport.Application.Features.Trips.DTOs
     {
         public Guid Id { get; set; }
         public Guid RouteAssignmentId { get; set; }
+        public Guid? TripScheduleId { get; set; }
+        public TripDirection? Direction { get; set; }
+        public DateOnly? OperationDate { get; set; }
+        public DateTime? ScheduledDepartureTime { get; set; }
+        public DateTime? ScheduledArrivalTime { get; set; }
         public Guid? RouteId { get; set; }
         public string? RouteName { get; set; }
         public Guid? DriverId { get; set; }
@@ -15,5 +20,8 @@ namespace Transport.Application.Features.Trips.DTOs
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public TripStatus Status { get; set; }
+        public string? CancellationReason { get; set; }
+        public string? NonOperationReason { get; set; }
+        public string? NonOperationNotes { get; set; }
     }
 }

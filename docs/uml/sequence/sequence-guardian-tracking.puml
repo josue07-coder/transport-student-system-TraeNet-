@@ -1,0 +1,45 @@
+@startuml
+title Diagrama de Secuencia - Consulta de Ubicacion por el Tutor
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 16
+
+actor Tutor
+participant Frontend
+participant TrackingController
+participant TrackingService
+participant TripRepository
+participant VehicleLocationRepository
+database Database
+
+Tutor -> Frontend : Consulta sus estudiantes
+Frontend -> TrackingController : GET /api/tracking/my-students
+TrackingController -> TrackingService : GetMyStudentsActiveTripLocationsQuery
+TrackingService -> TripRepository : Validar tutor y estudiantes asociados
+TripRepository -> Database : Consultar estudiantes del tutor
+Database --> TripRepository : Estudiantes asociados
+TripRepository --> TrackingService : Estudiantes autorizados
+
+Tutor -> Frontend : Selecciona estudiante
+Frontend -> TrackingController : Solicita ubicacion relacionada
+TrackingController -> TrackingService : Consultar viaje activo
+TrackingService -> TripRepository : Buscar viaje activo del estudiante
+TripRepository -> Database : Consultar viaje y asignacion
+Database --> TripRepository : Viaje activo
+TripRepository --> TrackingService : Datos del viaje
+TrackingService -> VehicleLocationRepository : Obtener ultima ubicacion
+VehicleLocationRepository -> Database : Consultar ultima VehicleLocation
+Database --> VehicleLocationRepository : Ubicacion GPS
+VehicleLocationRepository --> TrackingService : Ubicacion actual
+
+alt Ubicacion disponible
+    TrackingService --> TrackingController : CurrentTripLocationDto
+    TrackingController --> Frontend : 200 OK
+    Frontend --> Tutor : Mostrar mapa y estado del viaje
+else Sin viaje o ubicacion
+    TrackingService --> TrackingController : Respuesta vacia o error controlado
+    TrackingController --> Frontend : 200/400
+    Frontend --> Tutor : Mostrar mensaje informativo
+end
+@enduml

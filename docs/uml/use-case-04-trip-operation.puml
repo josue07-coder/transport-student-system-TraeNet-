@@ -1,0 +1,54 @@
+@startuml
+title Casos de Uso - Operacion de Viajes
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+}
+
+actor "Conductor" as Driver
+
+rectangle "Operacion de Viajes" {
+  rectangle "Viaje" {
+    usecase "Consultar mis\nasignaciones" as UC1
+    usecase "Consultar mis viajes" as UC2
+    usecase "Iniciar viaje" as UC3
+    usecase "Finalizar viaje" as UC4
+    usecase "Reportar incidente\noperativo" as UC10
+  }
+
+  rectangle "Pasajeros" {
+    usecase "Consultar pasajeros\ndel viaje" as UC5
+    usecase "Marcar estudiante\nabordado" as UC6
+    usecase "Marcar estudiante\nausente" as UC7
+    usecase "Marcar estudiante\ndejado" as UC8
+    usecase "Actualizar notas\nde pasajero" as UC9
+  }
+}
+
+UC1 -[hidden]down- UC2
+UC2 -[hidden]down- UC3
+UC3 -[hidden]down- UC4
+UC4 -[hidden]down- UC10
+UC5 -[hidden]down- UC6
+UC6 -[hidden]down- UC7
+UC7 -[hidden]down- UC8
+UC8 -[hidden]down- UC9
+
+Driver --> UC1
+Driver --> UC2
+Driver --> UC3
+Driver --> UC4
+Driver --> UC5
+Driver --> UC6
+Driver --> UC7
+Driver --> UC8
+Driver --> UC9
+Driver --> UC10
+
+UC3 .> UC5 : <<include>>
+UC6 .> UC5 : <<include>>
+UC7 .> UC5 : <<include>>
+UC8 .> UC5 : <<include>>
+@enduml

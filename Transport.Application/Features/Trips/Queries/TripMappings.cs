@@ -11,9 +11,17 @@ namespace Transport.Application.Features.Trips.Queries
             {
                 Id = trip.Id,
                 RouteAssignmentId = trip.RouteAssignmentId,
+                TripScheduleId = trip.TripScheduleId,
+                Direction = trip.Direction,
+                OperationDate = trip.OperationDate,
+                ScheduledDepartureTime = trip.ScheduledDepartureTime,
+                ScheduledArrivalTime = trip.ScheduledArrivalTime,
                 StartTime = trip.StartTime,
                 EndTime = trip.EndTime,
-                Status = trip.Status
+                Status = trip.Status,
+                CancellationReason = trip.CancellationReason,
+                NonOperationReason = trip.NonOperationReason,
+                NonOperationNotes = trip.NonOperationNotes
             };
         }
 
@@ -25,6 +33,11 @@ namespace Transport.Application.Features.Trips.Queries
             {
                 Id = trip.Id,
                 RouteAssignmentId = trip.RouteAssignmentId,
+                TripScheduleId = trip.TripScheduleId,
+                Direction = trip.Direction,
+                OperationDate = trip.OperationDate,
+                ScheduledDepartureTime = trip.ScheduledDepartureTime,
+                ScheduledArrivalTime = trip.ScheduledArrivalTime,
                 RouteId = assignment?.RouteId,
                 RouteName = assignment?.Route?.Name,
                 DriverId = assignment?.DriverId,
@@ -33,7 +46,10 @@ namespace Transport.Application.Features.Trips.Queries
                 PlateNumber = assignment?.Vehicle?.PlateNumber,
                 StartTime = trip.StartTime,
                 EndTime = trip.EndTime,
-                Status = trip.Status
+                Status = trip.Status,
+                CancellationReason = trip.CancellationReason,
+                NonOperationReason = trip.NonOperationReason,
+                NonOperationNotes = trip.NonOperationNotes
             };
         }
     }

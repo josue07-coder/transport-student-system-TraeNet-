@@ -1,0 +1,81 @@
+@startuml
+title Casos de uso - Supervision operativa
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Administrador" as Admin
+actor "Supervisor" as Supervisor
+
+rectangle "Supervision operativa" {
+  usecase "Consultar dashboard" as UC_Dashboard
+  usecase "Consultar reportes de viajes" as UC_TripReports
+  usecase "Consultar estudiantes por ruta" as UC_StudentsByRoute
+  usecase "Consultar reportes de incidentes" as UC_IncidentReports
+  usecase "Consultar desempeno\nde conductores" as UC_DriverPerformance
+  usecase "Consultar uso de vehiculos" as UC_VehicleUsage
+  usecase "Consultar resumen de auditoria" as UC_AuditSummary
+  usecase "Consultar auditoria detallada" as UC_AuditLogs
+  usecase "Monitorear viajes activos" as UC_ActiveTrips
+  usecase "Consultar ubicacion actual\nde un viaje" as UC_CurrentLocation
+  usecase "Consultar historial GPS" as UC_LocationHistory
+}
+
+rectangle "Incidentes y comunicacion" {
+  usecase "Consultar incidentes" as UC_ListIncidents
+  usecase "Asignar incidente" as UC_AssignIncident
+  usecase "Marcar incidente en progreso" as UC_InProgress
+  usecase "Resolver incidente" as UC_Resolve
+  usecase "Cerrar incidente" as UC_Close
+  usecase "Cancelar incidente" as UC_Cancel
+  usecase "Agregar comentario\na incidente" as UC_Comment
+  usecase "Consultar notificaciones" as UC_Notifications
+  usecase "Marcar notificaciones\ncomo leidas" as UC_ReadNotifications
+}
+
+Admin --> UC_Dashboard
+Admin --> UC_TripReports
+Admin --> UC_StudentsByRoute
+Admin --> UC_IncidentReports
+Admin --> UC_DriverPerformance
+Admin --> UC_VehicleUsage
+Admin --> UC_AuditSummary
+Admin --> UC_AuditLogs
+Admin --> UC_ActiveTrips
+Admin --> UC_CurrentLocation
+Admin --> UC_LocationHistory
+Admin --> UC_ListIncidents
+Admin --> UC_AssignIncident
+Admin --> UC_InProgress
+Admin --> UC_Resolve
+Admin --> UC_Close
+Admin --> UC_Cancel
+Admin --> UC_Comment
+Admin --> UC_Notifications
+Admin --> UC_ReadNotifications
+
+Supervisor --> UC_Dashboard
+Supervisor --> UC_TripReports
+Supervisor --> UC_StudentsByRoute
+Supervisor --> UC_IncidentReports
+Supervisor --> UC_DriverPerformance
+Supervisor --> UC_VehicleUsage
+Supervisor --> UC_AuditSummary
+Supervisor --> UC_AuditLogs
+Supervisor --> UC_ActiveTrips
+Supervisor --> UC_CurrentLocation
+Supervisor --> UC_LocationHistory
+Supervisor --> UC_ListIncidents
+Supervisor --> UC_AssignIncident
+Supervisor --> UC_InProgress
+Supervisor --> UC_Resolve
+Supervisor --> UC_Close
+Supervisor --> UC_Cancel
+Supervisor --> UC_Comment
+Supervisor --> UC_Notifications
+Supervisor --> UC_ReadNotifications
+
+UC_Dashboard .> UC_ActiveTrips : <<include>>
+UC_IncidentReports .> UC_ListIncidents : <<include>>
+UC_AuditSummary .> UC_AuditLogs : <<include>>
+@enduml

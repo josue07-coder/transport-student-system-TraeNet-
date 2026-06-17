@@ -1,0 +1,72 @@
+@startuml
+title Diagrama de Clases - Seguridad y Usuarios
+top to bottom direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+
+abstract class BaseEntity {
+  +Id: Guid
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime?
+}
+
+interface IActivatable {
+  +IsActive: bool
+}
+
+class User {
+  +Username: string
+  +Name: string
+  +Email: string
+  +PasswordHash: string
+  +ProfileImageUrl: string?
+  +IsActive: bool
+  +RoleId: Guid
+  +GuardianId: Guid?
+  +DriverId: Guid?
+  +TransportAssistantId: Guid?
+  +LastLoginAt: DateTime?
+}
+
+class Role {
+  +Name: string
+  +Description: string
+}
+
+class Permission {
+  +Name: string
+  +Description: string?
+  +Module: string
+}
+
+class RolePermission {
+  +RoleId: Guid
+  +PermissionId: Guid
+}
+
+class AuditLog {
+  +UserId: Guid?
+  +Username: string?
+  +Action: string
+  +EntityName: string
+  +EntityId: string?
+  +IpAddress: string?
+  +UserAgent: string?
+}
+
+BaseEntity <|-- User
+BaseEntity <|-- Role
+BaseEntity <|-- Permission
+BaseEntity <|-- AuditLog
+IActivatable <|.. User
+
+Role "1" <-- "0..*" User : pertenece a
+Role "1" o-- "0..*" RolePermission : permisos
+Permission "1" <-- "0..*" RolePermission : asigna
+User "0..1" .. "0..*" AuditLog : registra acciones
+@enduml

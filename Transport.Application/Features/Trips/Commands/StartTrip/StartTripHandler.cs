@@ -1,5 +1,6 @@
 using MediatR;
 using Transport.Application.Interfaces;
+using Transport.Domain.Entities;
 using Transport.Domain.Enums;
 using Transport.Domain.Exceptions;
 
@@ -9,6 +10,7 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
     {
         private readonly IRouteAssignmentRepository _assignmentRepository;
         private readonly ITripRepository _tripRepository;
+        private readonly ITripStudentAttendanceRepository _attendanceRepository;
         private readonly IAuditService _auditService;
         private readonly INotificationService _notificationService;
         private readonly IUserRepository _userRepository;
@@ -16,12 +18,14 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
         public StartTripHandler(
             IRouteAssignmentRepository assignmentRepository,
             ITripRepository tripRepository,
+            ITripStudentAttendanceRepository attendanceRepository,
             IAuditService auditService,
             INotificationService notificationService,
             IUserRepository userRepository)
         {
             _assignmentRepository = assignmentRepository;
             _tripRepository = tripRepository;
+            _attendanceRepository = attendanceRepository;
             _auditService = auditService;
             _notificationService = notificationService;
             _userRepository = userRepository;
@@ -29,12 +33,51 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
 
         public async Task<Guid> Handle(StartTripCommand request, CancellationToken cancellationToken)
         {
-            var assignment = await _assignmentRepository.GetByIdAsync(request.RouteAssignmentId)
+            var trip = request.TripId.HasValue
+                ? await GetScheduledTripAsync(request.TripId.Value, request.RouteAssignmentId)
+                : null;
+
+            var assignment = trip?.RouteAssignment ??
+                await _assignmentRepository.GetByIdAsync(request.RouteAssignmentId)
                 ?? throw new DomainException("Asignación de ruta no encontrada");
 
-            if (await _tripRepository.HasActiveTripAsync(request.RouteAssignmentId))
+            if (await _tripRepository.HasActiveTripAsync(assignment.Id))
                 throw new DomainException("Ya hay un viaje activo para esta asignación");
 
+            ValidateAssignmentCanStart(assignment);
+
+            trip ??= assignment.StartTrip();
+            if (request.TripId.HasValue)
+                trip.Start();
+            else
+                await _tripRepository.AddAsync(trip);
+
+            await SnapshotPassengersAsync(trip, assignment);
+            await _tripRepository.SaveChangesAsync();
+
+            await _auditService.LogAsync("TripStarted", "Trip", trip.Id.ToString(), null, $"{{\"RouteAssignmentId\":\"{trip.RouteAssignmentId}\"}}");
+            await _auditService.LogAsync("TripPassengersSnapshotted", "Trip", trip.Id.ToString(), null, $"{{\"StudentsCount\":{assignment.Students.Count}}}");
+            await NotifyTripStartedAsync(assignment, trip.Id);
+
+            return trip.Id;
+        }
+
+        private async Task<Trip> GetScheduledTripAsync(Guid tripId, Guid routeAssignmentId)
+        {
+            var trip = await _tripRepository.GetByIdWithAssignmentDetailsAsync(tripId)
+                ?? throw new DomainException("Viaje no encontrado");
+
+            if (routeAssignmentId != Guid.Empty && trip.RouteAssignmentId != routeAssignmentId)
+                throw new DomainException("El viaje no pertenece a la asignación indicada");
+
+            if (trip.Status != TripStatus.Scheduled)
+                throw new DomainException("Solo se puede iniciar un viaje programado");
+
+            return trip;
+        }
+
+        private static void ValidateAssignmentCanStart(RouteAssignment assignment)
+        {
             if (assignment.Route.Status != RouteStatus.Active)
                 throw new DomainException("La ruta debe estar activa para iniciar el viaje");
 
@@ -45,25 +88,39 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
                 throw new DomainException("El conductor está inactivo");
 
             if (assignment.Vehicle.Status != VehicleStatus.Active)
-                throw new DomainException("El vehiculo está inactivo");
+                throw new DomainException("El vehículo está inactivo");
 
             if (assignment.TransportAssistant is not null && !assignment.TransportAssistant.IsActive)
                 throw new DomainException("El asistente de transporte está inactivo");
 
             if (!assignment.Students.Any())
                 throw new DomainException("No se puede iniciar el viaje sin estudiantes");
-
-            var trip = assignment.StartTrip();
-            await _tripRepository.AddAsync(trip);
-            await _tripRepository.SaveChangesAsync();
-
-            await _auditService.LogAsync("TripStarted", "Trip", trip.Id.ToString(), null, $"{{\"RouteAssignmentId\":\"{trip.RouteAssignmentId}\"}}");
-            await NotifyTripStartedAsync(assignment, trip.Id);
-
-            return trip.Id;
         }
 
-        private async Task NotifyTripStartedAsync(Transport.Domain.Entities.RouteAssignment assignment, Guid tripId)
+        private async Task SnapshotPassengersAsync(Trip trip, RouteAssignment assignment)
+        {
+            if (await _attendanceRepository.ExistsForTripAsync(trip.Id))
+                throw new DomainException("El viaje ya tiene pasajeros registrados");
+
+            var attendances = assignment.Students
+                .Select(studentAssignment => studentAssignment.Student)
+                .Where(student => student.IsActive)
+                .Select(student => new TripStudentAttendance(
+                    trip.Id,
+                    student.Id,
+                    $"{student.FirstName} {student.LastName}",
+                    student.StudentCode.Value,
+                    student.GuardianId,
+                    student.Guardian == null ? null : $"{student.Guardian.FirstName} {student.Guardian.LastName}"))
+                .ToList();
+
+            if (!attendances.Any())
+                throw new DomainException("No se puede iniciar el viaje sin estudiantes activos");
+
+            await _attendanceRepository.AddRangeAsync(attendances);
+        }
+
+        private async Task NotifyTripStartedAsync(RouteAssignment assignment, Guid tripId)
         {
             var routeName = assignment.Route.Name;
             var title = "Viaje iniciado";
@@ -80,7 +137,7 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
                 tripId.ToString());
         }
 
-        private async Task<List<Guid>> GetOperationalAndGuardianUserIdsAsync(Transport.Domain.Entities.RouteAssignment assignment)
+        private async Task<List<Guid>> GetOperationalAndGuardianUserIdsAsync(RouteAssignment assignment)
         {
             var userIds = new List<Guid>();
 

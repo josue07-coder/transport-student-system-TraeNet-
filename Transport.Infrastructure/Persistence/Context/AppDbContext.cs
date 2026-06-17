@@ -22,6 +22,8 @@ namespace Transport.Infrastructure.Persistence.Context
         public DbSet<RouteAssignment> RouteAssignments => Set<RouteAssignment>();
         public DbSet<StudentRouteAssignment> StudentRouteAssignments => Set<StudentRouteAssignment>();
         public DbSet<Trip> Trips => Set<Trip>();
+        public DbSet<TripSchedule> TripSchedules => Set<TripSchedule>();
+        public DbSet<TripStudentAttendance> TripStudentAttendances => Set<TripStudentAttendance>();
 
         //  Operación
         public DbSet<Vehicle> Vehicles => Set<Vehicle>();
@@ -48,6 +50,7 @@ namespace Transport.Infrastructure.Persistence.Context
         public DbSet<VehicleLocation> VehicleLocations => Set<VehicleLocation>();
         public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
         public DbSet<BackupRecord> BackupRecords => Set<BackupRecord>();
+        public DbSet<NonSchoolDay> NonSchoolDays => Set<NonSchoolDay>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,0 +1,49 @@
+@startuml
+title Diagrama de Actividades - Gestion de Notificaciones
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam partitionBorderColor #64748B
+skinparam partitionBackgroundColor #FFFFFF
+
+|Sistema|
+start
+:Detectar evento del sistema;
+:Crear notificacion interna;
+:Asignar usuario destinatario;
+
+|Base de datos|
+:Guardar notificacion como no leida;
+
+|Usuario|
+:Abrir panel de notificaciones;
+:Consultar notificaciones;
+
+|Sistema|
+:Cargar notificaciones del usuario;
+
+|Usuario|
+if (Accion requerida?) then (Marcar una)
+  :Seleccionar notificacion;
+  :Marcar como leida;
+
+  |Sistema|
+  :Actualizar estado de notificacion;
+elseif (Marcar todas)
+  :Solicitar marcar todas como leidas;
+
+  |Sistema|
+  :Actualizar todas las notificaciones del usuario;
+else (Solo consultar)
+  :Revisar contenido;
+endif
+
+|Base de datos|
+:Guardar cambios;
+
+|Usuario|
+:Ver listado actualizado;
+stop
+@enduml

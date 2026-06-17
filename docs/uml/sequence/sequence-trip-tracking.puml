@@ -1,0 +1,37 @@
+@startuml
+title Diagrama de Secuencia - Tracking GPS del Viaje
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 18
+
+actor Conductor
+participant Frontend
+participant TrackingController
+participant TrackingService
+participant VehicleLocationRepository
+database Database
+
+Conductor -> Frontend : Envia ubicacion GPS
+Frontend -> TrackingController : POST /api/tracking/location
+TrackingController -> TrackingService : UpdateVehicleLocationCommand
+TrackingService -> TrackingService : Validar coordenadas
+TrackingService -> VehicleLocationRepository : Validar viaje en progreso
+VehicleLocationRepository -> Database : Consultar Trip y Assignment
+Database --> VehicleLocationRepository : Datos del viaje
+VehicleLocationRepository --> TrackingService : Viaje autorizado
+
+alt Ubicacion valida
+    TrackingService -> VehicleLocationRepository : Registrar VehicleLocation
+    VehicleLocationRepository -> Database : Insertar coordenadas
+    Database --> VehicleLocationRepository : Confirmacion
+    VehicleLocationRepository --> TrackingService : Id ubicacion
+    TrackingService --> TrackingController : Resultado
+    TrackingController --> Frontend : 200 OK
+    Frontend --> Conductor : Monitoreo actualizado
+else Ubicacion invalida
+    TrackingService --> TrackingController : Error de validacion
+    TrackingController --> Frontend : 400 Bad Request
+    Frontend --> Conductor : Mostrar error
+end
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+title Diagrama de Actividades - Gestion de Estudiantes
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam partitionBorderColor #64748B
+skinparam partitionBackgroundColor #FFFFFF
+
+|Administrador / Supervisor|
+start
+:Abrir modulo de estudiantes;
+:Consultar lista de estudiantes;
+
+|Sistema|
+:Cargar estudiantes paginados;
+
+|Administrador / Supervisor|
+if (Operacion requerida?) then (Crear)
+  :Completar formulario de estudiante;
+elseif (Editar)
+  :Seleccionar estudiante;
+  :Modificar datos permitidos;
+else (Desactivar)
+  :Seleccionar estudiante;
+  :Solicitar desactivacion;
+endif
+
+|Sistema|
+:Validar datos recibidos;
+:Validar tutor, escuela y grado;
+:Validar reglas de negocio;
+
+if (Datos validos?) then (Si)
+  |Base de datos|
+  :Guardar cambios del estudiante;
+
+  |Sistema|
+  :Registrar auditoria;
+  :Preparar respuesta exitosa;
+
+  |Administrador / Supervisor|
+  :Mostrar confirmacion;
+  :Actualizar listado;
+  stop
+else (No)
+  |Sistema|
+  :Preparar errores de validacion;
+
+  |Administrador / Supervisor|
+  :Mostrar errores;
+  stop
+endif
+@enduml

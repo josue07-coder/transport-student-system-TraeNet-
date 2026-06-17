@@ -1,0 +1,60 @@
+@startuml
+title Diagrama de Actividades - Operacion de Viaje
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam partitionBorderColor #64748B
+skinparam partitionBackgroundColor #FFFFFF
+
+|Conductor / Asistente|
+start
+:Consultar viaje programado;
+:Solicitar inicio de viaje;
+
+|Sistema|
+:Validar viaje Scheduled;
+:Validar asignacion operativa;
+:Validar ruta, vehiculo y personal activos;
+:Validar que no exista viaje en progreso;
+:Obtener estudiantes asignados;
+
+if (Puede iniciar?) then (Si)
+  |Base de datos|
+  :Crear snapshot de pasajeros;
+  :Actualizar estado a InProgress;
+
+  |Sistema|
+  :Registrar auditoria TripStarted;
+  :Notificar inicio de viaje;
+
+  |Conductor / Asistente|
+  :Registrar ubicacion GPS;
+  :Actualizar asistencia de estudiantes;
+  :Solicitar finalizacion del viaje;
+
+  |Sistema|
+  :Validar viaje InProgress;
+
+  |Base de datos|
+  :Guardar ubicaciones y asistencia;
+  :Actualizar estado a Completed;
+  :Guardar hora de finalizacion;
+
+  |Sistema|
+  :Registrar auditoria TripEnded;
+  :Notificar finalizacion;
+
+  |Conductor / Asistente|
+  :Ver confirmacion de viaje completado;
+  stop
+else (No)
+  |Sistema|
+  :Devolver error controlado;
+
+  |Conductor / Asistente|
+  :Mostrar causa del rechazo;
+  stop
+endif
+@enduml

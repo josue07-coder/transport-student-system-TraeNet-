@@ -1,0 +1,37 @@
+@startuml
+title Diagrama de Secuencia - Registro de Estudiante
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 18
+
+actor Administrador
+participant Frontend
+participant StudentsController
+participant CreateStudentHandler
+participant StudentRepository
+database Database
+
+Administrador -> Frontend : Completa formulario
+Frontend -> StudentsController : POST /api/students
+StudentsController -> CreateStudentHandler : CreateStudentCommand
+CreateStudentHandler -> CreateStudentHandler : Validar datos
+CreateStudentHandler -> StudentRepository : Verificar relaciones y codigo
+StudentRepository -> Database : Consultar Guardian, School y Grade
+Database --> StudentRepository : Datos relacionados
+StudentRepository --> CreateStudentHandler : Validaciones OK
+
+alt Datos validos
+    CreateStudentHandler -> StudentRepository : Agregar Student
+    StudentRepository -> Database : Insertar estudiante
+    Database --> StudentRepository : Id generado
+    StudentRepository --> CreateStudentHandler : Confirmacion
+    CreateStudentHandler --> StudentsController : Id estudiante
+    StudentsController --> Frontend : 200 OK
+    Frontend --> Administrador : Mostrar confirmacion
+else Datos invalidos
+    CreateStudentHandler --> StudentsController : Error de validacion
+    StudentsController --> Frontend : 400 Bad Request
+    Frontend --> Administrador : Mostrar errores
+end
+@enduml

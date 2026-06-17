@@ -1,0 +1,63 @@
+@startuml
+title Diagrama de Actividades - Programacion y Materializacion de Viaje
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam partitionBorderColor #64748B
+skinparam partitionBackgroundColor #FFFFFF
+
+|Administrador / Supervisor|
+start
+:Crear horario de viaje;
+:Seleccionar asignacion de ruta;
+:Definir direccion, hora y dias activos;
+:Guardar horario;
+
+|Sistema|
+:Validar asignacion y ruta activa;
+:Validar rango de vigencia;
+:Validar dias activos;
+
+if (Horario valido?) then (Si)
+  |Base de datos|
+  :Guardar TripSchedule;
+
+  |Administrador / Supervisor|
+  :Seleccionar fecha de operacion;
+  :Solicitar materializacion;
+
+  |Sistema|
+  :Validar horario activo;
+  :Validar fecha dentro de vigencia;
+  :Validar que el dia este activo;
+  :Verificar viaje duplicado;
+  :Consultar calendario escolar;
+
+  if (Fin de semana o dia no laborable?) then (Si)
+    :Crear viaje con estado NotOperating;
+    :Guardar razon de no operacion;
+  else (No)
+    :Crear viaje con estado Scheduled;
+    :Asignar hora programada;
+  endif
+
+  |Base de datos|
+  :Guardar viaje materializado;
+
+  |Sistema|
+  :Registrar auditoria;
+
+  |Administrador / Supervisor|
+  :Mostrar viaje creado;
+  stop
+else (No)
+  |Sistema|
+  :Devolver error de validacion;
+
+  |Administrador / Supervisor|
+  :Mostrar error;
+  stop
+endif
+@enduml

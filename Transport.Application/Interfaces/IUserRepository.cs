@@ -17,6 +17,7 @@ namespace Transport.Application.Interfaces
         Task<List<User>> GetByRoleAsync(Guid roleId);
         Task<List<User>> GetByActiveAsync(bool isActive);
         Task<bool> ExistsByUsernameAsync(string username);
+        Task<bool> ExistsByEmailAsync(string email);
         Task SaveChangesAsync();
     }
 }

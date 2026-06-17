@@ -8,8 +8,8 @@ namespace Transport.Application.Features.Me.Validators
         public UpdateProfilePhotoValidator()
         {
             RuleFor(x => x.ProfileImageUrl)
-                .NotEmpty()
-                .MaximumLength(300);
+                .MaximumLength(300)
+                .When(x => !string.IsNullOrWhiteSpace(x.ProfileImageUrl));
         }
     }
 }

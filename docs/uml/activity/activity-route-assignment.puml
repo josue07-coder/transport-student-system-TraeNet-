@@ -1,0 +1,52 @@
+@startuml
+title Diagrama de Actividades - Asignacion de Ruta
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam partitionBorderColor #64748B
+skinparam partitionBackgroundColor #FFFFFF
+
+|Administrador / Supervisor|
+start
+:Abrir modulo de asignaciones;
+:Seleccionar ruta;
+:Seleccionar vehiculo;
+:Seleccionar conductor;
+:Seleccionar asistente de transporte opcional;
+:Definir capacidad;
+:Seleccionar estudiantes;
+:Enviar asignacion;
+
+|Sistema|
+:Validar existencia de ruta, vehiculo y conductor;
+:Validar asistente si fue informado;
+:Validar que recursos esten activos;
+:Validar conflictos de horario;
+:Validar capacidad contra vehiculo;
+:Validar estudiantes activos;
+:Validar escuela del estudiante contra ruta;
+:Validar duplicados;
+
+if (Reglas cumplidas?) then (Si)
+  |Base de datos|
+  :Guardar asignacion de ruta;
+  :Guardar estudiantes asignados;
+
+  |Sistema|
+  :Registrar auditoria;
+  :Generar notificaciones si aplica;
+
+  |Administrador / Supervisor|
+  :Mostrar confirmacion;
+  stop
+else (No)
+  |Sistema|
+  :Devolver error controlado;
+
+  |Administrador / Supervisor|
+  :Mostrar causa del rechazo;
+  stop
+endif
+@enduml

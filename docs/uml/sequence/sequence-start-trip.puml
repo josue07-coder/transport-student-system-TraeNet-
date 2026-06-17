@@ -1,0 +1,44 @@
+@startuml
+title Diagrama de Secuencia - Inicio de Viaje
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 16
+
+actor Conductor
+participant Frontend
+participant TripsController
+participant StartTripHandler
+participant TripRepository
+participant AttendanceRepository
+database Database
+
+Conductor -> Frontend : Solicita iniciar viaje
+Frontend -> TripsController : POST /api/trips/start
+TripsController -> StartTripHandler : StartTripCommand
+StartTripHandler -> TripRepository : Cargar viaje/asignacion
+TripRepository -> Database : Consultar Trip y RouteAssignment
+Database --> TripRepository : Datos operativos
+TripRepository --> StartTripHandler : Viaje cargado
+StartTripHandler -> StartTripHandler : Validar estado Scheduled
+StartTripHandler -> StartTripHandler : Validar ruta, vehiculo y conductor
+StartTripHandler -> StartTripHandler : Validar estudiantes asignados
+StartTripHandler -> AttendanceRepository : Verificar snapshot existente
+AttendanceRepository -> Database : Consultar TripStudentAttendances
+Database --> AttendanceRepository : Resultado
+
+alt Puede iniciar
+    StartTripHandler -> AttendanceRepository : Crear snapshot de pasajeros
+    AttendanceRepository -> Database : Insertar asistencias
+    StartTripHandler -> TripRepository : Cambiar estado a InProgress
+    TripRepository -> Database : Guardar cambios
+    Database --> TripRepository : Confirmacion
+    StartTripHandler --> TripsController : Id viaje
+    TripsController --> Frontend : 200 OK
+    Frontend --> Conductor : Viaje iniciado
+else No puede iniciar
+    StartTripHandler --> TripsController : Error controlado
+    TripsController --> Frontend : 400/403
+    Frontend --> Conductor : Mostrar motivo
+end
+@enduml

@@ -1,0 +1,50 @@
+@startuml
+title Diagrama de Actividades - Consulta de Reportes
+skinparam activity {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam partitionBorderColor #64748B
+skinparam partitionBackgroundColor #FFFFFF
+
+|Administrador / Supervisor|
+start
+:Abrir modulo de reportes;
+:Seleccionar tipo de reporte;
+:Aplicar filtros requeridos;
+:Solicitar consulta;
+
+|Sistema|
+:Validar filtros;
+
+if (Filtros validos?) then (Si)
+  :Ejecutar consulta optimizada;
+
+  |Base de datos|
+  :Obtener datos agregados;
+
+  |Sistema|
+  :Construir DTO de reporte;
+  :Devolver resultados;
+
+  |Administrador / Supervisor|
+  :Visualizar resultados;
+
+  if (Exportar aplica?) then (Si)
+    :Solicitar exportacion desde frontend;
+    :Generar archivo o vista exportable;
+  else (No)
+    :Mantener reporte en pantalla;
+  endif
+
+  stop
+else (No)
+  |Sistema|
+  :Devolver error de validacion;
+
+  |Administrador / Supervisor|
+  :Corregir filtros;
+  stop
+endif
+@enduml

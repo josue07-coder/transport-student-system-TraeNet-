@@ -1,4 +1,5 @@
 using MediatR;
+using System.Text.Json;
 using Transport.Application.Interfaces;
 using Transport.Domain.Enums;
 using Transport.Domain.Exceptions;
@@ -29,10 +30,19 @@ namespace Transport.Application.Features.Trips.Commands.CancelTrip
             var trip = await _repository.GetByIdAsync(request.Id)
                 ?? throw new DomainException("Viaje no encontrado");
 
-            trip.Cancel();
+            trip.Cancel(request.Reason);
             await _repository.SaveChangesAsync();
 
-            await _auditService.LogAsync("TripCancelled", "Trip", trip.Id.ToString(), null, $"{{\"RouteAssignmentId\":\"{trip.RouteAssignmentId}\"}}");
+            await _auditService.LogAsync(
+                "TripCancelled",
+                "Trip",
+                trip.Id.ToString(),
+                null,
+                JsonSerializer.Serialize(new
+                {
+                    trip.RouteAssignmentId,
+                    Reason = trip.CancellationReason
+                }));
             await NotifyTripCancelledAsync(trip);
 
             return Unit.Value;
@@ -64,7 +74,7 @@ namespace Transport.Application.Features.Trips.Commands.CancelTrip
             }
 
             var title = "Viaje cancelado";
-            var message = $"El viaje de la ruta {assignment.Route.Name} fue cancelado.";
+            var message = $"El viaje de la ruta {assignment.Route.Name} fue cancelado. Motivo: {trip.CancellationReason}.";
 
             await _notificationService.NotifyUsersAsync(
                 userIds,

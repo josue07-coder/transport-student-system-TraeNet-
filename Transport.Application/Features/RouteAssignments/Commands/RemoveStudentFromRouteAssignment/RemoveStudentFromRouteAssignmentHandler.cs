@@ -32,6 +32,9 @@ namespace Transport.Application.Features.RouteAssignments.Commands.RemoveStudent
             var assignment = await _assignmentRepository.GetByIdAsync(request.RouteAssignmentId)
                 ?? throw new DomainException("Asignación de ruta no encontrada");
 
+            if (assignment.Trips.Any(trip => trip.Status == TripStatus.InProgress))
+                throw new DomainException("No se puede remover estudiantes mientras existe un viaje en progreso.");
+
             var student = await _studentRepository.GetByIdIncludingInactiveAsync(request.StudentId)
                 ?? throw new DomainException("Estudiante no encontrado");
 

@@ -1,0 +1,119 @@
+@startuml
+title Diagrama de Contexto - Plataforma Web TRAE
+top to bottom direction
+skinparam shadowing false
+skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam nodesep 55
+skinparam ranksep 55
+skinparam rectangle {
+  BackgroundColor #F8FAFC
+  BorderColor #1E293B
+  FontColor #0F172A
+}
+skinparam actor {
+  BackgroundColor #FFFFFF
+  BorderColor #334155
+  FontColor #0F172A
+}
+skinparam note {
+  BackgroundColor #FFF7ED
+  BorderColor #FDBA74
+  FontColor #0F172A
+}
+
+actor "Administrador" as Admin
+actor "Supervisor" as Supervisor
+actor "Conductor" as Driver
+actor "Asistente de\nTransporte" as Assistant
+actor "Tutor" as Guardian
+actor "Centro\nEducativo" as School
+actor "Distrito Educativo\n01-03" as District
+
+rectangle "Plataforma Web TRAE" as System #E0F2FE {
+  rectangle "Gestion academica\nTransporte y viajes\nMonitoreo GPS\nReportes y comunicacion" as Core #FFFFFF
+}
+
+' Distribucion academica casi cuadrada:
+' superior: Supervisor
+' izquierda: Administrador, Conductor
+' derecha: Tutor, Centro Educativo
+' inferior: Asistente, Distrito
+Supervisor -[hidden]down- System
+System -[hidden]down- Assistant
+Assistant -[hidden]right- District
+Admin -[hidden]down- Driver
+Guardian -[hidden]down- School
+Admin -[hidden]right- System
+System -[hidden]right- Guardian
+
+Supervisor --> System
+System --> Supervisor
+
+Admin --> System
+System --> Admin
+
+Driver --> System
+System --> Driver
+
+Guardian --> System
+System --> Guardian
+
+School --> System
+System --> School
+
+Assistant --> System
+System --> Assistant
+
+District --> System
+System --> District
+
+note left of Admin
+Gestiona usuarios,
+estudiantes, rutas
+y configuraciones.
+Recibe reportes
+y auditoria.
+end note
+
+note top of Supervisor
+Supervisa rutas,
+monitorea viajes
+y gestiona incidencias.
+Recibe indicadores
+y alertas.
+end note
+
+note left of Driver
+Consulta viajes,
+inicia/finaliza viajes
+y actualiza GPS.
+end note
+
+note right of Guardian
+Consulta estudiantes,
+viajes, ubicacion
+y notificaciones.
+end note
+
+note right of School
+Proporciona datos
+academicos.
+Consulta informacion
+relacionada.
+end note
+
+note bottom of Assistant
+Registra asistencia,
+gestiona estudiantes
+durante el viaje
+y reporta incidencias.
+end note
+
+note bottom of District
+Consulta indicadores,
+reportes operativos
+y supervision general.
+end note
+@enduml

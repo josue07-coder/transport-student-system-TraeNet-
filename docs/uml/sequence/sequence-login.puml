@@ -1,0 +1,38 @@
+@startuml
+title Diagrama de Secuencia - Autenticacion de Usuario
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+actor Usuario
+participant Frontend
+participant AuthController
+participant AuthService
+participant UserRepository
+database Database
+
+Usuario -> Frontend : Ingresa credenciales
+Frontend -> AuthController : POST /api/auth/login
+AuthController -> AuthService : Enviar LoginCommand
+AuthService -> UserRepository : Buscar usuario por username
+UserRepository -> Database : Consultar Users y Role
+Database --> UserRepository : Usuario encontrado
+UserRepository --> AuthService : Datos de usuario
+AuthService -> AuthService : Validar estado y password hash
+
+alt Credenciales validas
+    AuthService -> AuthService : Generar JWT
+    AuthService -> UserRepository : Actualizar LastLoginAt
+    UserRepository -> Database : Guardar cambios
+    Database --> UserRepository : OK
+    AuthService --> AuthController : LoginResponseDto
+    AuthController --> Frontend : 200 OK + token
+    Frontend --> Usuario : Redirigir al panel
+else Credenciales invalidas
+    AuthService --> AuthController : Error controlado
+    AuthController --> Frontend : 400/401
+    Frontend --> Usuario : Mostrar error
+end
+@enduml

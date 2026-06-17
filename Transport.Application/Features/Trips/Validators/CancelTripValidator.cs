@@ -8,6 +8,7 @@ namespace Transport.Application.Features.Trips.Validators
         public CancelTripValidator()
         {
             RuleFor(x => x.Id).NotEmpty();
+            RuleFor(x => x.Reason).NotEmpty().MaximumLength(500);
         }
     }
 }

@@ -1,0 +1,56 @@
+@startuml
+title Casos de Uso - Gestion Academica
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+}
+
+actor "Supervisor" as Supervisor
+
+rectangle "Modulo Academico" {
+  rectangle "Catalogos academicos" {
+    usecase "Gestionar sectores" as UC1
+    usecase "Gestionar escuelas" as UC2
+    usecase "Gestionar grados" as UC3
+    usecase "Gestionar tutores" as UC4
+    usecase "Gestionar estudiantes" as UC5
+  }
+
+  rectangle "Consultas y calendario" {
+    usecase "Consultar estudiante\npor codigo" as UC6
+    usecase "Consultar tutor\npor documento" as UC7
+    usecase "Filtrar estudiantes\npor grado" as UC8
+    usecase "Filtrar estudiantes\npor escuela" as UC9
+    usecase "Filtrar estudiantes\npor tutor" as UC10
+    usecase "Gestionar dias\nsin operacion" as UC11
+  }
+}
+
+UC1 -[hidden]down- UC2
+UC2 -[hidden]down- UC3
+UC3 -[hidden]down- UC4
+UC4 -[hidden]down- UC5
+UC6 -[hidden]down- UC7
+UC7 -[hidden]down- UC8
+UC8 -[hidden]down- UC9
+UC9 -[hidden]down- UC10
+UC10 -[hidden]down- UC11
+
+Supervisor --> UC1
+Supervisor --> UC2
+Supervisor --> UC3
+Supervisor --> UC4
+Supervisor --> UC5
+Supervisor --> UC6
+Supervisor --> UC7
+Supervisor --> UC8
+Supervisor --> UC9
+Supervisor --> UC10
+Supervisor --> UC11
+
+UC5 .> UC2 : <<include>>
+UC5 .> UC3 : <<include>>
+UC5 .> UC4 : <<include>>
+@enduml

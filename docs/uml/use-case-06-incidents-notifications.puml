@@ -1,0 +1,57 @@
+@startuml
+title Casos de Uso - Incidencias y Notificaciones
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+}
+
+actor "Supervisor" as Supervisor
+
+rectangle "Incidencias y Notificaciones" {
+  rectangle "Incidentes" {
+    usecase "Consultar incidentes" as UC1
+    usecase "Consultar incidente\npor detalle" as UC2
+    usecase "Filtrar incidentes\npor estado" as UC3
+    usecase "Filtrar incidentes\npor severidad" as UC4
+    usecase "Asignar incidente" as UC5
+    usecase "Marcar incidente\nen progreso" as UC6
+  }
+
+  rectangle "Seguimiento" {
+    usecase "Resolver incidente" as UC7
+    usecase "Cerrar o cancelar\nincidente" as UC8
+    usecase "Agregar comentario\na incidente" as UC9
+    usecase "Consultar\nnotificaciones" as UC10
+    usecase "Marcar notificaciones\ncomo leidas" as UC11
+  }
+}
+
+UC1 -[hidden]down- UC2
+UC2 -[hidden]down- UC3
+UC3 -[hidden]down- UC4
+UC4 -[hidden]down- UC5
+UC5 -[hidden]down- UC6
+UC7 -[hidden]down- UC8
+UC8 -[hidden]down- UC9
+UC9 -[hidden]down- UC10
+UC10 -[hidden]down- UC11
+
+Supervisor --> UC1
+Supervisor --> UC2
+Supervisor --> UC3
+Supervisor --> UC4
+Supervisor --> UC5
+Supervisor --> UC6
+Supervisor --> UC7
+Supervisor --> UC8
+Supervisor --> UC9
+Supervisor --> UC10
+Supervisor --> UC11
+
+UC2 .> UC1 : <<include>>
+UC5 .> UC2 : <<include>>
+UC7 .> UC2 : <<include>>
+UC11 .> UC10 : <<include>>
+@enduml

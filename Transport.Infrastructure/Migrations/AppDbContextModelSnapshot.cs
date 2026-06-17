@@ -443,6 +443,55 @@ namespace Transport.Infrastructure.Migrations
                     b.ToTable("IncidentComments");
                 });
 
+            modelBuilder.Entity("Transport.Domain.Entities.NonSchoolDay", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ReasonType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("SchoolId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Date")
+                        .IsUnique()
+                        .HasDatabaseName("IX_NonSchoolDays_Date_Global_Active")
+                        .HasFilter("[SchoolId] IS NULL AND [IsActive] = 1");
+
+                    b.HasIndex("SchoolId");
+
+                    b.HasIndex("Date", "IsActive");
+
+                    b.HasIndex("Date", "SchoolId")
+                        .IsUnique()
+                        .HasFilter("[SchoolId] IS NOT NULL AND [IsActive] = 1");
+
+                    b.ToTable("NonSchoolDays");
+                });
+
             modelBuilder.Entity("Transport.Domain.Entities.Notification", b =>
                 {
                     b.Property<Guid>("Id")
@@ -940,14 +989,39 @@ namespace Transport.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Direction")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("NonOperationNotes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("NonOperationReason")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateOnly?>("OperationDate")
+                        .HasColumnType("date");
+
                     b.Property<Guid>("RouteAssignmentId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("ScheduledArrivalTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ScheduledDepartureTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
@@ -956,6 +1030,9 @@ namespace Transport.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("TripScheduleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -963,7 +1040,135 @@ namespace Transport.Infrastructure.Migrations
 
                     b.HasIndex("RouteAssignmentId");
 
+                    b.HasIndex("TripScheduleId");
+
+                    b.HasIndex("TripScheduleId", "OperationDate")
+                        .IsUnique()
+                        .HasFilter("[TripScheduleId] IS NOT NULL AND [OperationDate] IS NOT NULL");
+
                     b.ToTable("Trips");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.TripSchedule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<TimeOnly?>("ArrivalTime")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeOnly>("DepartureTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<bool>("Friday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Monday")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("RouteAssignmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("Saturday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Sunday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Thursday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Tuesday")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly>("ValidFrom")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("ValidTo")
+                        .HasColumnType("date");
+
+                    b.Property<bool>("Wednesday")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RouteAssignmentId");
+
+                    b.HasIndex("RouteAssignmentId", "Direction", "ValidFrom");
+
+                    b.ToTable("TripSchedules");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.TripStudentAttendance", b =>
+                {
+                    b.Property<Guid>("TripId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("BoardedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DroppedOffAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("GuardianIdSnapshot")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("GuardianNameSnapshot")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("StudentCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("StudentNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TripId", "StudentId");
+
+                    b.HasIndex("GuardianIdSnapshot");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("TripId");
+
+                    b.ToTable("TripStudentAttendances");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.User", b =>
@@ -1393,6 +1598,16 @@ namespace Transport.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Transport.Domain.Entities.NonSchoolDay", b =>
+                {
+                    b.HasOne("Transport.Domain.Entities.School", "School")
+                        .WithMany()
+                        .HasForeignKey("SchoolId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("School");
+                });
+
             modelBuilder.Entity("Transport.Domain.Entities.Notification", b =>
                 {
                     b.HasOne("Transport.Domain.Entities.User", "User")
@@ -1792,7 +2007,44 @@ namespace Transport.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Transport.Domain.Entities.TripSchedule", "TripSchedule")
+                        .WithMany("Trips")
+                        .HasForeignKey("TripScheduleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("RouteAssignment");
+
+                    b.Navigation("TripSchedule");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.TripSchedule", b =>
+                {
+                    b.HasOne("Transport.Domain.Entities.RouteAssignment", "RouteAssignment")
+                        .WithMany()
+                        .HasForeignKey("RouteAssignmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("RouteAssignment");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.TripStudentAttendance", b =>
+                {
+                    b.HasOne("Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Transport.Domain.Entities.Trip", "Trip")
+                        .WithMany("StudentAttendances")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("Transport.Domain.Entities.User", b =>
@@ -1911,6 +2163,16 @@ namespace Transport.Infrastructure.Migrations
                     b.Navigation("Schools");
 
                     b.Navigation("Stops");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.Trip", b =>
+                {
+                    b.Navigation("StudentAttendances");
+                });
+
+            modelBuilder.Entity("Transport.Domain.Entities.TripSchedule", b =>
+                {
+                    b.Navigation("Trips");
                 });
 #pragma warning restore 612, 618
         }

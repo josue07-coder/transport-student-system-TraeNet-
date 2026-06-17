@@ -17,6 +17,7 @@ namespace Transport.Application.Interfaces
         Task<List<Trip>> GetByGuardianAsync(Guid guardianId);
         Task<Trip?> GetActiveByRouteAssignmentAsync(Guid routeAssignmentId);
         Task<Trip?> GetByIdWithAssignmentDetailsAsync(Guid id);
+        Task<bool> ExistsByScheduleAndDateAsync(Guid tripScheduleId, DateOnly operationDate);
         Task<bool> IsInProgressAsync(Guid id);
         Task<List<Trip>> GetActiveTripsAsync();
         Task<bool> HasActiveTripAsync(Guid routeAssignmentId);

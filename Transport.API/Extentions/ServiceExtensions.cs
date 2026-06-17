@@ -32,6 +32,9 @@ namespace Transport.API.Extensions
             services.AddScoped<IStopRepository, StopRepository>();
             services.AddScoped<IRouteRepository, RouteRepository>();
             services.AddScoped<ITripRepository, TripRepository>();
+            services.AddScoped<ITripScheduleRepository, TripScheduleRepository>();
+            services.AddScoped<ITripStudentAttendanceRepository, TripStudentAttendanceRepository>();
+            services.AddScoped<INonSchoolDayRepository, NonSchoolDayRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuditLogRepository, AuditLogRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();

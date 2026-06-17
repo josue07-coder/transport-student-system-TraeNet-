@@ -1,0 +1,58 @@
+@startuml
+title Casos de Uso - Tutor
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+}
+
+actor "Tutor" as Guardian
+
+rectangle "Portal del Tutor" {
+  rectangle "Cuenta" {
+    usecase "Iniciar sesion" as UC1
+    usecase "Recuperar contrasena" as UC2
+    usecase "Consultar perfil" as UC3
+    usecase "Actualizar perfil\no foto" as UC4
+    usecase "Cambiar contrasena" as UC5
+  }
+
+  rectangle "Seguimiento" {
+    usecase "Consultar mis\nestudiantes" as UC6
+    usecase "Consultar viajes\nrelacionados" as UC7
+    usecase "Consultar ubicacion\nde mis estudiantes" as UC8
+    usecase "Consultar\nnotificaciones" as UC9
+    usecase "Marcar notificaciones\ncomo leidas" as UC10
+    usecase "Reportar o consultar\nincidentes propios" as UC11
+  }
+}
+
+UC1 -[hidden]down- UC2
+UC2 -[hidden]down- UC3
+UC3 -[hidden]down- UC4
+UC4 -[hidden]down- UC5
+UC6 -[hidden]down- UC7
+UC7 -[hidden]down- UC8
+UC8 -[hidden]down- UC9
+UC9 -[hidden]down- UC10
+UC10 -[hidden]down- UC11
+
+Guardian --> UC1
+Guardian --> UC2
+Guardian --> UC3
+Guardian --> UC4
+Guardian --> UC5
+Guardian --> UC6
+Guardian --> UC7
+Guardian --> UC8
+Guardian --> UC9
+Guardian --> UC10
+Guardian --> UC11
+
+UC4 .> UC3 : <<include>>
+UC5 .> UC1 : <<include>>
+UC7 .> UC6 : <<include>>
+UC8 .> UC6 : <<include>>
+UC10 .> UC9 : <<include>>
+@enduml

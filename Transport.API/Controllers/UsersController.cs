@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Users.Commands.ActivateUser;
+using Transport.Application.Features.Users.Commands.CreateUser;
 using Transport.Application.Features.Users.Commands.DeactivateUser;
 using Transport.Application.Features.Users.Commands.ResetUserPassword;
 using Transport.Application.Features.Users.Commands.UpdateUser;
@@ -22,6 +23,14 @@ namespace Transport.API.Controllers
         public UsersController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create([FromBody] CreateUserCommand command)
+        {
+            var id = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetById), new { id }, new { id });
         }
 
         [HttpGet]

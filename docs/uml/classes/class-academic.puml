@@ -1,0 +1,91 @@
+@startuml
+title Diagrama de Clases - Gestion Academica
+top to bottom direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+
+abstract class BaseEntity {
+  +Id: Guid
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime?
+}
+
+interface IActivatable {
+  +IsActive: bool
+}
+
+class Student {
+  +StudentCode: StudentCode
+  +FirstName: string
+  +LastName: string
+  +SchoolId: Guid
+  +GradeId: Guid
+  +GuardianId: Guid
+  +PhotoUrl: string?
+  +IsActive: bool
+}
+
+class Guardian {
+  +DocumentType: DocumentType
+  +DocumentNumber: string
+  +FirstName: string
+  +LastName: string
+  +Phone: string
+  +Address: Address
+  +Gender: Gender
+  +SectorId: Guid?
+  +IsActive: bool
+}
+
+class School {
+  +Name: string
+  +DirectorName: string
+  +ContactEmail: Email
+  +ContactPhone: PhoneNumber
+  +Address: Address
+  +SectorId: Guid
+  +IsActive: bool
+}
+
+class Grade {
+  +Name: string
+  +SchoolId: Guid
+}
+
+class Sector {
+  +Name: string
+  +City: string
+  +Province: string
+  +SchoolDistrictId: Guid?
+}
+
+class SchoolDistrict {
+  +Name: string
+  +Code: string
+  +Description: string
+  +Address: Address
+}
+
+BaseEntity <|-- Student
+BaseEntity <|-- Guardian
+BaseEntity <|-- School
+BaseEntity <|-- Grade
+BaseEntity <|-- Sector
+BaseEntity <|-- SchoolDistrict
+IActivatable <|.. Student
+IActivatable <|.. Guardian
+IActivatable <|.. School
+
+Guardian "1" <-- "0..*" Student : responsable
+Grade "1" <-- "0..*" Student : cursa
+School "1" <-- "0..*" Student : pertenece
+School "1" <-- "0..*" Grade : contiene
+Sector "1" <-- "0..*" School : ubica
+SchoolDistrict "0..1" <-- "0..*" Sector : agrupa
+Sector "0..1" <-- "0..*" Guardian : reside
+@enduml

@@ -1,0 +1,55 @@
+@startuml
+title Casos de Uso - Administracion
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+}
+
+actor "Administrador" as Admin
+
+rectangle "Modulo de Administracion" {
+  rectangle "Usuarios" {
+    usecase "Iniciar sesion" as UC1
+    usecase "Crear usuario\nadministrativo" as UC2
+    usecase "Consultar usuarios" as UC3
+    usecase "Actualizar usuario" as UC4
+    usecase "Activar o desactivar\nusuario" as UC5
+    usecase "Restablecer\ncontrasena" as UC6
+  }
+
+  rectangle "Seguridad y sistema" {
+    usecase "Consultar roles\ny permisos" as UC7
+    usecase "Actualizar rol" as UC8
+    usecase "Asignar o remover\npermisos" as UC9
+    usecase "Administrar\nconfiguracion general" as UC10
+    usecase "Ejecutar backup\nmanual" as UC11
+  }
+}
+
+UC1 -[hidden]down- UC2
+UC2 -[hidden]down- UC3
+UC3 -[hidden]down- UC4
+UC4 -[hidden]down- UC5
+UC5 -[hidden]down- UC6
+UC7 -[hidden]down- UC8
+UC8 -[hidden]down- UC9
+UC9 -[hidden]down- UC10
+UC10 -[hidden]down- UC11
+
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+Admin --> UC7
+Admin --> UC8
+Admin --> UC9
+Admin --> UC10
+Admin --> UC11
+
+UC2 .> UC7 : <<include>>
+UC8 .> UC9 : <<include>>
+@enduml

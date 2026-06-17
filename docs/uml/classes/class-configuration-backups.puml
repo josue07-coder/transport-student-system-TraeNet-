@@ -1,0 +1,40 @@
+@startuml
+title Diagrama de Clases - Configuracion y Respaldos
+top to bottom direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+
+abstract class BaseEntity {
+  +Id: Guid
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime?
+}
+
+class SystemSetting {
+  +Key: string
+  +Value: string
+  +Description: string?
+  +Category: string
+  +DataType: string
+  +IsEditable: bool
+}
+
+class BackupRecord {
+  +FileName: string
+  +FilePath: string
+  +FileSizeBytes: long?
+  +Status: BackupStatus
+  +Type: BackupType
+  +ErrorMessage: string?
+  +CreatedByUserId: Guid
+  +CompletedAt: DateTime?
+}
+
+BaseEntity <|-- SystemSetting
+BaseEntity <|-- BackupRecord
+@enduml

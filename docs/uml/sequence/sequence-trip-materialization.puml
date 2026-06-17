@@ -1,0 +1,39 @@
+@startuml
+title Diagrama de Secuencia - Materializacion de Viaje
+skinparam shadowing false
+skinparam responseMessageBelowArrow true
+skinparam sequenceMessageAlign center
+skinparam ParticipantPadding 16
+
+actor Supervisor
+participant Frontend
+participant TripSchedulesController
+participant MaterializeTripScheduleHandler
+participant TripRepository
+database Database
+
+Supervisor -> Frontend : Selecciona horario y fecha
+Frontend -> TripSchedulesController : POST /api/trip-schedules/{id}/materialize
+TripSchedulesController -> MaterializeTripScheduleHandler : MaterializeTripScheduleCommand
+MaterializeTripScheduleHandler -> TripRepository : Buscar schedule con asignacion
+TripRepository -> Database : Consultar TripSchedule y RouteAssignment
+Database --> TripRepository : Datos del horario
+TripRepository --> MaterializeTripScheduleHandler : Schedule cargado
+MaterializeTripScheduleHandler -> MaterializeTripScheduleHandler : Validar fecha y vigencia
+MaterializeTripScheduleHandler -> TripRepository : Verificar duplicado
+TripRepository -> Database : Consultar Trips por schedule y fecha
+Database --> TripRepository : Resultado
+
+alt Fin de semana o dia no laborable
+    MaterializeTripScheduleHandler -> TripRepository : Crear Trip NotOperating
+else Dia operativo
+    MaterializeTripScheduleHandler -> TripRepository : Crear Trip Scheduled
+end
+
+TripRepository -> Database : Guardar viaje
+Database --> TripRepository : Confirmacion
+TripRepository --> MaterializeTripScheduleHandler : TripResponseDto
+MaterializeTripScheduleHandler --> TripSchedulesController : Resultado
+TripSchedulesController --> Frontend : 200 OK
+Frontend --> Supervisor : Mostrar viaje materializado
+@enduml

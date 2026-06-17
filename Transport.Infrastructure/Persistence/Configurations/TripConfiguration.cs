@@ -17,6 +17,31 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.RouteAssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(x => x.TripSchedule)
+                .WithMany(x => x.Trips)
+                .HasForeignKey(x => x.TripScheduleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasMany(x => x.StudentAttendances)
+                .WithOne(x => x.Trip)
+                .HasForeignKey(x => x.TripId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Property(x => x.Direction)
+                .HasConversion<string>()
+                .IsRequired(false)
+                .HasMaxLength(30);
+
+            builder.Property(x => x.OperationDate)
+                .HasColumnType("date")
+                .IsRequired(false);
+
+            builder.Property(x => x.ScheduledDepartureTime)
+                .IsRequired(false);
+
+            builder.Property(x => x.ScheduledArrivalTime)
+                .IsRequired(false);
+
             //  Campos de tiempo
             builder.Property(x => x.StartTime)
                 .IsRequired(false);
@@ -28,6 +53,20 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.Property(x => x.Status)
                 .IsRequired()
                 .HasConversion<string>(); // 🔥 guarda como texto en DB
+
+            builder.Property(x => x.CancellationReason)
+                .HasMaxLength(500);
+
+            builder.Property(x => x.NonOperationReason)
+                .HasMaxLength(200);
+
+            builder.Property(x => x.NonOperationNotes)
+                .HasMaxLength(1000);
+
+            builder.HasIndex(x => x.TripScheduleId);
+            builder.HasIndex(x => new { x.TripScheduleId, x.OperationDate })
+                .IsUnique()
+                .HasFilter("[TripScheduleId] IS NOT NULL AND [OperationDate] IS NOT NULL");
         }
     }
 }

@@ -125,6 +125,13 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .AnyAsync(user => user.Username == username);
         }
 
+        public async Task<bool> ExistsByEmailAsync(string email)
+        {
+            return await _context.Users
+                .IgnoreQueryFilters()
+                .AnyAsync(user => user.Email == email);
+        }
+
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

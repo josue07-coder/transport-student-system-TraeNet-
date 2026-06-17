@@ -1,0 +1,131 @@
+@startuml
+title Casos de uso - Transporte y operacion de rutas
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Administrador" as Admin
+actor "Supervisor" as Supervisor
+actor "Conductor" as Driver
+actor "Asistente de Transporte" as Assistant
+
+rectangle "Catalogos de transporte" {
+  usecase "Gestionar vehiculos" as UC_Vehicles
+  usecase "Gestionar conductores" as UC_Drivers
+  usecase "Gestionar asistentes\nde transporte" as UC_Assistants
+  usecase "Gestionar paradas" as UC_Stops
+}
+
+rectangle "Rutas y asignaciones" {
+  usecase "Gestionar rutas" as UC_Routes
+  usecase "Agregar parada a ruta" as UC_AddStop
+  usecase "Remover parada de ruta" as UC_RemoveStop
+  usecase "Actualizar orden de parada" as UC_OrderStop
+  usecase "Gestionar asignaciones\nde ruta" as UC_Assignments
+  usecase "Asignar estudiante\na ruta asignada" as UC_AssignStudent
+  usecase "Remover estudiante\nde ruta asignada" as UC_RemoveStudent
+}
+
+rectangle "Programacion y viajes" {
+  usecase "Gestionar programacion\nde viajes" as UC_Schedules
+  usecase "Materializar viaje programado" as UC_Materialize
+  usecase "Gestionar dias sin operacion" as UC_NonSchoolDays
+  usecase "Iniciar viaje" as UC_StartTrip
+  usecase "Finalizar viaje" as UC_EndTrip
+  usecase "Cancelar viaje" as UC_CancelTrip
+  usecase "Marcar viaje como\nsin operacion" as UC_NotOperating
+}
+
+rectangle "Pasajeros y GPS" {
+  usecase "Consultar pasajeros\ndel viaje" as UC_Passengers
+  usecase "Marcar estudiante abordado" as UC_Boarded
+  usecase "Marcar estudiante ausente" as UC_Absent
+  usecase "Marcar estudiante dejado" as UC_DroppedOff
+  usecase "Actualizar notas de pasajero" as UC_Notes
+  usecase "Actualizar ubicacion GPS" as UC_UpdateGps
+  usecase "Consultar ubicacion actual" as UC_CurrentGps
+  usecase "Consultar historial GPS" as UC_GpsHistory
+}
+
+Admin --> UC_Vehicles
+Admin --> UC_Drivers
+Admin --> UC_Assistants
+Admin --> UC_Stops
+Admin --> UC_Routes
+Admin --> UC_AddStop
+Admin --> UC_RemoveStop
+Admin --> UC_OrderStop
+Admin --> UC_Assignments
+Admin --> UC_AssignStudent
+Admin --> UC_RemoveStudent
+Admin --> UC_Schedules
+Admin --> UC_Materialize
+Admin --> UC_NonSchoolDays
+Admin --> UC_StartTrip
+Admin --> UC_EndTrip
+Admin --> UC_CancelTrip
+Admin --> UC_NotOperating
+Admin --> UC_Passengers
+Admin --> UC_Boarded
+Admin --> UC_Absent
+Admin --> UC_DroppedOff
+Admin --> UC_Notes
+Admin --> UC_UpdateGps
+Admin --> UC_CurrentGps
+Admin --> UC_GpsHistory
+
+Supervisor --> UC_Vehicles
+Supervisor --> UC_Drivers
+Supervisor --> UC_Assistants
+Supervisor --> UC_Stops
+Supervisor --> UC_Routes
+Supervisor --> UC_AddStop
+Supervisor --> UC_RemoveStop
+Supervisor --> UC_OrderStop
+Supervisor --> UC_Assignments
+Supervisor --> UC_AssignStudent
+Supervisor --> UC_RemoveStudent
+Supervisor --> UC_Schedules
+Supervisor --> UC_Materialize
+Supervisor --> UC_NonSchoolDays
+Supervisor --> UC_StartTrip
+Supervisor --> UC_EndTrip
+Supervisor --> UC_CancelTrip
+Supervisor --> UC_NotOperating
+Supervisor --> UC_Passengers
+Supervisor --> UC_Boarded
+Supervisor --> UC_Absent
+Supervisor --> UC_DroppedOff
+Supervisor --> UC_Notes
+Supervisor --> UC_UpdateGps
+Supervisor --> UC_CurrentGps
+Supervisor --> UC_GpsHistory
+
+Driver --> UC_StartTrip
+Driver --> UC_EndTrip
+Driver --> UC_Passengers
+Driver --> UC_Boarded
+Driver --> UC_Absent
+Driver --> UC_DroppedOff
+Driver --> UC_Notes
+Driver --> UC_UpdateGps
+Driver --> UC_CurrentGps
+Driver --> UC_GpsHistory
+
+Assistant --> UC_StartTrip
+Assistant --> UC_EndTrip
+Assistant --> UC_Passengers
+Assistant --> UC_Boarded
+Assistant --> UC_Absent
+Assistant --> UC_DroppedOff
+Assistant --> UC_Notes
+Assistant --> UC_UpdateGps
+Assistant --> UC_CurrentGps
+Assistant --> UC_GpsHistory
+
+UC_Materialize .> UC_Schedules : <<include>>
+UC_StartTrip .> UC_Passengers : <<include>>
+UC_StartTrip .> UC_UpdateGps : <<extend>>
+UC_AddStop .> UC_Routes : <<include>>
+UC_AssignStudent .> UC_Assignments : <<include>>
+@enduml

@@ -1,0 +1,81 @@
+@startuml
+title Diagrama de Clases - Rutas y Asignaciones
+top to bottom direction
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #F8FAFC
+  BorderColor #334155
+  FontColor #0F172A
+}
+
+abstract class BaseEntity {
+  +Id: Guid
+  +CreatedAt: DateTime
+  +UpdatedAt: DateTime?
+}
+
+class RouteAssignment {
+  +RouteId: Guid
+  +VehicleId: Guid
+  +DriverId: Guid
+  +TransportAssistantId: Guid?
+  +VehicleCapacity: int
+}
+
+class StudentRouteAssignment {
+  +StudentId: Guid
+  +RouteAssignmentId: Guid
+}
+
+class Route {
+  +Name: string
+  +SchoolId: Guid
+  +Status: RouteStatus
+}
+
+class Vehicle {
+  +PlateNumber: string
+  +Capacity: int
+  +Status: VehicleStatus
+}
+
+class Driver {
+  +FirstName: string
+  +LastName: string
+  +IsActive: bool
+}
+
+class TransportAssistant {
+  +FirstName: string
+  +LastName: string
+  +IsActive: bool
+}
+
+class Student {
+  +StudentCode: StudentCode
+  +FirstName: string
+  +LastName: string
+  +IsActive: bool
+}
+
+class Stop {
+  +Name: string
+}
+
+BaseEntity <|-- RouteAssignment
+BaseEntity <|-- Route
+BaseEntity <|-- Vehicle
+BaseEntity <|-- Driver
+BaseEntity <|-- TransportAssistant
+BaseEntity <|-- Student
+BaseEntity <|-- Stop
+
+Route "1" <-- "0..*" RouteAssignment : asigna
+Vehicle "1" <-- "0..*" RouteAssignment : usa
+Driver "1" <-- "0..*" RouteAssignment : conduce
+TransportAssistant "0..1" <-- "0..*" RouteAssignment : asiste
+RouteAssignment "1" *-- "0..*" StudentRouteAssignment : estudiantes
+Student "1" <-- "0..*" StudentRouteAssignment : asignado
+StudentRouteAssignment .. Stop : sin relacion directa
+@enduml
