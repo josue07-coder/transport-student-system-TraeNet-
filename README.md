@@ -1,44 +1,386 @@
-﻿# TransportStudentSystem - Plataforma Web TRAE
+# TransportStudentSystem - Plataforma Web TRAE
 
-Backend para la Plataforma Web del Sistema de Transporte Escolar TRAE. El sistema administra usuarios, roles, estudiantes, tutores, centros educativos, rutas, asignaciones, viajes, asistencia, tracking GPS, incidencias, notificaciones, auditoria, reportes, configuracion, integraciones mock/locales y backups logicos.
+Backend de la **Plataforma Web para el Sistema de Transporte Escolar TRAE**, desarrollado en ASP.NET Core bajo una arquitectura limpia orientada a dominio. El sistema centraliza la gestion academica, operativa y administrativa del transporte escolar: usuarios, roles, estudiantes, tutores, rutas, asignaciones, viajes, asistencia, ubicacion GPS, incidencias, notificaciones, reportes, auditoria, configuracion, integraciones y respaldos.
 
-## Tecnologia
+## Tabla de Contenido
 
-- ASP.NET Core 8
-- Clean Architecture
-- DDD
-- CQRS + MediatR
-- Entity Framework Core
-- SQL Server
-- FluentValidation
-- JWT Bearer Authentication
-- xUnit, FluentAssertions y Moq para pruebas
+- [Descripcion General](#descripcion-general)
+- [Stack Tecnologico](#stack-tecnologico)
+- [Arquitectura](#arquitectura)
+- [Modulos Implementados](#modulos-implementados)
+- [Requisitos Previos](#requisitos-previos)
+- [Configuracion Local](#configuracion-local)
+- [Base de Datos y Migraciones](#base-de-datos-y-migraciones)
+- [Ejecucion del Proyecto](#ejecucion-del-proyecto)
+- [Versionamiento de API](#versionamiento-de-api)
+- [Swagger y Autenticacion](#swagger-y-autenticacion)
+- [Pruebas Automatizadas](#pruebas-automatizadas)
+- [Smoke Tests](#smoke-tests)
+- [Usuarios Semilla](#usuarios-semilla)
+- [Documentacion del Proyecto](#documentacion-del-proyecto)
+- [Buenas Practicas y Seguridad](#buenas-practicas-y-seguridad)
+- [Solucion de Problemas](#solucion-de-problemas)
 
-## Estructura del repositorio
+## Descripcion General
+
+TransportStudentSystem es el backend principal de TRAE. Expone una API REST versionada para que un frontend web pueda administrar y monitorear la operacion diaria del transporte escolar.
+
+El sistema permite:
+
+- Administrar usuarios, roles y permisos.
+- Registrar estudiantes, tutores, centros educativos, grados y sectores.
+- Gestionar vehiculos, conductores, asistentes de transporte, paradas y rutas.
+- Crear asignaciones de ruta con conductor, vehiculo, asistente y estudiantes.
+- Programar viajes por ruta y materializarlos por fecha.
+- Controlar dias no escolares o sin operacion.
+- Iniciar, finalizar, cancelar o marcar viajes como no operativos.
+- Registrar asistencia por viaje, pasajeros esperados y pasajeros excepcionales.
+- Registrar desvio de ruta, incidencias, notificaciones y tracking GPS.
+- Consultar reportes operativos, auditoria y respaldos logicos.
+
+## Stack Tecnologico
+
+### Backend
+
+- **.NET 8**
+- **ASP.NET Core 8**
+- **ASP.NET Core Web API**
+- **JWT Bearer Authentication**
+- **Swagger / OpenAPI** con Swashbuckle
+
+### Arquitectura y Patrones
+
+- **Clean Architecture**
+- **Domain-Driven Design (DDD)**
+- **CQRS**
+- **MediatR**
+- **Repository Pattern**
+- **DTOs manuales**
+- **FluentValidation**
+- **Middleware centralizado de excepciones**
+- **Auditoria y trazabilidad**
+
+### Persistencia
+
+- **Entity Framework Core 8**
+- **SQL Server**
+- **EF Core Migrations**
+- Configuraciones explicitas por entidad
+- Restricciones, indices y relaciones configuradas desde Infrastructure
+
+### Seguridad
+
+- JWT Bearer
+- Autorizacion por roles
+- Roles principales:
+  - `Admin`
+  - `Supervisor`
+  - `Driver`
+  - `TransportAssistant`
+  - `Guardian`
+- Password hashing seguro
+- Validacion de ownership/visibilidad en operaciones sensibles
+
+### Pruebas
+
+- **xUnit**
+- **FluentAssertions**
+- **Moq**
+- **Microsoft.AspNetCore.Mvc.Testing**
+- **EF Core InMemory** para pruebas de integracion/API
+- Smoke tests con PowerShell
+
+### Paquetes Principales
+
+- `MediatR`
+- `FluentValidation`
+- `FluentValidation.DependencyInjectionExtensions`
+- `Microsoft.EntityFrameworkCore`
+- `Microsoft.EntityFrameworkCore.SqlServer`
+- `Microsoft.EntityFrameworkCore.Tools`
+- `Microsoft.AspNetCore.Authentication.JwtBearer`
+- `System.IdentityModel.Tokens.Jwt`
+- `Swashbuckle.AspNetCore`
+
+## Arquitectura
+
+El repositorio sigue una separacion por capas:
 
 ```text
-Transport.Domain/          Entidades, value objects, enums y reglas de dominio
-Transport.Application/     CQRS, DTOs, validators, interfaces y casos de uso
-Transport.Infrastructure/  EF Core, DbContext, configuraciones, repositorios y servicios externos
-Transport.API/             Controllers, middleware, DI, Swagger y servicios API
-tests/                     Pruebas automatizadas de Domain, Application y API
-scripts/                   Smoke tests PowerShell
-docs/                      Documentacion tecnica, UML, seguridad, calidad y base de datos
+Transport.Domain/          Entidades, value objects, enums y excepciones de dominio
+Transport.Application/     CQRS, commands, queries, DTOs, validators e interfaces
+Transport.Infrastructure/  EF Core, DbContext, configuraciones, repositorios y servicios
+Transport.API/             Controllers, middleware, DI, Swagger, JWT y servicios API
+Transport.Shared/          Componentes compartidos
+tests/                     Pruebas automatizadas
+scripts/                   Smoke tests y validaciones funcionales
+docs/                      Documentacion tecnica, UML, QA y base de datos
 ```
 
-## Arquitectura y reglas
+### Responsabilidades por Capa
 
-- Los controllers no devuelven entidades de dominio.
-- No se usa AutoMapper.
-- Se usan DTOs manuales.
-- La capa Application define interfaces de repositorios.
-- Infrastructure implementa repositorios y EF Core.
-- FluentValidation se ejecuta mediante pipeline existente.
-- Las reglas criticas se mantienen en dominio o handlers segun responsabilidad.
+| Capa | Responsabilidad |
+|---|---|
+| Domain | Reglas de negocio, entidades, value objects, enums y excepciones. |
+| Application | Casos de uso CQRS, DTOs, validaciones e interfaces de repositorios/servicios. |
+| Infrastructure | Persistencia EF Core, repositorios, servicios externos mock/locales y seeders. |
+| API | Controllers, autenticacion, autorizacion, Swagger, middlewares y configuracion HTTP. |
+
+### Reglas Arquitectonicas
+
+- No usar AutoMapper.
+- No exponer entidades de dominio desde los controllers.
+- Usar DTOs manuales para entrada/salida.
+- Usar MediatR para commands y queries.
+- Usar FluentValidation mediante pipeline.
+- Definir interfaces en Application e implementarlas en Infrastructure.
+- Mantener configuraciones EF Core explicitas.
+- Evitar columnas FK fantasma como `RoleId1`, `GuardianId1`, `RouteAssignmentId1`, etc.
+
+## Modulos Implementados
+
+### Seguridad y Usuarios
+
+- Auth/Login
+- Forgot password simple
+- Perfil `/me`
+- Cambio de contrasena
+- Upload real de foto de perfil
+- Usuarios administrativos manuales
+- Roles
+- Permisos
+- Visibilidad por rol
+
+### Gestion Academica
+
+- Sectores
+- Centros educativos
+- Grados
+- Tutores
+- Estudiantes
+- Historial de asistencia por estudiante
+
+### Transporte
+
+- Vehiculos
+- Conductores
+- Asistentes de transporte
+- Paradas
+- Rutas
+- Paradas por ruta
+- Asignaciones de ruta
+- Estudiantes asignados a ruta
+
+### Operacion de Viajes
+
+- Estados de viaje:
+  - `Scheduled`
+  - `InProgress`
+  - `Completed`
+  - `Cancelled`
+  - `NotOperating`
+- Programacion de viajes (`TripSchedule`)
+- Materializacion de viajes
+- Calendario de dias no escolares (`NonSchoolDay`)
+- Control de horarios y atraso
+- Puntualidad del viaje
+- Inicio anticipado justificado
+- Finalizacion/cancelacion/no operacion
+
+### Asistencia y Seguridad del Estudiante
+
+- Snapshot de pasajeros por viaje
+- Pasajeros esperados
+- Pasajeros excepcionales
+- Pase de lista por viaje
+- Marcar estudiante como abordado, ausente o descendido
+- Cierre de asistencia
+- Notificaciones al tutor
+- Historial de asistencia
+
+### Monitoreo y Operacion
+
+- Tracking GPS por viaje
+- Ubicacion actual
+- Historial de ubicaciones
+- Desvios de ruta con justificacion
+- Incidencias operativas
+- Comentarios de incidencias
+- Notificaciones internas
+
+### Administracion y Analitica
+
+- Reportes operativos
+- Dashboard
+- Auditoria
+- Configuracion del sistema
+- Integraciones mock/locales:
+  - Email
+  - SMS
+  - WhatsApp
+  - Push
+  - Maps
+  - File storage
+- Backups logicos
+
+## Requisitos Previos
+
+Para ejecutar el proyecto localmente se necesita:
+
+- **Windows 10/11** o ambiente compatible con .NET.
+- **.NET SDK 8** instalado.
+- **SQL Server** o **SQL Server Express**.
+- **Visual Studio 2022**, **Rider** o **VS Code**.
+- **PowerShell** para smoke tests.
+- Herramienta EF Core instalada si se trabajara con migraciones:
+
+```powershell
+dotnet tool install --global dotnet-ef
+```
+
+Si ya esta instalada:
+
+```powershell
+dotnet tool update --global dotnet-ef
+```
+
+## Configuracion Local
+
+Los archivos principales de configuracion estan en:
+
+```text
+Transport.API/appsettings.json
+Transport.API/appsettings.Development.json
+Transport.API/Properties/launchSettings.json
+```
+
+### Connection String
+
+El proyecto usa la clave:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=SERVIDOR;Database=TransportDB;Trusted_Connection=True;TrustServerCertificate=True;Encrypt=False;"
+  }
+}
+```
+
+Para desarrollo local se puede usar:
+
+- Autenticacion integrada de Windows:
+
+```text
+Server=localhost\\SQLEXPRESS;Database=TransportDB;Trusted_Connection=True;TrustServerCertificate=True;Encrypt=False;
+```
+
+- SQL Authentication:
+
+```text
+Server=localhost\\SQLEXPRESS;Database=TransportDB;User Id=usuario;Password=contrasena;TrustServerCertificate=True;Encrypt=False;
+```
+
+No se recomienda versionar credenciales reales.
+
+### JWT
+
+Configuracion requerida:
+
+```json
+{
+  "Jwt": {
+    "Key": "clave-segura-de-longitud-suficiente",
+    "Issuer": "TransportStudentSystem",
+    "Audience": "TransportStudentSystem",
+    "ExpiresInMinutes": "60"
+  }
+}
+```
+
+La misma configuracion debe ser usada para firmar y validar tokens.
+
+### Archivos Estaticos y Uploads
+
+El upload de foto de perfil guarda archivos localmente en:
+
+```text
+wwwroot/uploads/profile-photos
+```
+
+El endpoint acepta:
+
+- `image/jpeg`
+- `image/png`
+- `image/webp`
+
+Tamano maximo:
+
+```text
+5 MB
+```
+
+## Base de Datos y Migraciones
+
+Crear o actualizar la base de datos:
+
+```powershell
+dotnet ef database update --project Transport.Infrastructure --startup-project Transport.API
+```
+
+Crear una migracion nueva:
+
+```powershell
+dotnet ef migrations add NombreMigracion --project Transport.Infrastructure --startup-project Transport.API
+```
+
+Importante:
+
+- No ejecutar migraciones en produccion sin revision.
+- Revisar que no se generen FKs fantasma.
+- Revisar `AppDbContextModelSnapshot.cs` despues de cambios grandes.
+
+## Ejecucion del Proyecto
+
+Restaurar paquetes:
+
+```powershell
+dotnet restore TransportStudentSystem.sln
+```
+
+Compilar:
+
+```powershell
+dotnet build TransportStudentSystem.sln
+```
+
+Ejecutar API por HTTP:
+
+```powershell
+dotnet run --project Transport.API --launch-profile http
+```
+
+URL habitual:
+
+```text
+http://localhost:5075
+```
+
+Ejecutar por HTTPS:
+
+```powershell
+dotnet run --project Transport.API --launch-profile https
+```
+
+URLs habituales:
+
+```text
+https://localhost:7295
+http://localhost:5075
+```
 
 ## Versionamiento de API
 
-La API usa versionamiento por URL. Todas las rutas vigentes usan el prefijo:
+Todas las rutas vigentes usan:
 
 ```text
 /api/v1
@@ -49,128 +391,69 @@ Ejemplos:
 ```text
 POST /api/v1/auth/login
 GET  /api/v1/me
+GET  /api/v1/students
 GET  /api/v1/trips
 POST /api/v1/me/photo/upload
 ```
 
-Las rutas antiguas sin version (`/api/...`) ya no estan disponibles.
+Las rutas antiguas sin version (`/api/...`) no estan disponibles.
 
-## Swagger
+## Swagger y Autenticacion
 
-Con la API en ejecucion:
+Swagger UI:
 
 ```text
 http://localhost:5075/swagger
+```
+
+Documento OpenAPI:
+
+```text
 http://localhost:5075/swagger/v1/swagger.json
 ```
 
-Swagger soporta JWT Bearer mediante el boton `Authorize`.
+Para probar endpoints protegidos:
 
-## Autenticacion
-
-Endpoint de login:
-
-```http
-POST /api/v1/auth/login
-```
-
-Body de ejemplo:
-
-```json
-{
-  "username": "admin",
-  "password": "Admin123"
-}
-```
-
-Usar el token como:
-
-```http
-Authorization: Bearer {token}
-```
-
-## Modulos principales
-
-- Auth y perfil de usuario
-- Usuarios, roles y permisos
-- Gestion academica: sectores, escuelas, grados, tutores y estudiantes
-- Transporte: vehiculos, conductores, asistentes, paradas y rutas
-- Asignaciones de rutas y estudiantes
-- Programacion y materializacion de viajes
-- Calendario escolar y dias sin operacion
-- Operacion de viajes, asistencia y pasajeros excepcionales
-- Desvios de ruta
-- Tracking GPS
-- Incidencias operativas
-- Notificaciones internas
-- Reportes y analitica
-- Auditoria y trazabilidad
-- Configuracion general del sistema
-- Integraciones externas mock/locales
-- Backups logicos
-
-## Documentacion
-
-- API: `docs/API_DOCUMENTATION.md`
-- Requerimientos frontend: `docs/FRONTEND_REQUIREMENTS.md`
-- Solucion de problemas SQL Server SSPI: `docs/SQLSERVER_SSPI_TROUBLESHOOTING.md`
-- Revision de logica de viajes/asignaciones: `docs/TRIP_ASSIGNMENT_LOGIC_REVIEW.md`
-- Propuesta de rediseno operativo de viajes: `docs/TRIP_OPERATION_REDESIGN_PROPOSAL.md`
-- Auditorias QA: `docs/quality/`
-- Auditoria de seguridad: `docs/security/`
-- Diccionarios de base de datos: `docs/database/`
-- Diagramas UML: `docs/uml/`
-
-## Configuracion local
-
-1. Revisar connection string en:
+1. Ejecutar `POST /api/v1/auth/login`.
+2. Copiar el token JWT.
+3. Presionar `Authorize` en Swagger.
+4. Ingresar:
 
 ```text
-Transport.API/appsettings.json
-Transport.API/appsettings.Development.json
+Bearer {token}
 ```
 
-2. Si usa autenticacion integrada de SQL Server y aparece `Failed to generate SSPI context`, revisar:
+## Pruebas Automatizadas
 
-```text
-docs/SQLSERVER_SSPI_TROUBLESHOOTING.md
-```
-
-3. Aplicar migraciones cuando corresponda:
-
-```powershell
-dotnet ef database update --project Transport.Infrastructure --startup-project Transport.API
-```
-
-## Ejecucion
-
-```powershell
-dotnet run --project Transport.API --launch-profile http
-```
-
-URL local habitual:
-
-```text
-http://localhost:5075
-```
-
-## Build y pruebas
-
-Compilar solucion:
-
-```powershell
-dotnet build TransportStudentSystem.sln
-```
-
-Ejecutar pruebas automatizadas:
+Ejecutar todas las pruebas:
 
 ```powershell
 dotnet test TransportStudentSystem.sln
 ```
 
-## Smoke tests
+Proyectos de pruebas:
 
-Los smoke tests estan en `scripts/`. Algunos dependen de que la API este levantada y de que SQL Server este disponible.
+```text
+tests/Transport.Domain.Tests
+tests/Transport.Application.Tests
+tests/Transport.API.Tests
+```
+
+Cobertura principal:
+
+- Reglas de dominio.
+- Handlers de Application.
+- Autorizacion.
+- Rutas API.
+- Reglas de viaje, asistencia, tracking, auditoria y seguridad.
+
+## Smoke Tests
+
+Los smoke tests estan en:
+
+```text
+scripts/
+```
 
 Ejemplos:
 
@@ -178,29 +461,99 @@ Ejemplos:
 ./scripts/smoke-test.ps1
 ./scripts/smoke-test-write-endpoints.ps1
 ./scripts/smoke-test-security-authorization.ps1
+./scripts/smoke-test-operational-seed.ps1
 ./scripts/smoke-test-attendance-workflow.ps1
+./scripts/smoke-test-trip-route-deviations.ps1
 ```
 
-## Usuarios semilla de desarrollo
+Algunos smoke tests requieren:
 
-En ambiente `Development` el proyecto cuenta con seeding operativo para facilitar pruebas funcionales. Los usuarios esperados para pruebas incluyen:
+- API ejecutandose localmente.
+- SQL Server disponible.
+- Migraciones aplicadas.
+- Datos semilla cargados.
 
-- `admin`
-- `supervisor`
-- `driver01`
-- `assistant01`
-- `guardian01`
+## Usuarios Semilla
 
-Las contrasenas iniciales son de desarrollo y deben cambiarse para ambientes reales.
+En ambiente `Development`, el sistema incluye seeders para datos base y operativos.
 
-## Notas de seguridad
+Usuarios esperados para pruebas:
+
+| Rol | Username |
+|---|---|
+| Admin | `admin` |
+| Supervisor | `supervisor` |
+| Driver | `driver01` |
+| TransportAssistant | `assistant01` |
+| Guardian | `guardian01` |
+
+Las contrasenas son de desarrollo. Deben cambiarse o deshabilitarse en ambientes productivos.
+
+## Documentacion del Proyecto
+
+Documentacion principal:
+
+| Documento | Ruta |
+|---|---|
+| Documentacion API | `docs/API_DOCUMENTATION.md` |
+| Requerimientos frontend | `docs/FRONTEND_REQUIREMENTS.md` |
+| Troubleshooting SQL Server SSPI | `docs/SQLSERVER_SSPI_TROUBLESHOOTING.md` |
+| Revision logica de rutas/viajes | `docs/TRIP_ASSIGNMENT_LOGIC_REVIEW.md` |
+| Rediseno operativo de viajes | `docs/TRIP_OPERATION_REDESIGN_PROPOSAL.md` |
+| Auditorias QA | `docs/quality/` |
+| Seguridad backend | `docs/security/` |
+| Diccionarios de base de datos | `docs/database/` |
+| Diagramas UML | `docs/uml/` |
+
+## Buenas Practicas y Seguridad
 
 - No usar credenciales semilla en produccion.
 - No guardar contrasenas en texto plano.
-- No exponer entidades de dominio desde API.
-- Proteger los endpoints administrativos con roles.
-- Mantener actualizados los smoke tests de autorizacion cuando cambien permisos.
+- No exponer entidades de dominio en respuestas HTTP.
+- No usar AutoMapper.
+- Mantener DTOs manuales.
+- Proteger endpoints administrativos con roles.
+- Validar ownership en endpoints operativos.
+- No confiar solo en ocultar rutas desde el frontend.
+- Mantener Swagger y smoke tests alineados con `/api/v1`.
+- No ejecutar `database update` en produccion sin revision previa.
+- No versionar archivos `bin`, `obj`, `.vs`, logs temporales o secretos.
 
-## Estado actual
+## Solucion de Problemas
 
-El backend tiene APIs versionadas bajo `/api/v1`, Swagger JWT Bearer, pruebas automatizadas y documentacion tecnica en `docs/`.
+### Error: `Failed to generate SSPI context`
+
+Ocurre por problemas de autenticacion integrada con SQL Server. Revisar:
+
+```text
+docs/SQLSERVER_SSPI_TROUBLESHOOTING.md
+```
+
+Opciones:
+
+- Corregir autenticacion integrada.
+- Usar SQL Authentication en desarrollo.
+- Validar servicio SQL Server y SPN si aplica.
+
+### Build bloqueado por `Transport.API.exe`
+
+Si aparece un error indicando que `Transport.API.exe` esta siendo usado por otro proceso:
+
+```powershell
+Get-Process Transport.API -ErrorAction SilentlyContinue
+Stop-Process -Id {PID} -Force
+dotnet build TransportStudentSystem.sln
+```
+
+### Token JWT invalido en Swagger
+
+Verificar:
+
+- Usar token nuevo.
+- Revisar `Jwt:Key`, `Jwt:Issuer`, `Jwt:Audience`.
+- Confirmar que Swagger usa `Bearer {token}`.
+- Cerrar sesion/limpiar token viejo en Swagger si persiste.
+
+## Estado Actual
+
+El backend se encuentra versionado bajo `/api/v1`, con Swagger JWT Bearer, modulos operativos completos, pruebas automatizadas, smoke tests y documentacion tecnica en `docs/`.
