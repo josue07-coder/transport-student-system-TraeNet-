@@ -1,4 +1,5 @@
 using Transport.API.Extensions;
+using Transport.API.Conventions;
 using Transport.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,10 @@ builder.Services.AddMediatRServices();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddSwaggerDocs();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(new ApiVersionRouteConvention());
+});
 
 builder.Services.AddCors(options =>
 {
@@ -36,6 +40,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerDocs();
 }
 
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<ApiVersionHeaderMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
 
 //app.UseHttpsRedirection();

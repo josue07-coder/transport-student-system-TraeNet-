@@ -27,12 +27,19 @@ namespace Transport.Infrastructure.Persistence.Repositories
 
         public async Task<List<Sector>> GetAllAsync()
         {
-            return await _context.Sectors.ToListAsync();
+            return await _context.Sectors
+                .AsNoTracking()
+                .OrderBy(sector => sector.Name)
+                .ThenBy(sector => sector.Id)
+                .ToListAsync();
         }
 
         public async Task<PaginatedResponse<Sector>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _context.Sectors.AsQueryable();
+            var query = _context.Sectors
+                .AsNoTracking()
+                .OrderBy(sector => sector.Name)
+                .ThenBy(sector => sector.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)

@@ -56,13 +56,13 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.Navigation(x => x.Address)
                 .IsRequired();
 
-            builder.OwnsOne(x => x.Email, email =>
-            {
-                email.Property(e => e.Value)
-                    .HasColumnName("Email")
-                    .IsRequired(false)
-                    .HasMaxLength(150);
-            });
+            builder.Property(x => x.Email)
+                .HasConversion(
+                    email => email == null ? null : email.Value,
+                    value => string.IsNullOrWhiteSpace(value) ? null : Transport.Domain.ValueObjects.Email.Create(value))
+                .HasColumnName("Email")
+                .IsRequired(false)
+                .HasMaxLength(150);
 
             builder.Property(x => x.PhotoUrl)
                 .HasMaxLength(300);

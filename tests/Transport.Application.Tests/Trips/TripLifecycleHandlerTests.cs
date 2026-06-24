@@ -43,7 +43,8 @@ public class TripLifecycleHandlerTests
             repository.Object,
             Mock.Of<IAuditService>(),
             Mock.Of<INotificationService>(),
-            Mock.Of<IUserRepository>());
+            Mock.Of<IUserRepository>(),
+            Mock.Of<ITripOperationAuthorizationService>());
 
         var act = () => handler.Handle(new EndTripCommand { Id = trip.Id }, CancellationToken.None);
 

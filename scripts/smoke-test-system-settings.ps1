@@ -70,19 +70,19 @@ $script:Results = New-Object System.Collections.Generic.List[object]
 
 try {
     Write-Host "Base URL: $baseUrl"
-    $login = Invoke-Request -Group "AUTH" -Label "POST /api/auth/login" -Method "POST" -Path "api/auth/login" -Body @{ username = $Username; password = $Password }
+    $login = Invoke-Request -Group "AUTH" -Label "POST /api/v1/auth/login" -Method "POST" -Path "api/v1/auth/login" -Body @{ username = $Username; password = $Password }
     $script:Token = ($login.Content | ConvertFrom-Json).token
     $adminToken = $script:Token
 
-    $all = Invoke-Request -Label "GET /api/system-settings" -Method "GET" -Path "api/system-settings"
+    $all = Invoke-Request -Label "GET /api/v1/system-settings" -Method "GET" -Path "api/v1/system-settings"
     $settings = @($all.Content | ConvertFrom-Json)
     $baseSetting = $settings | Where-Object { $_.isEditable -eq $false } | Select-Object -First 1
 
-    Invoke-Request -Label "GET /api/system-settings/by-category/General" -Method "GET" -Path "api/system-settings/by-category/General" | Out-Null
-    Invoke-Request -Label "GET /api/system-settings/key/General.SystemName" -Method "GET" -Path "api/system-settings/key/General.SystemName" | Out-Null
+    Invoke-Request -Label "GET /api/v1/system-settings/by-category/General" -Method "GET" -Path "api/v1/system-settings/by-category/General" | Out-Null
+    Invoke-Request -Label "GET /api/v1/system-settings/key/General.SystemName" -Method "GET" -Path "api/v1/system-settings/key/General.SystemName" | Out-Null
 
     $stamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
-    $custom = Invoke-Request -Label "POST /api/system-settings" -Method "POST" -Path "api/system-settings" -Body @{
+    $custom = Invoke-Request -Label "POST /api/v1/system-settings" -Method "POST" -Path "api/v1/system-settings" -Body @{
         key = "Smoke.Custom.$stamp"
         value = "initial"
         description = "Smoke custom setting"
@@ -92,7 +92,7 @@ try {
     }
     $customSetting = $custom.Content | ConvertFrom-Json
 
-    Invoke-Request -Label "PUT /api/system-settings/{id}" -Method "PUT" -Path "api/system-settings/$($customSetting.id)" -Body @{
+    Invoke-Request -Label "PUT /api/v1/system-settings/{id}" -Method "PUT" -Path "api/v1/system-settings/$($customSetting.id)" -Body @{
         value = "updated"
         description = "Updated smoke custom setting"
         category = "Smoke"
@@ -100,9 +100,9 @@ try {
         isEditable = $true
     } | Out-Null
 
-    Invoke-Request -Label "DELETE /api/system-settings/{id}" -Method "DELETE" -Path "api/system-settings/$($customSetting.id)" | Out-Null
+    Invoke-Request -Label "DELETE /api/v1/system-settings/{id}" -Method "DELETE" -Path "api/v1/system-settings/$($customSetting.id)" | Out-Null
 
-    $nonEditable = Invoke-Request -Label "POST /api/system-settings non-editable" -Method "POST" -Path "api/system-settings" -Body @{
+    $nonEditable = Invoke-Request -Label "POST /api/v1/system-settings non-editable" -Method "POST" -Path "api/v1/system-settings" -Body @{
         key = "Smoke.Locked.$stamp"
         value = "locked"
         description = "Smoke non-editable setting"
@@ -112,7 +112,7 @@ try {
     }
     $nonEditableSetting = $nonEditable.Content | ConvertFrom-Json
 
-    Invoke-Request -Label "PUT /api/system-settings/{id} non-editable" -Method "PUT" -Path "api/system-settings/$($nonEditableSetting.id)" -ExpectedStatusCodes @(400) -Body @{
+    Invoke-Request -Label "PUT /api/v1/system-settings/{id} non-editable" -Method "PUT" -Path "api/v1/system-settings/$($nonEditableSetting.id)" -ExpectedStatusCodes @(400) -Body @{
         value = "blocked"
         description = "Blocked update"
         category = "Smoke"
@@ -121,12 +121,12 @@ try {
     } | Out-Null
 
     $guardianDocument = "SSG$stamp"
-    Invoke-Request -Group "SETUP" -Label "POST /api/sectors" -Method "POST" -Path "api/sectors" -Body @{ name = "Settings Sector $stamp"; province = "Smoke"; city = "Smoke" } | Out-Null
-    $guardian = Invoke-Request -Group "SETUP" -Label "POST /api/guardians" -Method "POST" -Path "api/guardians" -Body @{ documentType = 1; documentNumber = $guardianDocument; firstName = "Settings"; lastName = "Guardian"; phone = "8095552002"; street = "Street"; city = "Smoke"; gender = 1; sectorId = $null }
+    Invoke-Request -Group "SETUP" -Label "POST /api/v1/sectors" -Method "POST" -Path "api/v1/sectors" -Body @{ name = "Settings Sector $stamp"; province = "Smoke"; city = "Smoke" } | Out-Null
+    $guardian = Invoke-Request -Group "SETUP" -Label "POST /api/v1/guardians" -Method "POST" -Path "api/v1/guardians" -Body @{ documentType = 1; documentNumber = $guardianDocument; firstName = "Settings"; lastName = "Guardian"; phone = "8095552002"; street = "Street"; city = "Smoke"; gender = 1; sectorId = $null }
 
-    $guardianLogin = Invoke-Request -Group "AUTH" -Label "POST /api/auth/login (guardian)" -Method "POST" -Path "api/auth/login" -Body @{ username = $guardianDocument; password = $guardianDocument }
+    $guardianLogin = Invoke-Request -Group "AUTH" -Label "POST /api/v1/auth/login (guardian)" -Method "POST" -Path "api/v1/auth/login" -Body @{ username = $guardianDocument; password = $guardianDocument }
     $script:Token = ($guardianLogin.Content | ConvertFrom-Json).token
-    Invoke-Request -Group "AUTHZ" -Label "POST /api/system-settings unauthorized" -Method "POST" -Path "api/system-settings" -ExpectedStatusCodes @(403) -Body @{
+    Invoke-Request -Group "AUTHZ" -Label "POST /api/v1/system-settings unauthorized" -Method "POST" -Path "api/v1/system-settings" -ExpectedStatusCodes @(403) -Body @{
         key = "Smoke.Forbidden.$stamp"
         value = "no"
         description = "Forbidden"
@@ -154,3 +154,5 @@ if ($failed.Count -gt 0) {
     $failed | Select-Object Group, Endpoint, StatusCode, Error | Format-List
     exit 1
 }
+
+

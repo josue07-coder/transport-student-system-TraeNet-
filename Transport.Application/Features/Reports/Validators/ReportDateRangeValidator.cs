@@ -2,6 +2,7 @@ using FluentValidation;
 using Transport.Application.Features.Reports.Queries.GetAuditSummaryReport;
 using Transport.Application.Features.Reports.Queries.GetDriversPerformanceReport;
 using Transport.Application.Features.Reports.Queries.GetIncidentsReport;
+using Transport.Application.Features.Reports.Queries.GetLowPresenceReport;
 using Transport.Application.Features.Reports.Queries.GetTripsReport;
 using Transport.Application.Features.Reports.Queries.GetVehiclesUsageReport;
 
@@ -30,6 +31,18 @@ namespace Transport.Application.Features.Reports.Validators
     public class GetAuditSummaryReportValidator : AbstractValidator<GetAuditSummaryReportQuery>
     {
         public GetAuditSummaryReportValidator() => this.AddDateRangeRules();
+    }
+
+    public class GetLowPresenceReportValidator : AbstractValidator<GetLowPresenceReportQuery>
+    {
+        public GetLowPresenceReportValidator()
+        {
+            this.AddDateRangeRules();
+
+            RuleFor(x => x.MaximumPresencePercentage)
+                .InclusiveBetween(0, 100)
+                .WithMessage("El porcentaje máximo de presencia debe estar entre 0 y 100");
+        }
     }
 
     internal static class ReportDateRangeRules

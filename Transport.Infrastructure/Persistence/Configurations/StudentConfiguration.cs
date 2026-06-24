@@ -23,6 +23,9 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 sc.Property(c => c.Value)
                   .HasColumnName("StudentCode")
                   .IsRequired();
+
+                sc.HasIndex(c => c.Value)
+                  .IsUnique();
             });
             builder.Property(x => x.PhotoUrl)
                 .HasMaxLength(300);
@@ -51,6 +54,11 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .WithMany(g => g.Students)
                 .HasForeignKey(s => s.GuardianId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasIndex(x => x.SchoolId);
+            builder.HasIndex(x => x.GradeId);
+            builder.HasIndex(x => x.GuardianId);
+            builder.HasIndex(x => x.IsActive);
         }
     }
 }

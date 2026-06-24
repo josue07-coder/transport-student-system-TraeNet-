@@ -28,7 +28,7 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .Include(s => s.Grade)
                 .Include(s => s.Guardian)
                 .Include(s => s.Assignments)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == id && s.IsActive);
         }
 
         public async Task<Student?> GetByIdIncludingInactiveAsync(Guid id)
@@ -48,17 +48,28 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .Include(s => s.School)
                 .Include(s => s.Grade)
                 .Include(s => s.Guardian)
-                .FirstOrDefaultAsync(s => s.StudentCode.Value == code);
+                .FirstOrDefaultAsync(s => s.StudentCode.Value == code && s.IsActive);
         }
 
         public async Task<List<Student>> GetAllAsync()
         {
-            return await _context.Students.ToListAsync();
+            return await _context.Students
+                .AsNoTracking()
+                .Where(s => s.IsActive)
+                .OrderBy(s => s.LastName)
+                .ThenBy(s => s.FirstName)
+                .ThenBy(s => s.Id)
+                .ToListAsync();
         }
 
         public async Task<PaginatedResponse<Student>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _context.Students.AsQueryable();
+            var query = _context.Students
+                .AsNoTracking()
+                .Where(s => s.IsActive)
+                .OrderBy(s => s.LastName)
+                .ThenBy(s => s.FirstName)
+                .ThenBy(s => s.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
@@ -71,21 +82,52 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<List<Student>> GetByGradeAsync(Guid gradeId)
         {
             return await _context.Students
-                .Where(s => s.GradeId == gradeId)
+                .AsNoTracking()
+                .Where(s => s.GradeId == gradeId && s.IsActive)
+                .OrderBy(s => s.LastName)
+                .ThenBy(s => s.FirstName)
                 .ToListAsync();
         }
 
         public async Task<List<Student>> GetBySchoolAsync(Guid schoolId)
         {
             return await _context.Students
-                .Where(s => s.SchoolId == schoolId)
+                .AsNoTracking()
+                .Where(s => s.SchoolId == schoolId && s.IsActive)
+                .OrderBy(s => s.LastName)
+                .ThenBy(s => s.FirstName)
                 .ToListAsync();
         }
 
         public async Task<List<Student>> GetByGuardianAsync(Guid guardianId)
         {
             return await _context.Students
-                .Where(s => s.GuardianId == guardianId)
+                .AsNoTracking()
+                .Where(s => s.GuardianId == guardianId && s.IsActive)
+                .OrderBy(s => s.LastName)
+                .ThenBy(s => s.FirstName)
+                .ToListAsync();
+        }
+
+        public async Task<List<Student>> SearchForAttendanceAsync(string query, int maxResults = 20)
+        {
+            var normalizedQuery = query.Trim().ToLower();
+            var take = Math.Clamp(maxResults, 1, 50);
+
+            return await _context.Students
+                .AsNoTracking()
+                .Include(student => student.Guardian)
+                .Include(student => student.School)
+                .Where(student =>
+                    student.IsActive &&
+                    (student.FirstName.ToLower().Contains(normalizedQuery) ||
+                     student.LastName.ToLower().Contains(normalizedQuery) ||
+                     (student.FirstName + " " + student.LastName).ToLower().Contains(normalizedQuery) ||
+                     student.StudentCode.Value.ToLower().Contains(normalizedQuery) ||
+                     student.Guardian.DocumentNumber.ToLower().Contains(normalizedQuery)))
+                .OrderBy(student => student.LastName)
+                .ThenBy(student => student.FirstName)
+                .Take(take)
                 .ToListAsync();
         }
 
@@ -98,7 +140,7 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<bool> ExistsAsync(Guid id)
         {
             return await _context.Students
-                .AnyAsync(student => student.Id == id);
+                .AnyAsync(student => student.Id == id && student.IsActive);
         }
 
         public async Task<bool> HasActiveRouteAssignmentAsync(Guid studentId)

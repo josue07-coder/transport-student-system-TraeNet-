@@ -44,6 +44,7 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.HasIndex(notification => notification.UserId);
             builder.HasIndex(notification => notification.IsRead);
             builder.HasIndex(notification => notification.CreatedAt);
+            builder.HasIndex(notification => new { notification.UserId, notification.IsRead, notification.CreatedAt });
             builder.HasIndex(notification => new { notification.RelatedEntityType, notification.RelatedEntityId });
         }
     }

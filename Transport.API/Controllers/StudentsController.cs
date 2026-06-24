@@ -9,6 +9,7 @@ using Transport.Application.Features.Students.Queries.GetStudents;
 using Transport.Application.Features.Students.Queries.GetStudentsByGrade;
 using Transport.Application.Features.Students.Queries.GetStudentsByGuardian;
 using Transport.Application.Features.Students.Queries.GetStudentsBySchool;
+using Transport.Application.Features.TripStudentAttendances.Queries.GetStudentAttendanceHistory;
 
 namespace Transport.API.Controllers
 {
@@ -24,14 +25,16 @@ namespace Transport.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStudentCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Supervisor")]
         public async Task<IActionResult> GetAll([FromQuery] GetAllStudentsQuery query)
         {
             var result = await _mediator.Send(query);
@@ -39,6 +42,7 @@ namespace Transport.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,Supervisor")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _mediator.Send(new GetStudentByIdQuery(id));
@@ -46,6 +50,7 @@ namespace Transport.API.Controllers
         }
 
         [HttpGet("code/{code}")]
+        [Authorize(Roles = "Admin,Supervisor")]
         public async Task<IActionResult> GetByCode(string code)
         {
             var result = await _mediator.Send(new GetStudentByCodeQuery(code));
@@ -53,6 +58,7 @@ namespace Transport.API.Controllers
         }
 
         [HttpGet("by-grade/{gradeId}")]
+        [Authorize(Roles = "Admin,Supervisor")]
         public async Task<IActionResult> GetByGrade(Guid gradeId)
         {
             var result = await _mediator.Send(new GetStudentsByGradeQuery(gradeId));
@@ -60,6 +66,7 @@ namespace Transport.API.Controllers
         }
 
         [HttpGet("by-school/{schoolId}")]
+        [Authorize(Roles = "Admin,Supervisor")]
         public async Task<IActionResult> GetBySchool(Guid schoolId)
         {
             var result = await _mediator.Send(new GetStudentsBySchoolQuery(schoolId));
@@ -67,12 +74,22 @@ namespace Transport.API.Controllers
         }
 
         [HttpGet("by-guardian/{guardianId}")]
+        [Authorize(Roles = "Admin,Supervisor")]
         public async Task<IActionResult> GetByGuardian(Guid guardianId)
         {
             var result = await _mediator.Send(new GetStudentsByGuardianQuery(guardianId));
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin,Supervisor,Guardian,Driver,TransportAssistant")]
+        [HttpGet("{studentId}/attendance-history")]
+        public async Task<IActionResult> GetAttendanceHistory(Guid studentId)
+        {
+            var result = await _mediator.Send(new GetStudentAttendanceHistoryQuery(studentId));
+            return Ok(result);
+        }
+
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateStudentCommand command)
         {
@@ -83,6 +100,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

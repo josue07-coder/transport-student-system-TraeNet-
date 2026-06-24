@@ -58,7 +58,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateTripScheduleCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
         [HttpPost("{id}/materialize")]
@@ -68,7 +68,7 @@ namespace Transport.API.Controllers
                 return BadRequest();
 
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status201Created, result);
         }
 
         [HttpPut("{id}")]

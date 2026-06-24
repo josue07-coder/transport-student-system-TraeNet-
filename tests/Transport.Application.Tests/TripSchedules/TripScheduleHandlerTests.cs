@@ -101,7 +101,12 @@ public class TripScheduleHandlerTests
         var trips = new Mock<ITripRepository>();
         var nonSchoolDays = new Mock<INonSchoolDayRepository>();
         var audit = new Mock<IAuditService>();
-        var handler = new MaterializeTripScheduleHandler(schedules.Object, trips.Object, nonSchoolDays.Object, audit.Object);
+        var handler = new MaterializeTripScheduleHandler(
+            schedules.Object,
+            trips.Object,
+            nonSchoolDays.Object,
+            audit.Object,
+            new ImmediateUnitOfWork());
 
         var act = () => handler.Handle(new MaterializeTripScheduleCommand
         {
@@ -306,6 +311,11 @@ public class TripScheduleHandlerTests
         audit.Setup(x => x.LogAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<string?>()))
             .Returns(Task.CompletedTask);
 
-        return new MaterializeTripScheduleHandler(schedules.Object, trips.Object, nonSchoolDays.Object, audit.Object);
+        return new MaterializeTripScheduleHandler(
+            schedules.Object,
+            trips.Object,
+            nonSchoolDays.Object,
+            audit.Object,
+            new ImmediateUnitOfWork());
     }
 }

@@ -17,6 +17,10 @@ namespace Transport.Application.Features.AuditLogs.Queries
                 EntityId = auditLog.EntityId,
                 IpAddress = auditLog.IpAddress,
                 UserAgent = auditLog.UserAgent,
+                CorrelationId = auditLog.CorrelationId,
+                TraceId = auditLog.TraceId,
+                RequestPath = auditLog.RequestPath,
+                HttpMethod = auditLog.HttpMethod,
                 CreatedAt = auditLog.CreatedAt
             };
         }

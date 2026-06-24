@@ -44,13 +44,21 @@ namespace Transport.Infrastructure.Persistence.Repositories
         {
             return await _context.TransportAssistants
                 .IgnoreQueryFilters()
+                .AsNoTracking()
                 .Where(assistant => assistant.IsActive == isActive)
+                .OrderBy(assistant => assistant.LastName)
+                .ThenBy(assistant => assistant.FirstName)
+                .ThenBy(assistant => assistant.Id)
                 .ToListAsync();
         }
 
         public async Task<PaginatedResponse<TransportAssistant>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _context.TransportAssistants.AsQueryable();
+            var query = _context.TransportAssistants
+                .AsNoTracking()
+                .OrderBy(assistant => assistant.LastName)
+                .ThenBy(assistant => assistant.FirstName)
+                .ThenBy(assistant => assistant.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)

@@ -47,6 +47,10 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .WithOne(x => x.Route)
                 .HasForeignKey(x => x.RouteId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(x => x.SchoolId);
+            builder.HasIndex(x => x.Status);
+            builder.HasIndex(x => new { x.SchoolId, x.Name });
         }
     }
 }

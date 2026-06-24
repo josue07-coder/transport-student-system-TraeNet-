@@ -18,8 +18,8 @@ namespace Transport.API.Controllers
     [Route("api/me")]
     public class MeController : ControllerBase
     {
-        private const long MaxProfilePhotoSizeBytes = 2 * 1024 * 1024;
-        private const long MaxProfilePhotoRequestSizeBytes = 3 * 1024 * 1024;
+        private const long MaxProfilePhotoSizeBytes = 5 * 1024 * 1024;
+        private const long MaxProfilePhotoRequestSizeBytes = 6 * 1024 * 1024;
         private static readonly HashSet<string> AllowedProfilePhotoContentTypes = new(StringComparer.OrdinalIgnoreCase)
         {
             "image/jpeg",
@@ -114,7 +114,7 @@ namespace Transport.API.Controllers
 
             if (file.Length > MaxProfilePhotoSizeBytes)
             {
-                return BadRequest("El archivo no puede exceder 2 MB");
+                return BadRequest("El archivo no puede exceder 5 MB");
             }
 
             if (!AllowedProfilePhotoContentTypes.Contains(file.ContentType))

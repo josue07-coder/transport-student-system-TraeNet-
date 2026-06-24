@@ -54,6 +54,193 @@ public class DomainEntityTests
     }
 
     [Fact]
+    public void Trip_Start_OnTimeWithinTolerance_DoesNotMarkLate()
+    {
+        var scheduled = DateTime.UtcNow.AddMinutes(5);
+        var trip = Trip.CreateScheduledFromSchedule(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            TripDirection.ToSchool,
+            DateOnly.FromDateTime(scheduled),
+            scheduled);
+
+        trip.Start(scheduled.AddMinutes(-5), 5, false, null);
+
+        trip.Status.Should().Be(TripStatus.InProgress);
+        trip.DelayMinutes.Should().Be(0);
+        trip.IsLate.Should().BeFalse();
+        trip.StartedEarly.Should().BeFalse();
+        trip.PunctualityStatus.Should().Be(TripPunctualityStatus.OnTime);
+    }
+
+    [Fact]
+    public void Trip_Start_DoesNotAllowTooEarlyWithoutAuthorization()
+    {
+        var scheduled = DateTime.UtcNow.AddMinutes(30);
+        var trip = Trip.CreateScheduledFromSchedule(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            TripDirection.ToSchool,
+            DateOnly.FromDateTime(scheduled),
+            scheduled);
+
+        var act = () => trip.Start(scheduled.AddMinutes(-6), 5, false, null);
+
+        act.Should().Throw<DomainException>()
+            .WithMessage("No puede iniciar el viaje antes de la hora programada.");
+    }
+
+    [Fact]
+    public void Trip_Start_ForcedEarlyRequiresReason()
+    {
+        var scheduled = DateTime.UtcNow.AddMinutes(30);
+        var trip = Trip.CreateScheduledFromSchedule(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            TripDirection.ToSchool,
+            DateOnly.FromDateTime(scheduled),
+            scheduled);
+
+        var act = () => trip.Start(scheduled.AddMinutes(-10), 5, true, " ");
+
+        act.Should().Throw<DomainException>();
+    }
+
+    [Fact]
+    public void Trip_Start_ForcedEarlyStoresReason()
+    {
+        var scheduled = DateTime.UtcNow.AddMinutes(30);
+        var trip = Trip.CreateScheduledFromSchedule(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            TripDirection.ToSchool,
+            DateOnly.FromDateTime(scheduled),
+            scheduled);
+
+        trip.Start(scheduled.AddMinutes(-10), 5, true, "Autorizado por supervisor");
+
+        trip.StartedEarly.Should().BeTrue();
+        trip.EarlyStartReason.Should().Be("Autorizado por supervisor");
+        trip.DelayMinutes.Should().Be(0);
+        trip.PunctualityStatus.Should().Be(TripPunctualityStatus.OnTime);
+    }
+
+    [Fact]
+    public void Trip_Start_CalculatesSlightDelay()
+    {
+        var scheduled = DateTime.UtcNow.AddMinutes(-7);
+        var trip = Trip.CreateScheduledFromSchedule(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            TripDirection.ToSchool,
+            DateOnly.FromDateTime(scheduled),
+            scheduled);
+
+        trip.Start(scheduled.AddMinutes(7), 5, false, null);
+
+        trip.DelayMinutes.Should().Be(7);
+        trip.IsLate.Should().BeTrue();
+        trip.PunctualityStatus.Should().Be(TripPunctualityStatus.SlightlyLate);
+    }
+
+    [Fact]
+    public void Trip_Start_CalculatesLateDelay()
+    {
+        var scheduled = DateTime.UtcNow.AddMinutes(-12);
+        var trip = Trip.CreateScheduledFromSchedule(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            TripDirection.ToSchool,
+            DateOnly.FromDateTime(scheduled),
+            scheduled);
+
+        trip.Start(scheduled.AddMinutes(12), 5, false, null);
+
+        trip.DelayMinutes.Should().Be(12);
+        trip.IsLate.Should().BeTrue();
+        trip.PunctualityStatus.Should().Be(TripPunctualityStatus.Late);
+    }
+
+    [Fact]
+    public void Trip_ReportRouteDeviation_DoesNotAllowWhenNotInProgress()
+    {
+        var trip = new Trip(Guid.NewGuid());
+
+        var act = () => trip.ReportRouteDeviation(
+            Guid.NewGuid(),
+            RouteDeviationReasonType.Traffic,
+            "Tránsito pesado",
+            null,
+            null,
+            null,
+            DateTime.UtcNow);
+
+        act.Should().Throw<DomainException>();
+    }
+
+    [Fact]
+    public void Trip_ReportRouteDeviation_AllowsWhenInProgress()
+    {
+        var trip = new Trip(Guid.NewGuid());
+        trip.Start();
+        var userId = Guid.NewGuid();
+
+        var deviation = trip.ReportRouteDeviation(
+            userId,
+            RouteDeviationReasonType.RoadClosed,
+            "Puente cerrado",
+            "Se tomó una vía alterna",
+            18.208100m,
+            -71.100200m,
+            DateTime.UtcNow);
+
+        deviation.TripId.Should().Be(trip.Id);
+        deviation.ReportedByUserId.Should().Be(userId);
+        deviation.ReasonType.Should().Be(RouteDeviationReasonType.RoadClosed);
+        deviation.Reason.Should().Be("Puente cerrado");
+        deviation.Latitude.Should().Be(18.208100m);
+        deviation.Longitude.Should().Be(-71.100200m);
+        trip.RouteDeviations.Should().ContainSingle();
+    }
+
+    [Fact]
+    public void Trip_ReportRouteDeviation_OtherRequiresReason()
+    {
+        var trip = new Trip(Guid.NewGuid());
+        trip.Start();
+
+        var act = () => trip.ReportRouteDeviation(
+            Guid.NewGuid(),
+            RouteDeviationReasonType.Other,
+            " ",
+            null,
+            null,
+            null,
+            DateTime.UtcNow);
+
+        act.Should().Throw<DomainException>();
+    }
+
+    [Fact]
+    public void Trip_ReportRouteDeviation_AllowsOptionalCoordinates()
+    {
+        var trip = new Trip(Guid.NewGuid());
+        trip.Start();
+
+        var deviation = trip.ReportRouteDeviation(
+            Guid.NewGuid(),
+            RouteDeviationReasonType.Weather,
+            "Lluvia fuerte",
+            null,
+            null,
+            null,
+            DateTime.UtcNow);
+
+        deviation.Latitude.Should().BeNull();
+        deviation.Longitude.Should().BeNull();
+    }
+
+    [Fact]
     public void Trip_CreateScheduledFromSchedule_CreatesScheduledTrip()
     {
         var routeAssignmentId = Guid.NewGuid();
@@ -324,8 +511,113 @@ public class DomainEntityTests
         var attendance = CreateAttendance();
 
         attendance.Status.Should().Be(TripAttendanceStatus.Expected);
+        attendance.IsExpectedPassenger.Should().BeTrue();
+        attendance.AttendanceSource.Should().Be(AttendanceSource.Manual);
+        attendance.MarkedAt.Should().BeNull();
+        attendance.MarkedByUserId.Should().BeNull();
         attendance.BoardedAt.Should().BeNull();
         attendance.DroppedOffAt.Should().BeNull();
+    }
+
+    [Fact]
+    public void TripStudentAttendance_ExceptionalPassengerRequiresReason()
+    {
+        var act = () => TripStudentAttendance.CreateExceptionalPassenger(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            "Ana Santos",
+            "STU-001",
+            Guid.NewGuid(),
+            "Maria Santos",
+            " ",
+            Guid.NewGuid(),
+            DateTime.UtcNow,
+            null);
+
+        act.Should().Throw<DomainException>();
+    }
+
+    [Fact]
+    public void TripStudentAttendance_ExceptionalPassengerStartsBoarded()
+    {
+        var boardedAt = DateTime.UtcNow;
+        var registeredByUserId = Guid.NewGuid();
+
+        var attendance = TripStudentAttendance.CreateExceptionalPassenger(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            "Ana Santos",
+            "STU-001",
+            Guid.NewGuid(),
+            "Maria Santos",
+            "Cambio temporal autorizado",
+            registeredByUserId,
+            boardedAt,
+            "Tutor informado");
+
+        attendance.IsExpectedPassenger.Should().BeFalse();
+        attendance.Status.Should().Be(TripAttendanceStatus.Boarded);
+        attendance.BoardedAt.Should().Be(boardedAt);
+        attendance.MarkedAt.Should().Be(boardedAt);
+        attendance.MarkedByUserId.Should().Be(registeredByUserId);
+        attendance.AttendanceSource.Should().Be(AttendanceSource.ExceptionalManual);
+        attendance.ExceptionReason.Should().Be("Cambio temporal autorizado");
+        attendance.RegisteredByUserId.Should().Be(registeredByUserId);
+        attendance.RegisteredAt.Should().NotBeNull();
+        attendance.Notes.Should().Be("Tutor informado");
+    }
+
+    [Fact]
+    public void TripStudentAttendance_MarkBoardedStoresMarkerAndAutomaticTime()
+    {
+        var attendance = CreateAttendance();
+        var markedByUserId = Guid.NewGuid();
+        var boardedAt = DateTime.UtcNow;
+
+        attendance.MarkBoarded(boardedAt, markedByUserId);
+
+        attendance.Status.Should().Be(TripAttendanceStatus.Boarded);
+        attendance.BoardedAt.Should().Be(boardedAt);
+        attendance.MarkedAt.Should().Be(boardedAt);
+        attendance.MarkedByUserId.Should().Be(markedByUserId);
+        attendance.AttendanceSource.Should().Be(AttendanceSource.Manual);
+    }
+
+    [Fact]
+    public void TripStudentAttendance_ExceptionalPassengerRequiresBoardedAt()
+    {
+        var act = () => TripStudentAttendance.CreateExceptionalPassenger(
+            Guid.NewGuid(),
+            Guid.NewGuid(),
+            "Ana Santos",
+            "STU-001",
+            Guid.NewGuid(),
+            "Maria Santos",
+            "Cambio temporal autorizado",
+            Guid.NewGuid(),
+            default,
+            null);
+
+        act.Should().Throw<DomainException>();
+    }
+
+    [Fact]
+    public void Trip_AddExceptionalPassenger_RequiresInProgressTrip()
+    {
+        var trip = new Trip(Guid.NewGuid());
+
+        var act = () => trip.AddExceptionalPassenger(
+            Guid.NewGuid(),
+            "Ana Santos",
+            "STU-001",
+            Guid.NewGuid(),
+            "Maria Santos",
+            "Cambio temporal autorizado",
+            Guid.NewGuid(),
+            DateTime.UtcNow,
+            null);
+
+        act.Should().Throw<DomainException>();
     }
 
     [Fact]
@@ -358,6 +650,18 @@ public class DomainEntityTests
         var act = () => attendance.MarkDroppedOff(DateTime.UtcNow);
 
         act.Should().Throw<DomainException>();
+    }
+
+    [Fact]
+    public void TripStudentAttendance_DoesNotAllowAbsentAfterBoarded()
+    {
+        var attendance = CreateAttendance();
+        attendance.MarkBoarded(DateTime.UtcNow);
+
+        var act = () => attendance.MarkAbsent("No asistió");
+
+        act.Should().Throw<DomainException>()
+            .WithMessage("No se puede marcar ausente un estudiante que ya abordó");
     }
 
     [Fact]

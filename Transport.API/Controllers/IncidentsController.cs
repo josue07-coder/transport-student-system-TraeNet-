@@ -35,9 +35,10 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> Report([FromBody] ReportIncidentCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] GetAllIncidentsQuery query)
         {
@@ -50,12 +51,14 @@ namespace Transport.API.Controllers
             return Ok(await _mediator.Send(new GetIncidentByIdQuery(id)));
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpGet("by-status/{status}")]
         public async Task<IActionResult> GetByStatus(IncidentStatus status)
         {
             return Ok(await _mediator.Send(new GetIncidentsByStatusQuery(status)));
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpGet("by-severity/{severity}")]
         public async Task<IActionResult> GetBySeverity(IncidentSeverity severity)
         {
@@ -68,6 +71,7 @@ namespace Transport.API.Controllers
             return Ok(await _mediator.Send(new GetIncidentsByTripQuery(tripId)));
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpGet("by-route-assignment/{routeAssignmentId:guid}")]
         public async Task<IActionResult> GetByRouteAssignment(Guid routeAssignmentId)
         {
@@ -80,6 +84,7 @@ namespace Transport.API.Controllers
             return Ok(await _mediator.Send(new GetMyReportedIncidentsQuery()));
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id:guid}/assign/{userId:guid}")]
         public async Task<IActionResult> Assign(Guid id, Guid userId)
         {
@@ -101,6 +106,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id:guid}/close")]
         public async Task<IActionResult> Close(Guid id)
         {
@@ -108,6 +114,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id:guid}/cancel")]
         public async Task<IActionResult> Cancel(Guid id)
         {

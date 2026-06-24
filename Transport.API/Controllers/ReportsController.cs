@@ -5,6 +5,7 @@ using Transport.Application.Features.Reports.Queries.GetAuditSummaryReport;
 using Transport.Application.Features.Reports.Queries.GetDashboardReport;
 using Transport.Application.Features.Reports.Queries.GetDriversPerformanceReport;
 using Transport.Application.Features.Reports.Queries.GetIncidentsReport;
+using Transport.Application.Features.Reports.Queries.GetLowPresenceReport;
 using Transport.Application.Features.Reports.Queries.GetStudentsByRouteReport;
 using Transport.Application.Features.Reports.Queries.GetTripsReport;
 using Transport.Application.Features.Reports.Queries.GetVehiclesUsageReport;
@@ -69,6 +70,16 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> GetAuditSummary([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
             var result = await _mediator.Send(new GetAuditSummaryReportQuery(startDate, endDate));
+            return Ok(result);
+        }
+
+        [HttpGet("attendance/low-presence")]
+        public async Task<IActionResult> GetLowPresence(
+            [FromQuery] DateTime startDate,
+            [FromQuery] DateTime endDate,
+            [FromQuery] decimal maximumPresencePercentage = 80)
+        {
+            var result = await _mediator.Send(new GetLowPresenceReportQuery(startDate, endDate, maximumPresencePercentage));
             return Ok(result);
         }
     }

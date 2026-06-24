@@ -25,7 +25,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> CreateManual()
         {
             var result = await _mediator.Send(new CreateManualBackupCommand());
-            return Ok(result);
+            return StatusCode(StatusCodes.Status201Created, result);
         }
 
         [HttpGet]

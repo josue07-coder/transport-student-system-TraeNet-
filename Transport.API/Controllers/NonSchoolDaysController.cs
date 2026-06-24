@@ -56,7 +56,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateNonSchoolDayCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
         [HttpPut("{id}")]

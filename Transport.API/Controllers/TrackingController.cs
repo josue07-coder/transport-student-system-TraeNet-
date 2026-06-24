@@ -25,7 +25,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> UpdateLocation([FromBody] UpdateVehicleLocationCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
         [HttpGet("trips/{tripId:guid}/current-location")]

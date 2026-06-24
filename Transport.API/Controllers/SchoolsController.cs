@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Schools.Commands.CreateSchool;
 using Transport.Application.Features.Schools.Commands.DeleteSchool;
@@ -10,6 +11,7 @@ using Transport.Application.Features.Schools.Queries.GetSchoolsBySector;
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin,Supervisor")]
     [Route("api/[controller]")]
     public class SchoolsController : ControllerBase
     {
@@ -24,7 +26,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateSchoolCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(id);
+            return StatusCode(StatusCodes.Status201Created, id);
         }
 
         [HttpGet]

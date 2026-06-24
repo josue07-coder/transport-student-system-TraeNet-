@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Sectors.Commands.CreateSector;
 using Transport.Application.Features.Sectors.Commands.DeleteSector;
@@ -8,6 +9,7 @@ using Transport.Application.Features.Sectors.Queries.GetSectorById;
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin,Supervisor")]
     [Route("api/[controller]")]
     public class SectorsController : ControllerBase
     {
@@ -22,7 +24,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateSectorCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(id);
+            return StatusCode(StatusCodes.Status201Created, id);
         }
 
         [HttpGet]

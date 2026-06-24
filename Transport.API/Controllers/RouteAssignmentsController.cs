@@ -15,7 +15,7 @@ using Transport.Application.Features.RouteAssignments.Queries.GetRouteAssignment
 namespace Transport.API.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin,Supervisor")]
     [Route("api/route-assignments")]
     public class RouteAssignmentsController : ControllerBase
     {
@@ -30,7 +30,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateRouteAssignmentCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
         [HttpGet]

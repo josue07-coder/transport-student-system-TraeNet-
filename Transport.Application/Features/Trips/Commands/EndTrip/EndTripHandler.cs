@@ -11,17 +11,20 @@ namespace Transport.Application.Features.Trips.Commands.EndTrip
         private readonly IAuditService _auditService;
         private readonly INotificationService _notificationService;
         private readonly IUserRepository _userRepository;
+        private readonly ITripOperationAuthorizationService _operationAuthorizationService;
 
         public EndTripHandler(
             ITripRepository repository,
             IAuditService auditService,
             INotificationService notificationService,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ITripOperationAuthorizationService operationAuthorizationService)
         {
             _repository = repository;
             _auditService = auditService;
             _notificationService = notificationService;
             _userRepository = userRepository;
+            _operationAuthorizationService = operationAuthorizationService;
         }
 
         public async Task<Unit> Handle(EndTripCommand request, CancellationToken cancellationToken)
@@ -29,6 +32,7 @@ namespace Transport.Application.Features.Trips.Commands.EndTrip
             var trip = await _repository.GetByIdAsync(request.Id)
                 ?? throw new DomainException("Viaje no encontrado");
 
+            await _operationAuthorizationService.EnsureCanEndTripAsync(trip);
             trip.End();
             await _repository.SaveChangesAsync();
 

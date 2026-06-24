@@ -10,6 +10,7 @@ namespace Transport.Domain.Entities
         public Guid DriverId { get; private set; }
         public Guid? TransportAssistantId { get; private set; }
         public int VehicleCapacity { get; private set; }
+        public byte[] RowVersion { get; private set; } = Array.Empty<byte>();
 
         public Route Route { get; private set; } = null!;
         public Vehicle Vehicle { get; private set; } = null!;

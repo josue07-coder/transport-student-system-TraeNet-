@@ -119,14 +119,14 @@ try {
 
     $results = New-Object System.Collections.Generic.List[object]
 
-    $login = Invoke-SmokeRequest -Client $client -Method "POST" -Path "api/auth/login" -Body @{
+    $login = Invoke-SmokeRequest -Client $client -Method "POST" -Path "api/v1/auth/login" -Body @{
         username = $Username
         password = $Password
     }
 
     $results.Add([pscustomobject]@{
         Group = "AUTH"
-        Endpoint = "POST /api/auth/login"
+        Endpoint = "POST /api/v1/auth/login"
         Ok = $login.Ok
         StatusCode = $login.StatusCode
         Error = $login.Error
@@ -144,24 +144,42 @@ try {
     }
 
     $endpoints = @(
-        @{ Group = "AUTH"; Path = "api/me"; Label = "GET /api/me" },
-        @{ Group = "AUTH"; Path = "api/users"; Label = "GET /api/users" },
-        @{ Group = "AUTH"; Path = "api/roles"; Label = "GET /api/roles" },
-        @{ Group = "AUTH"; Path = "api/permissions"; Label = "GET /api/permissions" },
+        @{ Group = "AUTH"; Path = "api/v1/me"; Label = "GET /api/v1/me" },
+        @{ Group = "AUTH"; Path = "api/v1/users"; Label = "GET /api/v1/users" },
+        @{ Group = "AUTH"; Path = "api/v1/roles"; Label = "GET /api/v1/roles" },
+        @{ Group = "AUTH"; Path = "api/v1/permissions"; Label = "GET /api/v1/permissions" },
 
-        @{ Group = "EDUCATION"; Path = "api/sectors"; Label = "GET /api/sectors" },
-        @{ Group = "EDUCATION"; Path = "api/schools"; Label = "GET /api/schools" },
-        @{ Group = "EDUCATION"; Path = "api/grades"; Label = "GET /api/grades" },
-        @{ Group = "EDUCATION"; Path = "api/guardians"; Label = "GET /api/guardians" },
-        @{ Group = "EDUCATION"; Path = "api/students"; Label = "GET /api/students" },
+        @{ Group = "EDUCATION"; Path = "api/v1/sectors"; Label = "GET /api/v1/sectors" },
+        @{ Group = "EDUCATION"; Path = "api/v1/schools"; Label = "GET /api/v1/schools" },
+        @{ Group = "EDUCATION"; Path = "api/v1/grades"; Label = "GET /api/v1/grades" },
+        @{ Group = "EDUCATION"; Path = "api/v1/guardians"; Label = "GET /api/v1/guardians" },
+        @{ Group = "EDUCATION"; Path = "api/v1/students"; Label = "GET /api/v1/students" },
 
-        @{ Group = "TRANSPORT"; Path = "api/vehicles"; Label = "GET /api/vehicles" },
-        @{ Group = "TRANSPORT"; Path = "api/drivers"; Label = "GET /api/drivers" },
-        @{ Group = "TRANSPORT"; Path = "api/transport-assistants"; Label = "GET /api/transport-assistants" },
-        @{ Group = "TRANSPORT"; Path = "api/stops"; Label = "GET /api/stops" },
-        @{ Group = "TRANSPORT"; Path = "api/routes"; Label = "GET /api/routes" },
-        @{ Group = "TRANSPORT"; Path = "api/route-assignments"; Label = "GET /api/route-assignments" },
-        @{ Group = "TRANSPORT"; Path = "api/trips"; Label = "GET /api/trips" }
+        @{ Group = "TRANSPORT"; Path = "api/v1/vehicles"; Label = "GET /api/v1/vehicles" },
+        @{ Group = "TRANSPORT"; Path = "api/v1/drivers"; Label = "GET /api/v1/drivers" },
+        @{ Group = "TRANSPORT"; Path = "api/v1/transport-assistants"; Label = "GET /api/v1/transport-assistants" },
+        @{ Group = "TRANSPORT"; Path = "api/v1/stops"; Label = "GET /api/v1/stops" },
+        @{ Group = "TRANSPORT"; Path = "api/v1/routes"; Label = "GET /api/v1/routes" },
+        @{ Group = "TRANSPORT"; Path = "api/v1/route-assignments"; Label = "GET /api/v1/route-assignments" },
+        @{ Group = "TRANSPORT"; Path = "api/v1/trips"; Label = "GET /api/v1/trips" },
+        @{ Group = "TRANSPORT"; Path = "api/v1/trip-schedules"; Label = "GET /api/v1/trip-schedules" },
+        @{ Group = "TRANSPORT"; Path = "api/v1/non-school-days"; Label = "GET /api/v1/non-school-days" },
+
+        @{ Group = "OPERATIONS"; Path = "api/v1/notifications"; Label = "GET /api/v1/notifications" },
+        @{ Group = "OPERATIONS"; Path = "api/v1/notifications/unread"; Label = "GET /api/v1/notifications/unread" },
+        @{ Group = "OPERATIONS"; Path = "api/v1/incidents"; Label = "GET /api/v1/incidents" },
+        @{ Group = "OPERATIONS"; Path = "api/v1/tracking/active-trips"; Label = "GET /api/v1/tracking/active-trips" },
+
+        @{ Group = "REPORTS"; Path = "api/v1/reports/dashboard"; Label = "GET /api/v1/reports/dashboard" },
+        @{ Group = "REPORTS"; Path = "api/v1/reports/trips?startDate=2026-01-01&endDate=2026-12-31"; Label = "GET /api/v1/reports/trips" },
+        @{ Group = "REPORTS"; Path = "api/v1/reports/incidents?startDate=2026-01-01&endDate=2026-12-31"; Label = "GET /api/v1/reports/incidents" },
+        @{ Group = "REPORTS"; Path = "api/v1/reports/audit-summary?startDate=2026-01-01&endDate=2026-12-31"; Label = "GET /api/v1/reports/audit-summary" },
+
+        @{ Group = "ADMIN"; Path = "api/v1/audit-logs"; Label = "GET /api/v1/audit-logs" },
+        @{ Group = "ADMIN"; Path = "api/v1/system-settings"; Label = "GET /api/v1/system-settings" },
+        @{ Group = "ADMIN"; Path = "api/v1/backups"; Label = "GET /api/v1/backups" },
+        @{ Group = "ADMIN"; Path = "api/v1/backups/latest"; Label = "GET /api/v1/backups/latest" },
+        @{ Group = "ADMIN"; Path = "api/v1/integrations/test-distance?originLat=18.2081&originLng=-71.1002&destinationLat=18.5001&destinationLng=-69.9886"; Label = "GET /api/v1/integrations/test-distance" }
     )
 
     foreach ($endpoint in $endpoints) {
@@ -202,3 +220,5 @@ try {
 finally {
     $client.Dispose()
 }
+
+

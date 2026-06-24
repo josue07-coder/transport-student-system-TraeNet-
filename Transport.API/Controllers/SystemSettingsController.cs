@@ -56,7 +56,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateSystemSettingCommand command)
         {
             var result = await _mediator.Send(command);
-            return Ok(result);
+            return StatusCode(StatusCodes.Status201Created, result);
         }
 
         [Authorize(Roles = "Admin")]

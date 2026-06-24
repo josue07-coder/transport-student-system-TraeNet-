@@ -228,6 +228,79 @@ namespace Transport.Infrastructure.Persistence.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<List<LowPresenceStudentReportDto>> GetLowPresenceReportAsync(
+            DateTime startDate,
+            DateTime endDate,
+            decimal maximumPresencePercentage,
+            CancellationToken cancellationToken = default)
+        {
+            var (start, endExclusive) = NormalizeRange(startDate, endDate);
+
+            var attendanceStats = await _context.TripStudentAttendances
+                .AsNoTracking()
+                .Where(x => x.IsExpectedPassenger
+                    && x.CreatedAt >= start
+                    && x.CreatedAt < endExclusive)
+                .GroupBy(x => new
+                {
+                    x.StudentId,
+                    x.StudentNameSnapshot,
+                    x.StudentCodeSnapshot,
+                    x.GuardianIdSnapshot,
+                    x.GuardianNameSnapshot
+                })
+                .Select(x => new
+                {
+                    x.Key.StudentId,
+                    StudentName = x.Key.StudentNameSnapshot,
+                    StudentCode = x.Key.StudentCodeSnapshot,
+                    GuardianId = x.Key.GuardianIdSnapshot,
+                    GuardianName = x.Key.GuardianNameSnapshot,
+                    ExpectedTrips = x.Count(),
+                    PresentTrips = x.Count(a => a.Status == TripAttendanceStatus.Boarded || a.Status == TripAttendanceStatus.DroppedOff),
+                    AbsentTrips = x.Count(a => a.Status == TripAttendanceStatus.Absent),
+                    LastAttendanceAt = x.Max(a => a.MarkedAt ?? a.BoardedAt ?? a.DroppedOffAt ?? a.CreatedAt)
+                })
+                .ToListAsync(cancellationToken);
+
+            var exceptionalStats = await _context.TripStudentAttendances
+                .AsNoTracking()
+                .Where(x => !x.IsExpectedPassenger
+                    && x.CreatedAt >= start
+                    && x.CreatedAt < endExclusive)
+                .GroupBy(x => x.StudentId)
+                .Select(x => new { StudentId = x.Key, Count = x.Count() })
+                .ToListAsync(cancellationToken);
+
+            return attendanceStats
+                .Select(x =>
+                {
+                    var presencePercentage = x.ExpectedTrips == 0
+                        ? 0
+                        : Math.Round((decimal)x.PresentTrips * 100 / x.ExpectedTrips, 2);
+
+                    return new LowPresenceStudentReportDto
+                    {
+                        StudentId = x.StudentId,
+                        StudentName = x.StudentName,
+                        StudentCode = x.StudentCode,
+                        GuardianId = x.GuardianId,
+                        GuardianName = x.GuardianName,
+                        ExpectedTrips = x.ExpectedTrips,
+                        PresentTrips = x.PresentTrips,
+                        AbsentTrips = x.AbsentTrips,
+                        ExceptionalBoardings = exceptionalStats.FirstOrDefault(e => e.StudentId == x.StudentId)?.Count ?? 0,
+                        PresencePercentage = presencePercentage,
+                        LastAttendanceAt = x.LastAttendanceAt
+                    };
+                })
+                .Where(x => x.PresencePercentage <= maximumPresencePercentage)
+                .OrderBy(x => x.PresencePercentage)
+                .ThenByDescending(x => x.AbsentTrips)
+                .ThenBy(x => x.StudentName)
+                .ToList();
+        }
+
         private static (DateTime Start, DateTime EndExclusive) NormalizeRange(DateTime startDate, DateTime endDate)
         {
             var start = startDate.Date;

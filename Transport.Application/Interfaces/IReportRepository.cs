@@ -11,5 +11,6 @@ namespace Transport.Application.Interfaces
         Task<List<DriverPerformanceReportDto>> GetDriversPerformanceAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
         Task<List<VehicleUsageReportDto>> GetVehiclesUsageAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
         Task<List<AuditSummaryReportDto>> GetAuditSummaryAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken = default);
+        Task<List<LowPresenceStudentReportDto>> GetLowPresenceReportAsync(DateTime startDate, DateTime endDate, decimal maximumPresencePercentage, CancellationToken cancellationToken = default);
     }
 }

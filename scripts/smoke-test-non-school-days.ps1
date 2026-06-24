@@ -106,12 +106,12 @@ foreach ($url in Get-CandidateUrls) {
 }
 
 if (-not $client) {
-    throw "No se encontró API activa. Levanta Transport.API antes de ejecutar este smoke test."
+    throw "No se encontrÃ³ API activa. Levanta Transport.API antes de ejecutar este smoke test."
 }
 
 Write-Host "API detectada: $baseUrl"
 
-$login = Invoke-JsonRequest -Client $client -Method POST -Path "/api/auth/login" -Body @{
+$login = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/auth/login" -Body @{
     username = $Username
     password = $Password
 }
@@ -124,25 +124,25 @@ if (-not $login.Ok) {
 $token = $login.Data.token
 $operationDate = "2026-06-10"
 
-$createDay = Invoke-JsonRequest -Client $client -Method POST -Path "/api/non-school-days" -Token $token -Body @{
+$createDay = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/non-school-days" -Token $token -Body @{
     date = $operationDate
     reasonType = "Holiday"
     reason = "Feriado de prueba"
 }
 
 if (-not $createDay.Ok) {
-    throw "Crear NonSchoolDay falló: $($createDay.StatusCode) $($createDay.Content)"
+    throw "Crear NonSchoolDay fallÃ³: $($createDay.StatusCode) $($createDay.Content)"
 }
 
 Write-Host "NonSchoolDay creado: $($createDay.Data.id)"
 
-$range = Invoke-JsonRequest -Client $client -Method GET -Path "/api/non-school-days/by-date-range?startDate=$operationDate&endDate=$operationDate" -Token $token
+$range = Invoke-JsonRequest -Client $client -Method GET -Path "/api/v1/non-school-days/by-date-range?startDate=$operationDate&endDate=$operationDate" -Token $token
 if (-not $range.Ok) {
-    throw "Consulta por rango falló: $($range.StatusCode) $($range.Content)"
+    throw "Consulta por rango fallÃ³: $($range.StatusCode) $($range.Content)"
 }
 
 if ($RouteAssignmentId -eq [Guid]::Empty) {
-    $assignments = Invoke-JsonRequest -Client $client -Method GET -Path "/api/route-assignments?PageNumber=1&PageSize=10" -Token $token
+    $assignments = Invoke-JsonRequest -Client $client -Method GET -Path "/api/v1/route-assignments?PageNumber=1&PageSize=10" -Token $token
     if (-not $assignments.Ok) {
         throw "No se pudieron consultar asignaciones: $($assignments.StatusCode) $($assignments.Content)"
     }
@@ -155,7 +155,7 @@ if ($RouteAssignmentId -eq [Guid]::Empty) {
     $RouteAssignmentId = [Guid]$firstAssignment.id
 }
 
-$schedule = Invoke-JsonRequest -Client $client -Method POST -Path "/api/trip-schedules" -Token $token -Body @{
+$schedule = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/trip-schedules" -Token $token -Body @{
     routeAssignmentId = $RouteAssignmentId
     direction = "ToSchool"
     departureTime = "06:30:00"
@@ -172,22 +172,24 @@ $schedule = Invoke-JsonRequest -Client $client -Method POST -Path "/api/trip-sch
 }
 
 if (-not $schedule.Ok) {
-    throw "Crear TripSchedule falló: $($schedule.StatusCode) $($schedule.Content)"
+    throw "Crear TripSchedule fallÃ³: $($schedule.StatusCode) $($schedule.Content)"
 }
 
 $scheduleId = $schedule.Data.id
-$trip = Invoke-JsonRequest -Client $client -Method POST -Path "/api/trip-schedules/$scheduleId/materialize" -Token $token -Body @{
+$trip = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/trip-schedules/$scheduleId/materialize" -Token $token -Body @{
     tripScheduleId = $scheduleId
     operationDate = $operationDate
 }
 
 if (-not $trip.Ok) {
-    throw "Materializar viaje falló: $($trip.StatusCode) $($trip.Content)"
+    throw "Materializar viaje fallÃ³: $($trip.StatusCode) $($trip.Content)"
 }
 
 Write-Host "Trip materializado: $($trip.Data.id) Status=$($trip.Data.status)"
 if ($trip.Data.status -ne "NotOperating" -and $trip.Data.status -ne 5) {
-    throw "El trip materializado en NonSchoolDay no quedó NotOperating."
+    throw "El trip materializado en NonSchoolDay no quedÃ³ NotOperating."
 }
 
 Write-Host "smoke-test-non-school-days OK"
+
+

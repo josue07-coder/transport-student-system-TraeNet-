@@ -23,6 +23,7 @@ namespace Transport.Infrastructure.Security
             ("Notifications.EnablePush", "false", "Activa notificaciones push", "Notifications", "Boolean", true),
             ("Trips.MaxRouteDurationMinutes", "240", "Duración máxima permitida de una ruta", "Trips", "Integer", true),
             ("Trips.MinRouteDurationMinutes", "10", "Duración mínima permitida de una ruta", "Trips", "Integer", true),
+            ("TripStartToleranceMinutes", "5", "Minutos de tolerancia para iniciar un viaje antes de la hora programada", "Trips", "Integer", true),
             ("Reports.DefaultDateRangeDays", "30", "Rango por defecto para reportes", "Reports", "Integer", true),
             ("Security.PasswordMinLength", "6", "Longitud mínima de contraseña", "Security", "Integer", true),
             ("Backup.EnableAutoBackup", "false", "Activa respaldo automático", "Backup", "Boolean", true),

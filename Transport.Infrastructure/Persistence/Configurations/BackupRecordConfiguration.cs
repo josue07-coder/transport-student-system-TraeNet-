@@ -32,6 +32,9 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.Property(x => x.CreatedByUserId)
                 .IsRequired();
 
+            builder.Property(x => x.RowVersion)
+                .IsRowVersion();
+
             builder.HasIndex(x => x.CreatedAt);
             builder.HasIndex(x => x.Status);
             builder.HasIndex(x => x.Type);

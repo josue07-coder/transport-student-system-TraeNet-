@@ -7,6 +7,15 @@ namespace Transport.Infrastructure.Persistence.Context
 {
     public class AppDbContext: DbContext
     {
+        private static readonly HashSet<Type> ActiveFilterExclusions = new()
+        {
+            typeof(User),
+            typeof(Student),
+            typeof(Guardian),
+            typeof(Driver),
+            typeof(School)
+        };
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
@@ -24,6 +33,7 @@ namespace Transport.Infrastructure.Persistence.Context
         public DbSet<Trip> Trips => Set<Trip>();
         public DbSet<TripSchedule> TripSchedules => Set<TripSchedule>();
         public DbSet<TripStudentAttendance> TripStudentAttendances => Set<TripStudentAttendance>();
+        public DbSet<TripRouteDeviation> TripRouteDeviations => Set<TripRouteDeviation>();
 
         //  Operación
         public DbSet<Vehicle> Vehicles => Set<Vehicle>();
@@ -61,7 +71,8 @@ namespace Transport.Infrastructure.Persistence.Context
             //  GLOBAL FILTER: IsActive
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                if (typeof(IActivatable).IsAssignableFrom(entityType.ClrType))
+                if (typeof(IActivatable).IsAssignableFrom(entityType.ClrType) &&
+                    !ActiveFilterExclusions.Contains(entityType.ClrType))
                 {
                     var parameter = Expression.Parameter(entityType.ClrType, "e");
                     var property = Expression.Property(parameter, nameof(IActivatable.IsActive));

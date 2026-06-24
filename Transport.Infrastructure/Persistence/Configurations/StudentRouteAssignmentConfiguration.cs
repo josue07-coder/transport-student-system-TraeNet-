@@ -17,6 +17,8 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.HasOne(x => x.RouteAssignment)
                 .WithMany(r => r.Students)
                 .HasForeignKey(x => x.RouteAssignmentId);
+
+            builder.HasIndex(x => x.RouteAssignmentId);
         }
     }
 }

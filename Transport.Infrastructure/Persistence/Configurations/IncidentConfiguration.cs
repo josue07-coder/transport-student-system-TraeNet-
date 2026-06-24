@@ -21,6 +21,7 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.Property(incident => incident.Type).IsRequired();
             builder.Property(incident => incident.Severity).IsRequired();
             builder.Property(incident => incident.Status).IsRequired();
+            builder.Property(incident => incident.RowVersion).IsRowVersion();
 
             builder.HasOne(incident => incident.Trip)
                 .WithMany()
@@ -76,6 +77,8 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.HasIndex(incident => incident.RouteAssignmentId);
             builder.HasIndex(incident => incident.ReportedByUserId);
             builder.HasIndex(incident => incident.CreatedAt);
+            builder.HasIndex(incident => new { incident.Status, incident.CreatedAt });
+            builder.HasIndex(incident => new { incident.Severity, incident.CreatedAt });
         }
     }
 }

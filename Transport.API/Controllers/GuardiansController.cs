@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Guardians.Commands.CreateGuardian;
 using Transport.Application.Features.Guardians.Commands.DeleteGuardian;
@@ -9,6 +10,7 @@ using Transport.Application.Features.Guardians.Queries.GetGuardianById;
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin,Supervisor")]
     [Route("api/[controller]")]
     public class GuardiansController : ControllerBase
     {
@@ -19,11 +21,12 @@ namespace Transport.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateGuardianCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(id);
+            return StatusCode(StatusCodes.Status201Created, id);
         }
 
         [HttpGet]
@@ -47,6 +50,7 @@ namespace Transport.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateGuardianCommand command)
         {
@@ -57,6 +61,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

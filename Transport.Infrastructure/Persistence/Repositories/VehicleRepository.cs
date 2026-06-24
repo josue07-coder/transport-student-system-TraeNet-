@@ -35,13 +35,19 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<List<Vehicle>> GetByStatusAsync(VehicleStatus status)
         {
             return await _context.Vehicles
+                .AsNoTracking()
                 .Where(v => v.Status == status)
+                .OrderBy(v => v.PlateNumber)
+                .ThenBy(v => v.Id)
                 .ToListAsync();
         }
 
         public async Task<PaginatedResponse<Vehicle>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _context.Vehicles.AsQueryable();
+            var query = _context.Vehicles
+                .AsNoTracking()
+                .OrderBy(vehicle => vehicle.PlateNumber)
+                .ThenBy(vehicle => vehicle.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)

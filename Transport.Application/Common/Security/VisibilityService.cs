@@ -111,6 +111,9 @@ namespace Transport.Application.Common.Security
 
         private static bool CanViewTrip(User user, Trip trip)
         {
+            if (IsPrivileged(user))
+                return true;
+
             return trip.RouteAssignment != null && CanViewRouteAssignment(user, trip.RouteAssignment);
         }
 

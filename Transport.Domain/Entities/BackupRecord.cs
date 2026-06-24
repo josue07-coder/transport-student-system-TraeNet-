@@ -14,6 +14,7 @@ namespace Transport.Domain.Entities
         public string? ErrorMessage { get; private set; }
         public Guid CreatedByUserId { get; private set; }
         public DateTime? CompletedAt { get; private set; }
+        public byte[] RowVersion { get; private set; } = Array.Empty<byte>();
 
         private BackupRecord() { } // EF
 

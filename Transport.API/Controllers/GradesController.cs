@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Grades.Commands.CreateGrade;
 using Transport.Application.Features.Grades.Commands.DeleteGrade;
@@ -9,6 +10,7 @@ using Transport.Application.Features.Grades.Queries.GetGradesBySchool;
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin,Supervisor")]
     [Route("api/[controller]")]
     public class GradesController : ControllerBase
     {
@@ -23,7 +25,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateGradeCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(id);
+            return StatusCode(StatusCodes.Status201Created, id);
         }
 
         [HttpGet]

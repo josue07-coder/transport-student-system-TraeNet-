@@ -106,7 +106,7 @@ function Find-ApiBaseUrl {
 function Get-Token {
     param([string]$User, [string]$Pass)
 
-    $login = Invoke-Request -Method "POST" -Path "api/auth/login" -Token $null -Body @{
+    $login = Invoke-Request -Method "POST" -Path "api/v1/auth/login" -Token $null -Body @{
         username = $User
         password = $Pass
     }
@@ -168,13 +168,13 @@ try {
     $stamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
     $today = [DateTime]::UtcNow.Date
 
-    $sectorId = Invoke-Create -Path "api/sectors" -Body @{
+    $sectorId = Invoke-Create -Path "api/v1/sectors" -Body @{
         name = "Security Sector $stamp"
         province = "Security Province"
         city = "Security City"
     }
 
-    $schoolId = Invoke-Create -Path "api/schools" -Body @{
+    $schoolId = Invoke-Create -Path "api/v1/schools" -Body @{
         name = "Security School $stamp"
         directorName = "Security Director"
         email = "security.school.$stamp@test.local"
@@ -184,7 +184,7 @@ try {
         sectorId = $sectorId
     }
 
-    $gradeId = Invoke-Create -Path "api/grades" -Body @{
+    $gradeId = Invoke-Create -Path "api/v1/grades" -Body @{
         name = "Security Grade $stamp"
         schoolId = $schoolId
     }
@@ -192,7 +192,7 @@ try {
     $guardianDocument = "SG$stamp"
     $otherGuardianDocument = "SGX$stamp"
 
-    $guardianId = Invoke-Create -Path "api/guardians" -Body @{
+    $guardianId = Invoke-Create -Path "api/v1/guardians" -Body @{
         documentType = 1
         documentNumber = $guardianDocument
         firstName = "Security"
@@ -204,7 +204,7 @@ try {
         sectorId = $sectorId
     }
 
-    $otherGuardianId = Invoke-Create -Path "api/guardians" -Body @{
+    $otherGuardianId = Invoke-Create -Path "api/v1/guardians" -Body @{
         documentType = 1
         documentNumber = $otherGuardianDocument
         firstName = "Other"
@@ -216,7 +216,7 @@ try {
         sectorId = $sectorId
     }
 
-    $studentId = Invoke-Create -Path "api/students" -Body @{
+    $studentId = Invoke-Create -Path "api/v1/students" -Body @{
         firstName = "Security"
         lastName = "Student"
         schoolId = $schoolId
@@ -224,7 +224,7 @@ try {
         guardianId = $guardianId
     }
 
-    $otherStudentId = Invoke-Create -Path "api/students" -Body @{
+    $otherStudentId = Invoke-Create -Path "api/v1/students" -Body @{
         firstName = "Other"
         lastName = "Student"
         schoolId = $schoolId
@@ -232,13 +232,13 @@ try {
         guardianId = $otherGuardianId
     }
 
-    $vehicleId = Invoke-Create -Path "api/vehicles" -Body @{
+    $vehicleId = Invoke-Create -Path "api/v1/vehicles" -Body @{
         plateNumber = "SEC$($stamp % 1000000)"
         capacity = 20
     }
 
     $driverDocument = "SD$stamp"
-    $driverId = Invoke-Create -Path "api/drivers" -Body @{
+    $driverId = Invoke-Create -Path "api/v1/drivers" -Body @{
         firstName = "Security"
         lastName = "Driver"
         documentType = 1
@@ -252,7 +252,7 @@ try {
     }
 
     $assistantDocument = "SA$stamp"
-    $assistantId = Invoke-Create -Path "api/transport-assistants" -Body @{
+    $assistantId = Invoke-Create -Path "api/v1/transport-assistants" -Body @{
         documentType = 1
         documentNumber = $assistantDocument
         firstName = "Security"
@@ -264,7 +264,7 @@ try {
         photoUrl = $null
     }
 
-    $stopId = Invoke-Create -Path "api/stops" -Body @{
+    $stopId = Invoke-Create -Path "api/v1/stops" -Body @{
         name = "Security Stop $stamp"
         street = "Stop Street"
         city = "Security City"
@@ -273,21 +273,21 @@ try {
         sectorId = $sectorId
     }
 
-    $routeId = Invoke-Create -Path "api/routes" -Body @{
+    $routeId = Invoke-Create -Path "api/v1/routes" -Body @{
         name = "Security Route $stamp"
         schoolId = $schoolId
         startTime = $today.AddHours(9).ToString("o")
         endTime = $today.AddHours(10).ToString("o")
     }
 
-    $addStop = Invoke-Request -Method "POST" -Path "api/routes/$routeId/stops" -Body @{
+    $addStop = Invoke-Request -Method "POST" -Path "api/v1/routes/$routeId/stops" -Body @{
         routeId = $routeId
         stopId = $stopId
         stopOrder = 1
     }
     if (-not $addStop.Ok) { throw "Add stop failed: $($addStop.Error)" }
 
-    $activateRoute = Invoke-Request -Method "PUT" -Path "api/routes/$routeId" -Body @{
+    $activateRoute = Invoke-Request -Method "PUT" -Path "api/v1/routes/$routeId" -Body @{
         id = $routeId
         name = "Security Route $stamp"
         schoolId = $schoolId
@@ -297,7 +297,7 @@ try {
     }
     if (-not $activateRoute.Ok) { throw "Activate route failed: $($activateRoute.Error)" }
 
-    $assignmentId = Invoke-Create -Path "api/route-assignments" -Body @{
+    $assignmentId = Invoke-Create -Path "api/v1/route-assignments" -Body @{
         routeId = $routeId
         driverId = $driverId
         vehicleId = $vehicleId
@@ -305,10 +305,10 @@ try {
         vehicleCapacity = 20
     }
 
-    $assignStudent = Invoke-Request -Method "POST" -Path "api/route-assignments/$assignmentId/students/$studentId"
+    $assignStudent = Invoke-Request -Method "POST" -Path "api/v1/route-assignments/$assignmentId/students/$studentId"
     if (-not $assignStudent.Ok) { throw "Assign student failed: $($assignStudent.Error)" }
 
-    $tripId = Invoke-Create -Path "api/trips/start" -Body @{
+    $tripId = Invoke-Create -Path "api/v1/trips/start" -Body @{
         routeAssignmentId = $assignmentId
     }
 
@@ -317,34 +317,34 @@ try {
     $assistantToken = Get-Token -User $assistantDocument -Pass $assistantDocument
 
     Add-Result -Actor "Guardian" -Check "GET own student" -ExpectedSuccess $true `
-        -Result (Invoke-Request -Method "GET" -Path "api/students/$studentId" -Token $guardianToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/students/$studentId" -Token $guardianToken)
 
     Add-Result -Actor "Guardian" -Check "GET foreign student is denied" -ExpectedSuccess $false `
-        -Result (Invoke-Request -Method "GET" -Path "api/students/$otherStudentId" -Token $guardianToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/students/$otherStudentId" -Token $guardianToken)
 
     Add-Result -Actor "Guardian" -Check "GET my students" -ExpectedSuccess $true `
-        -Result (Invoke-Request -Method "GET" -Path "api/me/students" -Token $guardianToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/me/students" -Token $guardianToken)
 
     Add-Result -Actor "Guardian" -Check "GET related trip" -ExpectedSuccess $true `
-        -Result (Invoke-Request -Method "GET" -Path "api/trips/$tripId" -Token $guardianToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/trips/$tripId" -Token $guardianToken)
 
     Add-Result -Actor "Driver" -Check "GET my assignments" -ExpectedSuccess $true `
-        -Result (Invoke-Request -Method "GET" -Path "api/me/route-assignments" -Token $driverToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/me/route-assignments" -Token $driverToken)
 
     Add-Result -Actor "Driver" -Check "GET assigned route" -ExpectedSuccess $true `
-        -Result (Invoke-Request -Method "GET" -Path "api/routes/$routeId" -Token $driverToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/routes/$routeId" -Token $driverToken)
 
     Add-Result -Actor "Driver" -Check "GET assigned trip" -ExpectedSuccess $true `
-        -Result (Invoke-Request -Method "GET" -Path "api/trips/$tripId" -Token $driverToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/trips/$tripId" -Token $driverToken)
 
     Add-Result -Actor "Assistant" -Check "GET my assignments" -ExpectedSuccess $true `
-        -Result (Invoke-Request -Method "GET" -Path "api/me/route-assignments" -Token $assistantToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/me/route-assignments" -Token $assistantToken)
 
     Add-Result -Actor "Assistant" -Check "GET assigned route" -ExpectedSuccess $true `
-        -Result (Invoke-Request -Method "GET" -Path "api/routes/$routeId" -Token $assistantToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/routes/$routeId" -Token $assistantToken)
 
     Add-Result -Actor "Assistant" -Check "GET assigned trip" -ExpectedSuccess $true `
-        -Result (Invoke-Request -Method "GET" -Path "api/trips/$tripId" -Token $assistantToken)
+        -Result (Invoke-Request -Method "GET" -Path "api/v1/trips/$tripId" -Token $assistantToken)
 
     $script:Results | Format-Table -AutoSize -Wrap
 
@@ -367,3 +367,5 @@ finally {
         $script:Client.Dispose()
     }
 }
+
+

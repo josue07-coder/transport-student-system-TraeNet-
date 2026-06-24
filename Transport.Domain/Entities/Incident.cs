@@ -38,6 +38,7 @@ namespace Transport.Domain.Entities
 
         public DateTime? ResolvedAt { get; private set; }
         public DateTime? ClosedAt { get; private set; }
+        public byte[] RowVersion { get; private set; } = Array.Empty<byte>();
 
         private readonly List<IncidentComment> _comments = new();
         public IReadOnlyCollection<IncidentComment> Comments => _comments.AsReadOnly();

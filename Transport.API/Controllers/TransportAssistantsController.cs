@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.TransportAssistants.Commands.CreateTransportAssistant;
 using Transport.Application.Features.TransportAssistants.Commands.DeleteTransportAssistant;
@@ -11,6 +12,7 @@ using Transport.Application.Features.TransportAssistants.Queries.GetTransportAss
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin,Supervisor")]
     [Route("api/transport-assistants")]
     public class TransportAssistantsController : ControllerBase
     {
@@ -21,11 +23,12 @@ namespace Transport.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateTransportAssistantCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
         [HttpGet]
@@ -56,6 +59,7 @@ namespace Transport.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateTransportAssistantCommand command)
         {
@@ -66,6 +70,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

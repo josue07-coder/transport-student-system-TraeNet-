@@ -36,10 +36,25 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.Property(x => x.UserAgent)
                 .HasMaxLength(500);
 
+            builder.Property(x => x.CorrelationId)
+                .HasMaxLength(100);
+
+            builder.Property(x => x.TraceId)
+                .HasMaxLength(100);
+
+            builder.Property(x => x.RequestPath)
+                .HasMaxLength(300);
+
+            builder.Property(x => x.HttpMethod)
+                .HasMaxLength(20);
+
             builder.HasIndex(x => x.UserId);
             builder.HasIndex(x => new { x.EntityName, x.EntityId });
+            builder.HasIndex(x => new { x.UserId, x.CreatedAt });
+            builder.HasIndex(x => x.CorrelationId);
             builder.HasIndex(x => x.Action);
             builder.HasIndex(x => x.CreatedAt);
+            builder.HasIndex(x => new { x.Action, x.CreatedAt });
         }
     }
 }

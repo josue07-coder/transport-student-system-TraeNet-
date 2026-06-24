@@ -39,6 +39,9 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.Property(x => x.VehicleCapacity)
                 .IsRequired();
 
+            builder.Property(x => x.RowVersion)
+                .IsRowVersion();
+
             // Students (StudentRouteAssignment)
             builder.HasMany(x => x.Students)
                 .WithOne(x => x.RouteAssignment)
@@ -50,6 +53,11 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .WithOne(x => x.RouteAssignment)
                 .HasForeignKey(x => x.RouteAssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasIndex(x => x.RouteId);
+            builder.HasIndex(x => x.DriverId);
+            builder.HasIndex(x => x.VehicleId);
+            builder.HasIndex(x => x.TransportAssistantId);
         }
     }
 }

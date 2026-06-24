@@ -94,18 +94,103 @@ public class StartTripHandlerTests
         await act.Should().ThrowAsync<DomainException>();
     }
 
-    private static StartTripHandler CreateHandler(RouteAssignment assignment, bool hasActiveTrip)
+    [Fact]
+    public async Task StartTrip_Fails_WhenScheduledTripStartsTooEarly()
+    {
+        var assignment = AssignmentWithActiveStudent();
+        var scheduled = DateTime.UtcNow.AddMinutes(30);
+        var trip = CreateScheduledTrip(assignment, scheduled);
+        var handler = CreateHandler(assignment, hasActiveTrip: false, scheduledTrip: trip);
+
+        var act = () => handler.Handle(new StartTripCommand
+        {
+            TripId = trip.Id,
+            RouteAssignmentId = assignment.Id
+        }, CancellationToken.None);
+
+        await act.Should().ThrowAsync<DomainException>()
+            .WithMessage("No puede iniciar el viaje antes de la hora programada.");
+    }
+
+    [Theory]
+    [InlineData("Admin")]
+    [InlineData("Supervisor")]
+    public async Task StartTrip_AllowsForcedEarlyStart_ForAdminOrSupervisor(string role)
+    {
+        var assignment = AssignmentWithActiveStudent();
+        var scheduled = DateTime.UtcNow.AddMinutes(30);
+        var trip = CreateScheduledTrip(assignment, scheduled);
+        var handler = CreateHandler(assignment, hasActiveTrip: false, scheduledTrip: trip, role: role);
+
+        await handler.Handle(new StartTripCommand
+        {
+            TripId = trip.Id,
+            RouteAssignmentId = assignment.Id,
+            ForceEarlyStart = true,
+            EarlyStartReason = "Salida autorizada"
+        }, CancellationToken.None);
+
+        trip.Status.Should().Be(TripStatus.InProgress);
+        trip.StartedEarly.Should().BeTrue();
+        trip.EarlyStartReason.Should().Be("Salida autorizada");
+    }
+
+    [Fact]
+    public async Task StartTrip_Fails_WhenForcedEarlyStartHasNoReason()
+    {
+        var assignment = AssignmentWithActiveStudent();
+        var scheduled = DateTime.UtcNow.AddMinutes(30);
+        var trip = CreateScheduledTrip(assignment, scheduled);
+        var handler = CreateHandler(assignment, hasActiveTrip: false, scheduledTrip: trip, role: "Supervisor");
+
+        var act = () => handler.Handle(new StartTripCommand
+        {
+            TripId = trip.Id,
+            RouteAssignmentId = assignment.Id,
+            ForceEarlyStart = true
+        }, CancellationToken.None);
+
+        await act.Should().ThrowAsync<DomainException>();
+    }
+
+    [Fact]
+    public async Task StartTrip_CalculatesDelayMinutes_ForLateScheduledTrip()
+    {
+        var assignment = AssignmentWithActiveStudent();
+        var scheduled = DateTime.UtcNow.AddMinutes(-12);
+        var trip = CreateScheduledTrip(assignment, scheduled);
+        var handler = CreateHandler(assignment, hasActiveTrip: false, scheduledTrip: trip);
+
+        await handler.Handle(new StartTripCommand
+        {
+            TripId = trip.Id,
+            RouteAssignmentId = assignment.Id
+        }, CancellationToken.None);
+
+        trip.DelayMinutes.Should().BeGreaterThanOrEqualTo(12);
+        trip.IsLate.Should().BeTrue();
+        trip.PunctualityStatus.Should().Be(TripPunctualityStatus.Late);
+    }
+
+    private static StartTripHandler CreateHandler(
+        RouteAssignment assignment,
+        bool hasActiveTrip,
+        Trip? scheduledTrip = null,
+        string role = "Driver")
     {
         var trips = new Mock<ITripRepository>();
         trips.Setup(x => x.HasActiveTripAsync(assignment.Id)).ReturnsAsync(hasActiveTrip);
+        if (scheduledTrip is not null)
+            trips.Setup(x => x.GetByIdWithAssignmentDetailsAsync(scheduledTrip.Id)).ReturnsAsync(scheduledTrip);
 
-        return CreateHandler(assignment, trips);
+        return CreateHandler(assignment, trips, role: role);
     }
 
     private static StartTripHandler CreateHandler(
         RouteAssignment assignment,
         Mock<ITripRepository> trips,
-        Mock<ITripStudentAttendanceRepository>? attendances = null)
+        Mock<ITripStudentAttendanceRepository>? attendances = null,
+        string role = "Driver")
     {
         var assignments = new Mock<IRouteAssignmentRepository>();
         if (attendances is null)
@@ -117,8 +202,13 @@ public class StartTripHandlerTests
         var audit = new Mock<IAuditService>();
         var notifications = new Mock<INotificationService>();
         var users = new Mock<IUserRepository>();
+        var settings = new Mock<ISystemSettingService>();
+        var currentUser = new Mock<ICurrentUserService>();
+        var operationAuthorization = new Mock<ITripOperationAuthorizationService>();
 
         assignments.Setup(x => x.GetByIdAsync(assignment.Id)).ReturnsAsync(assignment);
+        settings.Setup(x => x.GetIntAsync("TripStartToleranceMinutes", 5)).ReturnsAsync(5);
+        currentUser.Setup(x => x.Role).Returns(role);
         audit.Setup(x => x.LogAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string?>(), It.IsAny<string?>(), It.IsAny<string?>()))
             .Returns(Task.CompletedTask);
         notifications.Setup(x => x.NotifyUsersAsync(
@@ -130,7 +220,41 @@ public class StartTripHandlerTests
                 It.IsAny<string?>(),
                 It.IsAny<string?>()))
             .Returns(Task.CompletedTask);
+        operationAuthorization.Setup(x => x.EnsureCanStartTripAsync(assignment))
+            .Returns(Task.CompletedTask);
 
-        return new StartTripHandler(assignments.Object, trips.Object, attendances.Object, audit.Object, notifications.Object, users.Object);
+        return new StartTripHandler(
+            assignments.Object,
+            trips.Object,
+            attendances.Object,
+            audit.Object,
+            notifications.Object,
+            users.Object,
+            settings.Object,
+            currentUser.Object,
+            operationAuthorization.Object,
+            new ImmediateUnitOfWork());
+    }
+
+    private static RouteAssignment AssignmentWithActiveStudent()
+    {
+        var assignment = DomainTestFactory.AssignmentWithDetails();
+        var student = DomainTestFactory.ActiveStudent(assignment.Route.SchoolId);
+        assignment.AssignStudent(student.Id);
+        ReflectionHelper.SetProperty(assignment.Students.Single(), nameof(StudentRouteAssignment.Student), student);
+        return assignment;
+    }
+
+    private static Trip CreateScheduledTrip(RouteAssignment assignment, DateTime scheduled)
+    {
+        var trip = Trip.CreateScheduledFromSchedule(
+            assignment.Id,
+            Guid.NewGuid(),
+            TripDirection.ToSchool,
+            DateOnly.FromDateTime(scheduled),
+            scheduled);
+
+        ReflectionHelper.SetProperty(trip, nameof(Trip.RouteAssignment), assignment);
+        return trip;
     }
 }

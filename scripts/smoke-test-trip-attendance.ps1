@@ -107,12 +107,12 @@ foreach ($url in Get-CandidateUrls) {
 }
 
 if (-not $client) {
-    throw "No se encontró API activa. Levanta Transport.API antes de ejecutar este smoke test."
+    throw "No se encontrÃ³ API activa. Levanta Transport.API antes de ejecutar este smoke test."
 }
 
 Write-Host "API detectada: $baseUrl"
 
-$login = Invoke-JsonRequest -Client $client -Method POST -Path "/api/auth/login" -Body @{
+$login = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/auth/login" -Body @{
     username = $Username
     password = $Password
 }
@@ -125,7 +125,7 @@ if (-not $login.Ok) {
 $token = $login.Data.token
 
 if ($RouteAssignmentId -eq [Guid]::Empty) {
-    $assignments = Invoke-JsonRequest -Client $client -Method GET -Path "/api/route-assignments?PageNumber=1&PageSize=10" -Token $token
+    $assignments = Invoke-JsonRequest -Client $client -Method GET -Path "/api/v1/route-assignments?PageNumber=1&PageSize=10" -Token $token
     if (-not $assignments.Ok) {
         throw "No se pudieron consultar asignaciones: $($assignments.StatusCode) $($assignments.Content)"
     }
@@ -138,45 +138,47 @@ if ($RouteAssignmentId -eq [Guid]::Empty) {
     $RouteAssignmentId = [Guid]$firstAssignment.id
 }
 
-$start = Invoke-JsonRequest -Client $client -Method POST -Path "/api/trips/start" -Token $token -Body @{
+$start = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/trips/start" -Token $token -Body @{
     routeAssignmentId = $RouteAssignmentId
 }
 
 if (-not $start.Ok) {
-    throw "Iniciar viaje falló: $($start.StatusCode) $($start.Content)"
+    throw "Iniciar viaje fallÃ³: $($start.StatusCode) $($start.Content)"
 }
 
 $tripId = $start.Data.id
 Write-Host "Trip iniciado: $tripId"
 
-$passengers = Invoke-JsonRequest -Client $client -Method GET -Path "/api/trips/$tripId/passengers" -Token $token
+$passengers = Invoke-JsonRequest -Client $client -Method GET -Path "/api/v1/trips/$tripId/passengers" -Token $token
 if (-not $passengers.Ok) {
-    throw "Consultar pasajeros falló: $($passengers.StatusCode) $($passengers.Content)"
+    throw "Consultar pasajeros fallÃ³: $($passengers.StatusCode) $($passengers.Content)"
 }
 
 $firstPassenger = Get-Items $passengers.Data | Select-Object -First 1
 if (-not $firstPassenger) {
-    throw "El viaje iniciado no devolvió pasajeros snapshot."
+    throw "El viaje iniciado no devolviÃ³ pasajeros snapshot."
 }
 
 if ($StudentId -eq [Guid]::Empty) {
     $StudentId = [Guid]$firstPassenger.studentId
 }
 
-$boarded = Invoke-JsonRequest -Client $client -Method PUT -Path "/api/trips/$tripId/students/$StudentId/boarded" -Token $token
+$boarded = Invoke-JsonRequest -Client $client -Method PUT -Path "/api/v1/trips/$tripId/students/$StudentId/boarded" -Token $token
 if (-not $boarded.Ok) {
-    throw "Marcar boarded falló: $($boarded.StatusCode) $($boarded.Content)"
+    throw "Marcar boarded fallÃ³: $($boarded.StatusCode) $($boarded.Content)"
 }
 
-$droppedOff = Invoke-JsonRequest -Client $client -Method PUT -Path "/api/trips/$tripId/students/$StudentId/dropped-off" -Token $token
+$droppedOff = Invoke-JsonRequest -Client $client -Method PUT -Path "/api/v1/trips/$tripId/students/$StudentId/dropped-off" -Token $token
 if (-not $droppedOff.Ok) {
-    throw "Marcar dropped-off falló: $($droppedOff.StatusCode) $($droppedOff.Content)"
+    throw "Marcar dropped-off fallÃ³: $($droppedOff.StatusCode) $($droppedOff.Content)"
 }
 
-$remove = Invoke-JsonRequest -Client $client -Method DELETE -Path "/api/route-assignments/$RouteAssignmentId/students/$StudentId" -Token $token
+$remove = Invoke-JsonRequest -Client $client -Method DELETE -Path "/api/v1/route-assignments/$RouteAssignmentId/students/$StudentId" -Token $token
 if ($remove.Ok) {
-    throw "Se permitió remover estudiante con viaje en progreso."
+    throw "Se permitiÃ³ remover estudiante con viaje en progreso."
 }
 
-Write-Host "Remoción bloqueada correctamente: $($remove.StatusCode)"
+Write-Host "RemociÃ³n bloqueada correctamente: $($remove.StatusCode)"
 Write-Host "smoke-test-trip-attendance OK"
+
+

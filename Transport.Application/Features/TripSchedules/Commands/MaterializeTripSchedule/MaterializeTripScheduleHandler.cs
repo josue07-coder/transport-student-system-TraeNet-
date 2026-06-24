@@ -1,4 +1,5 @@
 using MediatR;
+using System.Data;
 using System.Text.Json;
 using Transport.Application.Features.Trips.DTOs;
 using Transport.Application.Features.Trips.Queries;
@@ -15,17 +16,20 @@ namespace Transport.Application.Features.TripSchedules.Commands.MaterializeTripS
         private readonly ITripRepository _tripRepository;
         private readonly INonSchoolDayRepository _nonSchoolDayRepository;
         private readonly IAuditService _auditService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public MaterializeTripScheduleHandler(
             ITripScheduleRepository scheduleRepository,
             ITripRepository tripRepository,
             INonSchoolDayRepository nonSchoolDayRepository,
-            IAuditService auditService)
+            IAuditService auditService,
+            IUnitOfWork unitOfWork)
         {
             _scheduleRepository = scheduleRepository;
             _tripRepository = tripRepository;
             _nonSchoolDayRepository = nonSchoolDayRepository;
             _auditService = auditService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<TripResponseDto> Handle(MaterializeTripScheduleCommand request, CancellationToken cancellationToken)
@@ -44,38 +48,47 @@ namespace Transport.Application.Features.TripSchedules.Commands.MaterializeTripS
                 ? request.OperationDate.ToDateTime(schedule.ArrivalTime.Value)
                 : (DateTime?)null;
 
-            var trip = Trip.CreateScheduledFromSchedule(
-                schedule.RouteAssignmentId,
-                schedule.Id,
-                schedule.Direction,
-                request.OperationDate,
-                scheduledDepartureTime,
-                scheduledArrivalTime);
+            Trip? trip = null;
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                if (await _tripRepository.ExistsByScheduleAndDateAsync(schedule.Id, request.OperationDate))
+                    throw new DomainException("Ya existe un viaje programado para esta programación y fecha");
 
-            if (nonOperation is not null)
-                trip.MarkNotOperating(nonOperation.Value.Reason, nonOperation.Value.Notes);
+                trip = Trip.CreateScheduledFromSchedule(
+                    schedule.RouteAssignmentId,
+                    schedule.Id,
+                    schedule.Direction,
+                    request.OperationDate,
+                    scheduledDepartureTime,
+                    scheduledArrivalTime);
 
-            await _tripRepository.AddAsync(trip);
-            await _tripRepository.SaveChangesAsync();
+                if (nonOperation is not null)
+                    trip.MarkNotOperating(nonOperation.Value.Reason, nonOperation.Value.Notes);
+
+                await _tripRepository.AddAsync(trip);
+                await _tripRepository.SaveChangesAsync();
+            }, IsolationLevel.Serializable, cancellationToken);
+
+            var materializedTrip = trip ?? throw new DomainException("No se pudo materializar el viaje");
 
             await _auditService.LogAsync(
-                trip.Status == TripStatus.NotOperating ? "TripMaterializedAsNotOperating" : "TripMaterialized",
+                materializedTrip.Status == TripStatus.NotOperating ? "TripMaterializedAsNotOperating" : "TripMaterialized",
                 "Trip",
-                trip.Id.ToString(),
+                materializedTrip.Id.ToString(),
                 null,
                 JsonSerializer.Serialize(new
                 {
-                    trip.RouteAssignmentId,
-                    trip.TripScheduleId,
-                    trip.Direction,
-                    trip.OperationDate,
-                    trip.ScheduledDepartureTime,
-                    trip.ScheduledArrivalTime,
-                    trip.NonOperationReason,
-                    trip.NonOperationNotes
+                    materializedTrip.RouteAssignmentId,
+                    materializedTrip.TripScheduleId,
+                    materializedTrip.Direction,
+                    materializedTrip.OperationDate,
+                    materializedTrip.ScheduledDepartureTime,
+                    materializedTrip.ScheduledArrivalTime,
+                    materializedTrip.NonOperationReason,
+                    materializedTrip.NonOperationNotes
                 }));
 
-            return TripMappings.ToResponseDto(trip);
+            return TripMappings.ToResponseDto(materializedTrip);
         }
 
         private async Task<(string Reason, string Notes)?> GetNonOperationReasonAsync(TripSchedule schedule, DateOnly operationDate)

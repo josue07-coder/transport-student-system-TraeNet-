@@ -73,7 +73,11 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<PaginatedResponse<Route>> GetPagedAsync(int pageNumber, int pageSize)
         {
             var query = _context.Routes
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Include(r => r.Stops)
+                .OrderBy(r => r.Name)
+                .ThenBy(r => r.Id)
                 .AsQueryable();
 
             var totalCount = await query.CountAsync();
@@ -88,16 +92,22 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<List<Route>> GetBySchoolAsync(Guid schoolId)
         {
             return await _context.Routes
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Include(r => r.Stops)
                 .Where(r => r.SchoolId == schoolId)
+                .OrderBy(r => r.Name)
                 .ToListAsync();
         }
 
         public async Task<List<Route>> GetByStatusAsync(RouteStatus status)
         {
             return await _context.Routes
+                .AsNoTracking()
+                .AsSplitQuery()
                 .Include(r => r.Stops)
                 .Where(r => r.Status == status)
+                .OrderBy(r => r.Name)
                 .ToListAsync();
         }
 

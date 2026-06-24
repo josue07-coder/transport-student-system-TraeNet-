@@ -30,6 +30,9 @@ namespace Transport.Infrastructure.Persistence.Configurations
             //  Índice único: evita duplicados en el orden por ruta
             builder.HasIndex(x => new { x.RouteId, x.StopOrder })
                 .IsUnique();
+
+            builder.HasIndex(x => new { x.RouteId, x.StopId })
+                .IsUnique();
         }
     }
 }

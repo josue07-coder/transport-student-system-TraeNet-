@@ -27,6 +27,11 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.TripId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasMany(x => x.RouteDeviations)
+                .WithOne(x => x.Trip)
+                .HasForeignKey(x => x.TripId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(x => x.Direction)
                 .HasConversion<string>()
                 .IsRequired(false)
@@ -63,10 +68,41 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.Property(x => x.NonOperationNotes)
                 .HasMaxLength(1000);
 
+            builder.Property(x => x.DelayMinutes)
+                .IsRequired();
+
+            builder.Property(x => x.IsLate)
+                .IsRequired();
+
+            builder.Property(x => x.StartedEarly)
+                .IsRequired();
+
+            builder.Property(x => x.EarlyStartReason)
+                .HasMaxLength(500);
+
+            builder.Property(x => x.PunctualityStatus)
+                .IsRequired()
+                .HasConversion<string>()
+                .HasMaxLength(30);
+
+            builder.Property(x => x.RowVersion)
+                .IsRowVersion();
+
             builder.HasIndex(x => x.TripScheduleId);
             builder.HasIndex(x => new { x.TripScheduleId, x.OperationDate })
                 .IsUnique()
                 .HasFilter("[TripScheduleId] IS NOT NULL AND [OperationDate] IS NOT NULL");
+
+            builder.HasIndex(x => x.RouteAssignmentId)
+                .IsUnique()
+                .HasFilter("[Status] = 'InProgress'");
+
+            builder.HasIndex(x => x.Status);
+            builder.HasIndex(x => x.OperationDate);
+            builder.HasIndex(x => x.StartTime);
+            builder.HasIndex(x => x.ScheduledDepartureTime);
+            builder.HasIndex(x => new { x.RouteAssignmentId, x.Status });
+            builder.HasIndex(x => new { x.Status, x.StartTime });
         }
     }
 }

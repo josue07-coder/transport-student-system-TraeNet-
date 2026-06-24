@@ -21,7 +21,12 @@ namespace Transport.Application.Features.Trips.Queries
                 Status = trip.Status,
                 CancellationReason = trip.CancellationReason,
                 NonOperationReason = trip.NonOperationReason,
-                NonOperationNotes = trip.NonOperationNotes
+                NonOperationNotes = trip.NonOperationNotes,
+                DelayMinutes = trip.DelayMinutes,
+                IsLate = trip.IsLate,
+                StartedEarly = trip.StartedEarly,
+                EarlyStartReason = trip.EarlyStartReason,
+                PunctualityStatus = trip.PunctualityStatus
             };
         }
 
@@ -49,7 +54,14 @@ namespace Transport.Application.Features.Trips.Queries
                 Status = trip.Status,
                 CancellationReason = trip.CancellationReason,
                 NonOperationReason = trip.NonOperationReason,
-                NonOperationNotes = trip.NonOperationNotes
+                NonOperationNotes = trip.NonOperationNotes,
+                DelayMinutes = trip.DelayMinutes,
+                IsLate = trip.IsLate,
+                StartedEarly = trip.StartedEarly,
+                EarlyStartReason = trip.EarlyStartReason,
+                PunctualityStatus = trip.PunctualityStatus,
+                HasRouteDeviation = trip.RouteDeviations.Any(),
+                RouteDeviationCount = trip.RouteDeviations.Count
             };
         }
     }

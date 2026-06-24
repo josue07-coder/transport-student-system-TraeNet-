@@ -9,19 +9,16 @@ namespace Transport.Application.Features.TripStudentAttendances.Queries.GetTripP
     {
         private readonly ITripRepository _tripRepository;
         private readonly ITripStudentAttendanceRepository _attendanceRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly ITripOperationAuthorizationService _operationAuthorizationService;
 
         public GetTripPassengersHandler(
             ITripRepository tripRepository,
             ITripStudentAttendanceRepository attendanceRepository,
-            IUserRepository userRepository,
-            ICurrentUserService currentUserService)
+            ITripOperationAuthorizationService operationAuthorizationService)
         {
             _tripRepository = tripRepository;
             _attendanceRepository = attendanceRepository;
-            _userRepository = userRepository;
-            _currentUserService = currentUserService;
+            _operationAuthorizationService = operationAuthorizationService;
         }
 
         public async Task<List<TripStudentAttendanceDto>> Handle(GetTripPassengersQuery request, CancellationToken cancellationToken)
@@ -29,7 +26,7 @@ namespace Transport.Application.Features.TripStudentAttendances.Queries.GetTripP
             var trip = await _tripRepository.GetByIdWithAssignmentDetailsAsync(request.TripId)
                 ?? throw new DomainException("Viaje no encontrado");
 
-            await TripAttendanceAccess.EnsureCanViewPassengersAsync(trip, _userRepository, _currentUserService, _attendanceRepository);
+            await _operationAuthorizationService.EnsureCanViewTripAsync(trip);
 
             var attendances = await _attendanceRepository.GetByTripAsync(request.TripId);
             return attendances.Select(TripStudentAttendanceMappings.ToDto).ToList();

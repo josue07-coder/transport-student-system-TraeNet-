@@ -23,9 +23,18 @@ namespace Transport.Domain.Entities
         public string? CancellationReason { get; private set; }
         public string? NonOperationReason { get; private set; }
         public string? NonOperationNotes { get; private set; }
+        public int DelayMinutes { get; private set; }
+        public bool IsLate { get; private set; }
+        public bool StartedEarly { get; private set; }
+        public string? EarlyStartReason { get; private set; }
+        public TripPunctualityStatus PunctualityStatus { get; private set; }
+        public byte[] RowVersion { get; private set; } = Array.Empty<byte>();
 
         private readonly List<TripStudentAttendance> _studentAttendances = new();
         public IReadOnlyCollection<TripStudentAttendance> StudentAttendances => _studentAttendances.AsReadOnly();
+
+        private readonly List<TripRouteDeviation> _routeDeviations = new();
+        public IReadOnlyCollection<TripRouteDeviation> RouteDeviations => _routeDeviations.AsReadOnly();
 
         public bool IsActive => Status == TripStatus.InProgress;
 
@@ -38,6 +47,7 @@ namespace Transport.Domain.Entities
 
             RouteAssignmentId = routeAssignmentId;
             Status = TripStatus.Scheduled;
+            PunctualityStatus = TripPunctualityStatus.OnTime;
         }
 
         public Trip(
@@ -94,17 +104,52 @@ namespace Transport.Domain.Entities
 
         public void Start()
         {
+            Start(DateTime.UtcNow, 0, false, null);
+        }
+
+        public void Start(DateTime currentTime, int toleranceMinutes, bool forceEarlyStart, string? earlyStartReason)
+        {
             if (Status != TripStatus.Scheduled)
                 throw new DomainException("Solo se puede iniciar un viaje programado");
 
-            StartTime = DateTime.UtcNow;
+            if (ScheduledDepartureTime.HasValue)
+            {
+                var earliestStartTime = ScheduledDepartureTime.Value.AddMinutes(-Math.Max(toleranceMinutes, 0));
+                if (currentTime < earliestStartTime)
+                {
+                    if (!forceEarlyStart)
+                        throw new DomainException("No puede iniciar el viaje antes de la hora programada.");
+
+                    if (string.IsNullOrWhiteSpace(earlyStartReason))
+                        throw new DomainException("La razón de inicio anticipado es obligatoria");
+
+                    StartedEarly = true;
+                    EarlyStartReason = earlyStartReason.Trim();
+                }
+
+                DelayMinutes = Math.Max(0, (int)Math.Floor((currentTime - ScheduledDepartureTime.Value).TotalMinutes));
+                IsLate = DelayMinutes > 0;
+                PunctualityStatus = DelayMinutes <= 0
+                    ? TripPunctualityStatus.OnTime
+                    : DelayMinutes <= 10
+                        ? TripPunctualityStatus.SlightlyLate
+                        : TripPunctualityStatus.Late;
+            }
+            else
+            {
+                DelayMinutes = 0;
+                IsLate = false;
+                PunctualityStatus = TripPunctualityStatus.OnTime;
+            }
+
+            StartTime = currentTime;
             Status = TripStatus.InProgress;
         }
 
         public void End()
         {
             if (Status != TripStatus.InProgress)
-                throw new DomainException("Trip is not in progress");
+                throw new DomainException("El viaje no está en progreso");
 
             EndTime = DateTime.UtcNow;
             Status = TripStatus.Completed;
@@ -133,6 +178,65 @@ namespace Transport.Domain.Entities
             NonOperationReason = reason.Trim();
             NonOperationNotes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
             Status = TripStatus.NotOperating;
+        }
+
+        public TripRouteDeviation ReportRouteDeviation(
+            Guid reportedByUserId,
+            RouteDeviationReasonType reasonType,
+            string? reason,
+            string? notes,
+            decimal? latitude,
+            decimal? longitude,
+            DateTime reportedAt)
+        {
+            if (Status != TripStatus.InProgress)
+                throw new DomainException("Solo se puede reportar un desvío en un viaje en progreso");
+
+            var deviation = new TripRouteDeviation(
+                Id,
+                reportedByUserId,
+                reasonType,
+                reason,
+                notes,
+                latitude,
+                longitude,
+                reportedAt);
+
+            _routeDeviations.Add(deviation);
+            return deviation;
+        }
+
+        public TripStudentAttendance AddExceptionalPassenger(
+            Guid studentId,
+            string studentNameSnapshot,
+            string studentCodeSnapshot,
+            Guid? guardianIdSnapshot,
+            string? guardianNameSnapshot,
+            string exceptionReason,
+            Guid registeredByUserId,
+            DateTime boardedAt,
+            string? notes)
+        {
+            if (Status != TripStatus.InProgress)
+                throw new DomainException("Solo se puede agregar un pasajero excepcional en un viaje en progreso");
+
+            if (_studentAttendances.Any(attendance => attendance.StudentId == studentId))
+                throw new DomainException("El estudiante ya está registrado como pasajero de este viaje");
+
+            var attendance = TripStudentAttendance.CreateExceptionalPassenger(
+                Id,
+                studentId,
+                studentNameSnapshot,
+                studentCodeSnapshot,
+                guardianIdSnapshot,
+                guardianNameSnapshot,
+                exceptionReason,
+                registeredByUserId,
+                boardedAt,
+                notes);
+
+            _studentAttendances.Add(attendance);
+            return attendance;
         }
     }
 }

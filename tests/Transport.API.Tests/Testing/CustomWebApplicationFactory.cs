@@ -57,14 +57,20 @@ public sealed class CustomWebApplicationFactory : WebApplicationFactory<Program>
             return;
 
         var adminRole = new Role("Admin", "Administrator");
+        var supervisorRole = new Role("Supervisor", "Supervisor");
         var guardianRole = new Role("Guardian", "Guardian");
-        db.Roles.AddRange(adminRole, guardianRole);
+        var driverRole = new Role("Driver", "Driver");
+        var assistantRole = new Role("TransportAssistant", "TransportAssistant");
+        db.Roles.AddRange(adminRole, supervisorRole, guardianRole, driverRole, assistantRole);
         db.SaveChanges();
 
         var hasher = services.GetRequiredService<IPasswordHasherService>();
         db.Users.AddRange(
             new User("admin", "Admin", "admin@test.local", hasher.HashPassword("Admin123"), adminRole.Id),
-            new User("guardian-test", "Guardian Test", "guardian@test.local", hasher.HashPassword("Guardian123"), guardianRole.Id));
+            new User("supervisor-test", "Supervisor Test", "supervisor@test.local", hasher.HashPassword("Supervisor123"), supervisorRole.Id),
+            new User("guardian-test", "Guardian Test", "guardian@test.local", hasher.HashPassword("Guardian123"), guardianRole.Id),
+            new User("driver-test", "Driver Test", "driver@test.local", hasher.HashPassword("Driver123"), driverRole.Id, driverId: Guid.NewGuid()),
+            new User("assistant-test", "Assistant Test", "assistant@test.local", hasher.HashPassword("Assistant123"), assistantRole.Id, transportAssistantId: Guid.NewGuid()));
 
         db.SaveChanges();
     }

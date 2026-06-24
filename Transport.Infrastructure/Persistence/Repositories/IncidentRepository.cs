@@ -42,7 +42,7 @@ namespace Transport.Infrastructure.Persistence.Repositories
 
         public async Task<PaginatedResponse<Incident>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = IncidentQuery();
+            var query = IncidentQuery(asNoTracking: true);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
@@ -54,35 +54,35 @@ namespace Transport.Infrastructure.Persistence.Repositories
 
         public async Task<List<Incident>> GetByStatusAsync(IncidentStatus status)
         {
-            return await IncidentQuery()
+            return await IncidentQuery(asNoTracking: true)
                 .Where(incident => incident.Status == status)
                 .ToListAsync();
         }
 
         public async Task<List<Incident>> GetBySeverityAsync(IncidentSeverity severity)
         {
-            return await IncidentQuery()
+            return await IncidentQuery(asNoTracking: true)
                 .Where(incident => incident.Severity == severity)
                 .ToListAsync();
         }
 
         public async Task<List<Incident>> GetByTripAsync(Guid tripId)
         {
-            return await IncidentQuery()
+            return await IncidentQuery(asNoTracking: true)
                 .Where(incident => incident.TripId == tripId)
                 .ToListAsync();
         }
 
         public async Task<List<Incident>> GetByRouteAssignmentAsync(Guid routeAssignmentId)
         {
-            return await IncidentQuery()
+            return await IncidentQuery(asNoTracking: true)
                 .Where(incident => incident.RouteAssignmentId == routeAssignmentId)
                 .ToListAsync();
         }
 
         public async Task<List<Incident>> GetByReportedByAsync(Guid userId)
         {
-            return await IncidentQuery()
+            return await IncidentQuery(asNoTracking: true)
                 .Where(incident => incident.ReportedByUserId == userId)
                 .ToListAsync();
         }
@@ -92,10 +92,11 @@ namespace Transport.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        private IQueryable<Incident> IncidentQuery()
+        private IQueryable<Incident> IncidentQuery(bool asNoTracking = false)
         {
-            return _context.Incidents
+            var query = _context.Incidents
                 .IgnoreQueryFilters()
+                .AsSplitQuery()
                 .Include(incident => incident.Trip)
                     .ThenInclude(trip => trip!.RouteAssignment)
                         .ThenInclude(assignment => assignment.Route)
@@ -116,8 +117,9 @@ namespace Transport.Infrastructure.Persistence.Repositories
                         .ThenInclude(studentAssignment => studentAssignment.Student)
                 .Include(incident => incident.ReportedByUser)
                 .Include(incident => incident.AssignedToUser)
-                .OrderByDescending(incident => incident.CreatedAt)
-                .AsQueryable();
+                .OrderByDescending(incident => incident.CreatedAt);
+
+            return asNoTracking ? query.AsNoTracking() : query;
         }
     }
 }

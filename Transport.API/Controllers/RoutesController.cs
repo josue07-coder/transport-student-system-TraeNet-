@@ -16,7 +16,7 @@ using Transport.Domain.Enums;
 namespace Transport.API.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin,Supervisor")]
     [Route("api/[controller]")]
     public class RoutesController : ControllerBase
     {
@@ -27,11 +27,12 @@ namespace Transport.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRouteCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
         [HttpGet]
@@ -62,6 +63,7 @@ namespace Transport.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRouteCommand command)
         {
@@ -72,6 +74,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -79,6 +82,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPost("{routeId}/stops")]
         public async Task<IActionResult> AddStop(Guid routeId, [FromBody] AddStopToRouteCommand command)
         {
@@ -89,6 +93,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpDelete("{routeId}/stops/{stopId}")]
         public async Task<IActionResult> RemoveStop(Guid routeId, Guid stopId)
         {
@@ -101,6 +106,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{routeId}/stops/{stopId}/order")]
         public async Task<IActionResult> UpdateStopOrder(Guid routeId, Guid stopId, [FromBody] UpdateRouteStopOrderCommand command)
         {

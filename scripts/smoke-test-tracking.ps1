@@ -79,40 +79,40 @@ $script:Results = New-Object System.Collections.Generic.List[object]
 try {
     Write-Host "Base URL: $baseUrl"
     $loginBody = @{ username = $Username; password = $Password }
-    $login = Invoke-Request -Group "AUTH" -Label "POST /api/auth/login" -Method "POST" -Path "api/auth/login" -Body $loginBody
+    $login = Invoke-Request -Group "AUTH" -Label "POST /api/v1/auth/login" -Method "POST" -Path "api/v1/auth/login" -Body $loginBody
     $script:Token = ($login.Content | ConvertFrom-Json).token
     $adminToken = $script:Token
 
     $stamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
     $today = [DateTime]::UtcNow.Date
 
-    $sectorId = Invoke-Request -Group "SETUP" -Label "POST /api/sectors" -Method "POST" -Path "api/sectors" -ReturnId -Body @{ name = "Track Sector $stamp"; province = "Smoke"; city = "Smoke" }
-    $schoolId = Invoke-Request -Group "SETUP" -Label "POST /api/schools" -Method "POST" -Path "api/schools" -ReturnId -Body @{ name = "Track School $stamp"; directorName = "Director"; email = "track.school.$stamp@smoke.local"; phone = "8095550001"; street = "Street"; city = "Smoke"; sectorId = $sectorId }
-    $gradeId = Invoke-Request -Group "SETUP" -Label "POST /api/grades" -Method "POST" -Path "api/grades" -ReturnId -Body @{ name = "Track Grade $stamp"; schoolId = $schoolId }
-    $guardianId = Invoke-Request -Group "SETUP" -Label "POST /api/guardians" -Method "POST" -Path "api/guardians" -ReturnId -Body @{ documentType = 1; documentNumber = "TG$stamp"; firstName = "Track"; lastName = "Guardian"; phone = "8095550002"; street = "Street"; city = "Smoke"; gender = 1; sectorId = $sectorId }
-    $studentId = Invoke-Request -Group "SETUP" -Label "POST /api/students" -Method "POST" -Path "api/students" -ReturnId -Body @{ firstName = "Track"; lastName = "Student"; schoolId = $schoolId; gradeId = $gradeId; guardianId = $guardianId; photoUrl = $null }
-    $vehicleId = Invoke-Request -Group "SETUP" -Label "POST /api/vehicles" -Method "POST" -Path "api/vehicles" -ReturnId -Body @{ plateNumber = "TRK$($stamp.ToString().Substring($stamp.ToString().Length - 6))"; model = "Bus"; brand = "Smoke"; capacity = 20; status = 1 }
-    $driverId = Invoke-Request -Group "SETUP" -Label "POST /api/drivers" -Method "POST" -Path "api/drivers" -ReturnId -Body @{ documentType = 1; documentNumber = "TD$stamp"; firstName = "Track"; lastName = "Driver"; licenseNumber = "TL$stamp"; phone = "8095550003"; street = "Street"; city = "Smoke"; email = "track.driver.$stamp@smoke.local"; photoUrl = $null }
-    $assistantId = Invoke-Request -Group "SETUP" -Label "POST /api/transport-assistants" -Method "POST" -Path "api/transport-assistants" -ReturnId -Body @{ documentType = 1; documentNumber = "TA$stamp"; firstName = "Track"; lastName = "Assistant"; phone = "8095550004"; street = "Street"; city = "Smoke"; email = "track.assistant.$stamp@smoke.local"; photoUrl = $null }
-    $stopId = Invoke-Request -Group "SETUP" -Label "POST /api/stops" -Method "POST" -Path "api/stops" -ReturnId -Body @{ name = "Track Stop $stamp"; street = "Street"; city = "Smoke"; latitude = 18.4861; longitude = -69.9312; sectorId = $sectorId }
-    $routeId = Invoke-Request -Group "SETUP" -Label "POST /api/routes" -Method "POST" -Path "api/routes" -ReturnId -Body @{ name = "Track Route $stamp"; schoolId = $schoolId; startTime = $today.AddHours(10).ToString("o"); endTime = $today.AddHours(11).ToString("o") }
-    Invoke-Request -Group "SETUP" -Label "POST /api/routes/{routeId}/stops" -Method "POST" -Path "api/routes/$routeId/stops" -Body @{ routeId = $routeId; stopId = $stopId; stopOrder = 1 } | Out-Null
-    Invoke-Request -Group "SETUP" -Label "PUT /api/routes/{id}" -Method "PUT" -Path "api/routes/$routeId" -Body @{ id = $routeId; name = "Track Route $stamp"; schoolId = $schoolId; startTime = $today.AddHours(10).ToString("o"); endTime = $today.AddHours(11).ToString("o"); status = 2 } | Out-Null
-    $assignmentId = Invoke-Request -Group "SETUP" -Label "POST /api/route-assignments" -Method "POST" -Path "api/route-assignments" -ReturnId -Body @{ routeId = $routeId; vehicleId = $vehicleId; driverId = $driverId; transportAssistantId = $assistantId; vehicleCapacity = 20 }
-    Invoke-Request -Group "SETUP" -Label "POST /api/route-assignments/{assignmentId}/students/{studentId}" -Method "POST" -Path "api/route-assignments/$assignmentId/students/$studentId" | Out-Null
-    $tripId = Invoke-Request -Group "SETUP" -Label "POST /api/trips/start" -Method "POST" -Path "api/trips/start" -ReturnId -Body @{ routeAssignmentId = $assignmentId }
+    $sectorId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/sectors" -Method "POST" -Path "api/v1/sectors" -ReturnId -Body @{ name = "Track Sector $stamp"; province = "Smoke"; city = "Smoke" }
+    $schoolId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/schools" -Method "POST" -Path "api/v1/schools" -ReturnId -Body @{ name = "Track School $stamp"; directorName = "Director"; email = "track.school.$stamp@smoke.local"; phone = "8095550001"; street = "Street"; city = "Smoke"; sectorId = $sectorId }
+    $gradeId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/grades" -Method "POST" -Path "api/v1/grades" -ReturnId -Body @{ name = "Track Grade $stamp"; schoolId = $schoolId }
+    $guardianId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/guardians" -Method "POST" -Path "api/v1/guardians" -ReturnId -Body @{ documentType = 1; documentNumber = "TG$stamp"; firstName = "Track"; lastName = "Guardian"; phone = "8095550002"; street = "Street"; city = "Smoke"; gender = 1; sectorId = $sectorId }
+    $studentId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/students" -Method "POST" -Path "api/v1/students" -ReturnId -Body @{ firstName = "Track"; lastName = "Student"; schoolId = $schoolId; gradeId = $gradeId; guardianId = $guardianId; photoUrl = $null }
+    $vehicleId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/vehicles" -Method "POST" -Path "api/v1/vehicles" -ReturnId -Body @{ plateNumber = "TRK$($stamp.ToString().Substring($stamp.ToString().Length - 6))"; model = "Bus"; brand = "Smoke"; capacity = 20; status = 1 }
+    $driverId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/drivers" -Method "POST" -Path "api/v1/drivers" -ReturnId -Body @{ documentType = 1; documentNumber = "TD$stamp"; firstName = "Track"; lastName = "Driver"; licenseNumber = "TL$stamp"; phone = "8095550003"; street = "Street"; city = "Smoke"; email = "track.driver.$stamp@smoke.local"; photoUrl = $null }
+    $assistantId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/transport-assistants" -Method "POST" -Path "api/v1/transport-assistants" -ReturnId -Body @{ documentType = 1; documentNumber = "TA$stamp"; firstName = "Track"; lastName = "Assistant"; phone = "8095550004"; street = "Street"; city = "Smoke"; email = "track.assistant.$stamp@smoke.local"; photoUrl = $null }
+    $stopId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/stops" -Method "POST" -Path "api/v1/stops" -ReturnId -Body @{ name = "Track Stop $stamp"; street = "Street"; city = "Smoke"; latitude = 18.4861; longitude = -69.9312; sectorId = $sectorId }
+    $routeId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/routes" -Method "POST" -Path "api/v1/routes" -ReturnId -Body @{ name = "Track Route $stamp"; schoolId = $schoolId; startTime = $today.AddHours(10).ToString("o"); endTime = $today.AddHours(11).ToString("o") }
+    Invoke-Request -Group "SETUP" -Label "POST /api/v1/routes/{routeId}/stops" -Method "POST" -Path "api/v1/routes/$routeId/stops" -Body @{ routeId = $routeId; stopId = $stopId; stopOrder = 1 } | Out-Null
+    Invoke-Request -Group "SETUP" -Label "PUT /api/v1/routes/{id}" -Method "PUT" -Path "api/v1/routes/$routeId" -Body @{ id = $routeId; name = "Track Route $stamp"; schoolId = $schoolId; startTime = $today.AddHours(10).ToString("o"); endTime = $today.AddHours(11).ToString("o"); status = 2 } | Out-Null
+    $assignmentId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/route-assignments" -Method "POST" -Path "api/v1/route-assignments" -ReturnId -Body @{ routeId = $routeId; vehicleId = $vehicleId; driverId = $driverId; transportAssistantId = $assistantId; vehicleCapacity = 20 }
+    Invoke-Request -Group "SETUP" -Label "POST /api/v1/route-assignments/{assignmentId}/students/{studentId}" -Method "POST" -Path "api/v1/route-assignments/$assignmentId/students/$studentId" | Out-Null
+    $tripId = Invoke-Request -Group "SETUP" -Label "POST /api/v1/trips/start" -Method "POST" -Path "api/v1/trips/start" -ReturnId -Body @{ routeAssignmentId = $assignmentId }
 
-    Invoke-Request -Label "POST /api/tracking/location" -Method "POST" -Path "api/tracking/location" -Body @{ tripId = $tripId; latitude = 18.4861; longitude = -69.9312; speed = 35; heading = 90 } | Out-Null
-    Invoke-Request -Label "GET /api/tracking/trips/{tripId}/current-location" -Method "GET" -Path "api/tracking/trips/$tripId/current-location" | Out-Null
-    Invoke-Request -Label "GET /api/tracking/trips/{tripId}/history" -Method "GET" -Path "api/tracking/trips/$tripId/history" | Out-Null
-    Invoke-Request -Label "GET /api/tracking/active-trips" -Method "GET" -Path "api/tracking/active-trips" | Out-Null
+    Invoke-Request -Label "POST /api/v1/tracking/location" -Method "POST" -Path "api/v1/tracking/location" -Body @{ tripId = $tripId; latitude = 18.4861; longitude = -69.9312; speed = 35; heading = 90 } | Out-Null
+    Invoke-Request -Label "GET /api/v1/tracking/trips/{tripId}/current-location" -Method "GET" -Path "api/v1/tracking/trips/$tripId/current-location" | Out-Null
+    Invoke-Request -Label "GET /api/v1/tracking/trips/{tripId}/history" -Method "GET" -Path "api/v1/tracking/trips/$tripId/history" | Out-Null
+    Invoke-Request -Label "GET /api/v1/tracking/active-trips" -Method "GET" -Path "api/v1/tracking/active-trips" | Out-Null
 
-    $guardianLogin = Invoke-Request -Group "AUTH" -Label "POST /api/auth/login (guardian)" -Method "POST" -Path "api/auth/login" -Body @{ username = "TG$stamp"; password = "TG$stamp" }
+    $guardianLogin = Invoke-Request -Group "AUTH" -Label "POST /api/v1/auth/login (guardian)" -Method "POST" -Path "api/v1/auth/login" -Body @{ username = "TG$stamp"; password = "TG$stamp" }
     $script:Token = ($guardianLogin.Content | ConvertFrom-Json).token
-    Invoke-Request -Label "GET /api/tracking/my-students (guardian)" -Method "GET" -Path "api/tracking/my-students" | Out-Null
+    Invoke-Request -Label "GET /api/v1/tracking/my-students (guardian)" -Method "GET" -Path "api/v1/tracking/my-students" | Out-Null
 
     $script:Token = $adminToken
-    Invoke-Request -Group "CLEANUP" -Label "PUT /api/trips/{id}/end" -Method "PUT" -Path "api/trips/$tripId/end" -AllowFailure | Out-Null
+    Invoke-Request -Group "CLEANUP" -Label "PUT /api/v1/trips/{id}/end" -Method "PUT" -Path "api/v1/trips/$tripId/end" -AllowFailure | Out-Null
 }
 finally {
     $script:Client.Dispose()
@@ -131,3 +131,5 @@ if ($failed.Count -gt 0) {
     $failed | Select-Object Group, Endpoint, StatusCode, Error | Format-List
     exit 1
 }
+
+

@@ -188,14 +188,14 @@ $script:Results = New-Object System.Collections.Generic.List[object]
 try {
     Write-Host "Base URL: $baseUrl"
 
-    $login = Invoke-SmokeRequest -Client $script:Client -Method "POST" -Path "api/auth/login" -Body @{
+    $login = Invoke-SmokeRequest -Client $script:Client -Method "POST" -Path "api/v1/auth/login" -Body @{
         username = $Username
         password = $Password
     }
 
     $script:Results.Add([pscustomobject]@{
         Group = "AUTH"
-        Endpoint = "POST /api/auth/login"
+        Endpoint = "POST /api/v1/auth/login"
         Ok = $login.Ok
         StatusCode = $login.StatusCode
         Error = $login.Error
@@ -213,13 +213,13 @@ try {
     $stamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
     $today = [DateTime]::UtcNow.Date
 
-    $sectorId = Invoke-Step -Group "EDUCATION" -Label "POST /api/sectors" -Method "POST" -Path "api/sectors" -ReturnId -Body @{
+    $sectorId = Invoke-Step -Group "EDUCATION" -Label "POST /api/v1/sectors" -Method "POST" -Path "api/v1/sectors" -ReturnId -Body @{
         name = "Smoke Sector $stamp"
         province = "Smoke Province"
         city = "Smoke City"
     }
 
-    $schoolId = Invoke-Step -Group "EDUCATION" -Label "POST /api/schools" -Method "POST" -Path "api/schools" -ReturnId -Body @{
+    $schoolId = Invoke-Step -Group "EDUCATION" -Label "POST /api/v1/schools" -Method "POST" -Path "api/v1/schools" -ReturnId -Body @{
         name = "Smoke School $stamp"
         directorName = "Smoke Director"
         email = "school.$stamp@smoke.local"
@@ -229,12 +229,12 @@ try {
         sectorId = $sectorId
     }
 
-    $gradeId = Invoke-Step -Group "EDUCATION" -Label "POST /api/grades" -Method "POST" -Path "api/grades" -ReturnId -Body @{
+    $gradeId = Invoke-Step -Group "EDUCATION" -Label "POST /api/v1/grades" -Method "POST" -Path "api/v1/grades" -ReturnId -Body @{
         name = "Smoke Grade $stamp"
         schoolId = $schoolId
     }
 
-    $guardianId = Invoke-Step -Group "EDUCATION" -Label "POST /api/guardians" -Method "POST" -Path "api/guardians" -ReturnId -Body @{
+    $guardianId = Invoke-Step -Group "EDUCATION" -Label "POST /api/v1/guardians" -Method "POST" -Path "api/v1/guardians" -ReturnId -Body @{
         documentType = 1
         documentNumber = "G$stamp"
         firstName = "Smoke"
@@ -246,7 +246,7 @@ try {
         sectorId = $sectorId
     }
 
-    $studentId = Invoke-Step -Group "EDUCATION" -Label "POST /api/students" -Method "POST" -Path "api/students" -ReturnId -Body @{
+    $studentId = Invoke-Step -Group "EDUCATION" -Label "POST /api/v1/students" -Method "POST" -Path "api/v1/students" -ReturnId -Body @{
         firstName = "Smoke"
         lastName = "Student"
         schoolId = $schoolId
@@ -254,12 +254,12 @@ try {
         guardianId = $guardianId
     }
 
-    $vehicleId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/vehicles" -Method "POST" -Path "api/vehicles" -ReturnId -Body @{
+    $vehicleId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/v1/vehicles" -Method "POST" -Path "api/v1/vehicles" -ReturnId -Body @{
         plateNumber = "SMK$($stamp % 1000000)"
         capacity = 20
     }
 
-    $driverId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/drivers" -Method "POST" -Path "api/drivers" -ReturnId -Body @{
+    $driverId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/v1/drivers" -Method "POST" -Path "api/v1/drivers" -ReturnId -Body @{
         firstName = "Smoke"
         lastName = "Driver"
         documentType = 1
@@ -272,7 +272,7 @@ try {
         photoUrl = $null
     }
 
-    $assistantId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/transport-assistants" -Method "POST" -Path "api/transport-assistants" -ReturnId -Body @{
+    $assistantId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/v1/transport-assistants" -Method "POST" -Path "api/v1/transport-assistants" -ReturnId -Body @{
         documentType = 1
         documentNumber = "A$stamp"
         firstName = "Smoke"
@@ -284,7 +284,7 @@ try {
         photoUrl = $null
     }
 
-    $stopId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/stops" -Method "POST" -Path "api/stops" -ReturnId -Body @{
+    $stopId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/v1/stops" -Method "POST" -Path "api/v1/stops" -ReturnId -Body @{
         name = "Smoke Stop $stamp"
         street = "Stop Street"
         city = "Smoke City"
@@ -293,34 +293,34 @@ try {
         sectorId = $sectorId
     }
 
-    $routeId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/routes" -Method "POST" -Path "api/routes" -ReturnId -Body @{
+    $routeId = Invoke-Step -Group "TRANSPORT" -Label "POST /api/v1/routes" -Method "POST" -Path "api/v1/routes" -ReturnId -Body @{
         name = "Smoke Route $stamp"
         schoolId = $schoolId
         startTime = $today.AddHours(7).ToString("o")
         endTime = $today.AddHours(8).ToString("o")
     }
 
-    Invoke-Step -Group "ROUTE_STOPS" -Label "POST /api/routes/{routeId}/stops" -Method "POST" -Path "api/routes/$routeId/stops" -AllowFailure -Body @{
+    Invoke-Step -Group "ROUTE_STOPS" -Label "POST /api/v1/routes/{routeId}/stops" -Method "POST" -Path "api/v1/routes/$routeId/stops" -AllowFailure -Body @{
         routeId = $routeId
         stopId = $stopId
         stopOrder = 1
     }
 
-    Invoke-Step -Group "ROUTE_STOPS" -Label "PUT /api/routes/{routeId}/stops/{stopId}/order" -Method "PUT" -Path "api/routes/$routeId/stops/$stopId/order" -AllowFailure -Body @{
+    Invoke-Step -Group "ROUTE_STOPS" -Label "PUT /api/v1/routes/{routeId}/stops/{stopId}/order" -Method "PUT" -Path "api/v1/routes/$routeId/stops/$stopId/order" -AllowFailure -Body @{
         routeId = $routeId
         stopId = $stopId
         stopOrder = 2
     }
 
-    Invoke-Step -Group "ROUTE_STOPS" -Label "DELETE /api/routes/{routeId}/stops/{stopId}" -Method "DELETE" -Path "api/routes/$routeId/stops/$stopId" -AllowFailure
+    Invoke-Step -Group "ROUTE_STOPS" -Label "DELETE /api/v1/routes/{routeId}/stops/{stopId}" -Method "DELETE" -Path "api/v1/routes/$routeId/stops/$stopId" -AllowFailure
 
-    Invoke-Step -Group "ROUTE_STOPS" -Label "POST /api/routes/{routeId}/stops (re-add for assignment)" -Method "POST" -Path "api/routes/$routeId/stops" -AllowFailure -Body @{
+    Invoke-Step -Group "ROUTE_STOPS" -Label "POST /api/v1/routes/{routeId}/stops (re-add for assignment)" -Method "POST" -Path "api/v1/routes/$routeId/stops" -AllowFailure -Body @{
         routeId = $routeId
         stopId = $stopId
         stopOrder = 1
     }
 
-    Invoke-Step -Group "TRANSPORT" -Label "PUT /api/routes/{id} (activate for assignment rules)" -Method "PUT" -Path "api/routes/$routeId" -Body @{
+    Invoke-Step -Group "TRANSPORT" -Label "PUT /api/v1/routes/{id} (activate for assignment rules)" -Method "PUT" -Path "api/v1/routes/$routeId" -Body @{
         id = $routeId
         name = "Smoke Route $stamp"
         schoolId = $schoolId
@@ -329,7 +329,7 @@ try {
         status = 2
     }
 
-    $assignmentId = Invoke-Step -Group "ROUTE_ASSIGNMENTS" -Label "POST /api/route-assignments" -Method "POST" -Path "api/route-assignments" -ReturnId -Body @{
+    $assignmentId = Invoke-Step -Group "ROUTE_ASSIGNMENTS" -Label "POST /api/v1/route-assignments" -Method "POST" -Path "api/v1/route-assignments" -ReturnId -Body @{
         routeId = $routeId
         driverId = $driverId
         vehicleId = $vehicleId
@@ -337,34 +337,34 @@ try {
         vehicleCapacity = 20
     }
 
-    Invoke-Step -Group "ROUTE_ASSIGNMENTS" -Label "POST /api/route-assignments/{assignmentId}/students/{studentId}" -Method "POST" -Path "api/route-assignments/$assignmentId/students/$studentId"
+    Invoke-Step -Group "ROUTE_ASSIGNMENTS" -Label "POST /api/v1/route-assignments/{assignmentId}/students/{studentId}" -Method "POST" -Path "api/v1/route-assignments/$assignmentId/students/$studentId"
 
-    Invoke-Step -Group "ROUTE_ASSIGNMENTS" -Label "DELETE /api/route-assignments/{assignmentId}/students/{studentId}" -Method "DELETE" -Path "api/route-assignments/$assignmentId/students/$studentId"
+    Invoke-Step -Group "ROUTE_ASSIGNMENTS" -Label "DELETE /api/v1/route-assignments/{assignmentId}/students/{studentId}" -Method "DELETE" -Path "api/v1/route-assignments/$assignmentId/students/$studentId"
 
-    Invoke-Step -Group "ROUTE_ASSIGNMENTS" -Label "POST /api/route-assignments/{assignmentId}/students/{studentId} (re-assign for trip)" -Method "POST" -Path "api/route-assignments/$assignmentId/students/$studentId"
+    Invoke-Step -Group "ROUTE_ASSIGNMENTS" -Label "POST /api/v1/route-assignments/{assignmentId}/students/{studentId} (re-assign for trip)" -Method "POST" -Path "api/v1/route-assignments/$assignmentId/students/$studentId"
 
-    $tripId = Invoke-Step -Group "TRIPS" -Label "POST /api/trips/start" -Method "POST" -Path "api/trips/start" -ReturnId -AllowFailure -Body @{
+    $tripId = Invoke-Step -Group "TRIPS" -Label "POST /api/v1/trips/start" -Method "POST" -Path "api/v1/trips/start" -ReturnId -AllowFailure -Body @{
         routeAssignmentId = $assignmentId
     }
 
     if ($tripId) {
-        Invoke-Step -Group "TRIPS" -Label "PUT /api/trips/{id}/end" -Method "PUT" -Path "api/trips/$tripId/end"
+        Invoke-Step -Group "TRIPS" -Label "PUT /api/v1/trips/{id}/end" -Method "PUT" -Path "api/v1/trips/$tripId/end"
     }
     else {
-        Add-SkippedStep -Group "TRIPS" -Label "PUT /api/trips/{id}/end" -Reason "POST /api/trips/start did not create a trip"
+        Add-SkippedStep -Group "TRIPS" -Label "PUT /api/v1/trips/{id}/end" -Reason "POST /api/v1/trips/start did not create a trip"
     }
 
-    $tripToCancelId = Invoke-Step -Group "TRIPS" -Label "POST /api/trips/start (for cancel)" -Method "POST" -Path "api/trips/start" -ReturnId -AllowFailure -Body @{
+    $tripToCancelId = Invoke-Step -Group "TRIPS" -Label "POST /api/v1/trips/start (for cancel)" -Method "POST" -Path "api/v1/trips/start" -ReturnId -AllowFailure -Body @{
         routeAssignmentId = $assignmentId
     }
 
     if ($tripToCancelId) {
-        Invoke-ExpectedFailureStep -Group "TRIPS" -Label "PUT /api/trips/{id}/cancel (reject in-progress trip)" -Method "PUT" -Path "api/trips/$tripToCancelId/cancel" -Body @{
+        Invoke-ExpectedFailureStep -Group "TRIPS" -Label "PUT /api/v1/trips/{id}/cancel (reject in-progress trip)" -Method "PUT" -Path "api/v1/trips/$tripToCancelId/cancel" -Body @{
             reason = "Smoke test cancellation attempt"
         }
     }
     else {
-        Add-SkippedStep -Group "TRIPS" -Label "PUT /api/trips/{id}/cancel" -Reason "POST /api/trips/start did not create a trip"
+        Add-SkippedStep -Group "TRIPS" -Label "PUT /api/v1/trips/{id}/cancel" -Reason "POST /api/v1/trips/start did not create a trip"
     }
 
     $script:Results |
@@ -394,3 +394,5 @@ try {
 finally {
     $script:Client.Dispose()
 }
+
+

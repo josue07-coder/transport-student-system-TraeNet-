@@ -88,6 +88,12 @@ public class RouteAssignmentHandlerTests
         assignments.Setup(x => x.GetByIdAsync(assignment.Id)).ReturnsAsync(assignment);
         students.Setup(x => x.GetByIdIncludingInactiveAsync(student.Id)).ReturnsAsync(student);
 
-        return new AssignStudentToRouteAssignmentHandler(assignments.Object, students.Object, audit.Object, notifications.Object, users.Object);
+        return new AssignStudentToRouteAssignmentHandler(
+            assignments.Object,
+            students.Object,
+            audit.Object,
+            notifications.Object,
+            users.Object,
+            new ImmediateUnitOfWork());
     }
 }

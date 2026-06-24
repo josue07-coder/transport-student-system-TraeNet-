@@ -17,5 +17,10 @@ namespace Transport.Application.Features.Trips.DTOs
         public string? CancellationReason { get; set; }
         public string? NonOperationReason { get; set; }
         public string? NonOperationNotes { get; set; }
+        public int DelayMinutes { get; set; }
+        public bool IsLate { get; set; }
+        public bool StartedEarly { get; set; }
+        public string? EarlyStartReason { get; set; }
+        public TripPunctualityStatus PunctualityStatus { get; set; }
     }
 }

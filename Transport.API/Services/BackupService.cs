@@ -3,12 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Transport.Application.Interfaces;
 using Transport.Domain.Entities;
 using Transport.Domain.Enums;
+using Transport.Domain.Exceptions;
 using Transport.Infrastructure.Persistence.Context;
 
 namespace Transport.API.Services
 {
     public class BackupService : IBackupService
     {
+        private static readonly SemaphoreSlim ManualBackupLock = new(1, 1);
+
         private readonly AppDbContext _context;
         private readonly IBackupRecordRepository _repository;
         private readonly ISystemSettingService _settings;
@@ -31,41 +34,51 @@ namespace Transport.API.Services
 
         public async Task<BackupRecord> CreateManualBackupAsync(Guid userId, CancellationToken cancellationToken)
         {
-            var localPath = await _settings.GetValueOrDefaultAsync("Backup.LocalPath", "backups");
-            Directory.CreateDirectory(localPath);
-
-            var fileName = $"backup_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json";
-            var filePath = Path.Combine(localPath, fileName);
-            var backupRecord = new BackupRecord(fileName, filePath, BackupType.Manual, userId);
-
-            await _repository.AddAsync(backupRecord);
-            await _repository.SaveChangesAsync();
-            await _auditService.LogAsync("BackupStarted", "BackupRecord", backupRecord.Id.ToString());
+            if (!await ManualBackupLock.WaitAsync(0, cancellationToken))
+                throw new DomainException("Ya hay un backup en ejecución");
 
             try
             {
-                backupRecord.MarkInProgress();
+                var localPath = await _settings.GetValueOrDefaultAsync("Backup.LocalPath", "backups");
+                Directory.CreateDirectory(localPath);
+
+                var fileName = $"backup_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json";
+                var filePath = Path.Combine(localPath, fileName);
+                var backupRecord = new BackupRecord(fileName, filePath, BackupType.Manual, userId);
+
+                await _repository.AddAsync(backupRecord);
                 await _repository.SaveChangesAsync();
+                await _auditService.LogAsync("BackupStarted", "BackupRecord", backupRecord.Id.ToString());
 
-                var payload = await CreateBackupPayloadAsync(userId, cancellationToken);
-                var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true });
+                try
+                {
+                    backupRecord.MarkInProgress();
+                    await _repository.SaveChangesAsync();
 
-                await File.WriteAllTextAsync(filePath, json, cancellationToken);
-                var fileInfo = new FileInfo(filePath);
+                    var payload = await CreateBackupPayloadAsync(userId, cancellationToken);
+                    var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions { WriteIndented = true });
 
-                backupRecord.MarkCompleted(fileInfo.Length);
-                await _repository.SaveChangesAsync();
-                await _auditService.LogAsync("BackupCompleted", "BackupRecord", backupRecord.Id.ToString(), null, JsonSerializer.Serialize(new { backupRecord.FileName, backupRecord.FileSizeBytes }));
+                    await File.WriteAllTextAsync(filePath, json, cancellationToken);
+                    var fileInfo = new FileInfo(filePath);
+
+                    backupRecord.MarkCompleted(fileInfo.Length);
+                    await _repository.SaveChangesAsync();
+                    await _auditService.LogAsync("BackupCompleted", "BackupRecord", backupRecord.Id.ToString(), null, JsonSerializer.Serialize(new { backupRecord.FileName, backupRecord.FileSizeBytes }));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Manual backup failed");
+                    backupRecord.MarkFailed(ex.Message);
+                    await _repository.SaveChangesAsync();
+                    await _auditService.LogAsync("BackupFailed", "BackupRecord", backupRecord.Id.ToString(), null, ex.Message);
+                }
+
+                return backupRecord;
             }
-            catch (Exception ex)
+            finally
             {
-                _logger.LogError(ex, "Manual backup failed");
-                backupRecord.MarkFailed(ex.Message);
-                await _repository.SaveChangesAsync();
-                await _auditService.LogAsync("BackupFailed", "BackupRecord", backupRecord.Id.ToString(), null, ex.Message);
+                ManualBackupLock.Release();
             }
-
-            return backupRecord;
         }
 
         public Task<BackupRecord?> GetLatestBackupAsync(CancellationToken cancellationToken)

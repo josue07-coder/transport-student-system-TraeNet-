@@ -9,6 +9,13 @@ namespace Transport.API.Extensions
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
             {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Transport Student System API",
+                    Version = "v1",
+                    Description = "API versionada para la Plataforma Web TRAE."
+                });
+
                 var securityScheme = new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -44,6 +51,7 @@ namespace Transport.API.Extensions
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Transport Student System API v1");
                 options.ConfigObject.PersistAuthorization = false;
             });
 

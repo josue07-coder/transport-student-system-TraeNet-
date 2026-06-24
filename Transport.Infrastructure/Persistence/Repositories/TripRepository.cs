@@ -23,13 +23,16 @@ namespace Transport.Infrastructure.Persistence.Repositories
 
         public async Task<Trip?> GetByIdAsync(Guid id)
         {
-            return await TripQuery()
+            return await FullTripQuery()
                 .FirstOrDefaultAsync(trip => trip.Id == id);
         }
 
         public async Task<PaginatedResponse<Trip>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = TripQuery();
+            var query = BaseTripQuery()
+                .OrderByDescending(trip => trip.StartTime ?? trip.ScheduledDepartureTime ?? trip.CreatedAt)
+                .ThenByDescending(trip => trip.CreatedAt)
+                .ThenBy(trip => trip.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
@@ -41,58 +44,64 @@ namespace Transport.Infrastructure.Persistence.Repositories
 
         public async Task<List<Trip>> GetByRouteAssignmentAsync(Guid routeAssignmentId)
         {
-            return await TripQuery()
+            return await BaseTripQuery()
                 .Where(trip => trip.RouteAssignmentId == routeAssignmentId)
+                .OrderByDescending(trip => trip.StartTime ?? trip.ScheduledDepartureTime ?? trip.CreatedAt)
                 .ToListAsync();
         }
 
         public async Task<List<Trip>> GetByStatusAsync(TripStatus status)
         {
-            return await TripQuery()
+            return await BaseTripQuery()
                 .Where(trip => trip.Status == status)
+                .OrderByDescending(trip => trip.StartTime ?? trip.ScheduledDepartureTime ?? trip.CreatedAt)
                 .ToListAsync();
         }
 
         public async Task<List<Trip>> GetByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
-            return await TripQuery()
+            return await BaseTripQuery()
                 .Where(trip => trip.StartTime.HasValue &&
                     trip.StartTime.Value.Date >= startDate.Date &&
                     trip.StartTime.Value.Date <= endDate.Date)
+                .OrderByDescending(trip => trip.StartTime)
                 .ToListAsync();
         }
 
         public async Task<List<Trip>> GetByDriverAsync(Guid driverId)
         {
-            return await TripQuery()
+            return await VisibilityTripQuery()
                 .Where(trip => trip.RouteAssignment.DriverId == driverId)
+                .OrderByDescending(trip => trip.StartTime ?? trip.ScheduledDepartureTime ?? trip.CreatedAt)
                 .ToListAsync();
         }
 
         public async Task<List<Trip>> GetByTransportAssistantAsync(Guid transportAssistantId)
         {
-            return await TripQuery()
+            return await VisibilityTripQuery()
                 .Where(trip => trip.RouteAssignment.TransportAssistantId == transportAssistantId)
+                .OrderByDescending(trip => trip.StartTime ?? trip.ScheduledDepartureTime ?? trip.CreatedAt)
                 .ToListAsync();
         }
 
         public async Task<List<Trip>> GetByGuardianAsync(Guid guardianId)
         {
-            return await TripQuery()
+            return await VisibilityTripQuery()
                 .Where(trip => trip.RouteAssignment.Students.Any(studentAssignment =>
                     studentAssignment.Student.GuardianId == guardianId))
+                .OrderByDescending(trip => trip.StartTime ?? trip.ScheduledDepartureTime ?? trip.CreatedAt)
                 .ToListAsync();
         }
 
         public async Task<Trip?> GetActiveByRouteAssignmentAsync(Guid routeAssignmentId)
         {
-            return await TripQuery()
+            return await BaseTripQuery()
                 .FirstOrDefaultAsync(trip => trip.RouteAssignmentId == routeAssignmentId && trip.Status == TripStatus.InProgress);
         }
 
         public async Task<Trip?> GetByIdWithAssignmentDetailsAsync(Guid id)
         {
-            return await TripQuery()
+            return await FullTripQuery()
                 .FirstOrDefaultAsync(trip => trip.Id == id);
         }
 
@@ -110,8 +119,9 @@ namespace Transport.Infrastructure.Persistence.Repositories
 
         public async Task<List<Trip>> GetActiveTripsAsync()
         {
-            return await TripQuery()
+            return await VisibilityTripQuery()
                 .Where(trip => trip.Status == TripStatus.InProgress)
+                .OrderByDescending(trip => trip.StartTime ?? trip.CreatedAt)
                 .ToListAsync();
         }
 
@@ -126,9 +136,26 @@ namespace Transport.Infrastructure.Persistence.Repositories
             await _context.SaveChangesAsync();
         }
 
-        private IQueryable<Trip> TripQuery()
+        private IQueryable<Trip> BaseTripQuery()
         {
             return _context.Trips
+                .AsNoTracking();
+        }
+
+        private IQueryable<Trip> VisibilityTripQuery()
+        {
+            return _context.Trips
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(trip => trip.RouteAssignment)
+                    .ThenInclude(assignment => assignment.Students)
+                        .ThenInclude(studentAssignment => studentAssignment.Student);
+        }
+
+        private IQueryable<Trip> FullTripQuery()
+        {
+            return _context.Trips
+                .AsSplitQuery()
                 .Include(trip => trip.RouteAssignment)
                     .ThenInclude(assignment => assignment.Route)
                         .ThenInclude(route => route.Stops)
@@ -143,7 +170,7 @@ namespace Transport.Infrastructure.Persistence.Repositories
                         .ThenInclude(studentAssignment => studentAssignment.Student)
                             .ThenInclude(student => student.Guardian)
                 .Include(trip => trip.StudentAttendances)
-                .AsQueryable();
+                .Include(trip => trip.RouteDeviations);
         }
     }
 }

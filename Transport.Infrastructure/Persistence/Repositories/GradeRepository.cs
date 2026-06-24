@@ -27,12 +27,19 @@ namespace Transport.Infrastructure.Repositories
 
         public async Task<List<Grade>> GetAllAsync()
         {
-            return await _context.Grades.ToListAsync();
+            return await _context.Grades
+                .AsNoTracking()
+                .OrderBy(grade => grade.Name)
+                .ThenBy(grade => grade.Id)
+                .ToListAsync();
         }
 
         public async Task<PaginatedResponse<Grade>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _context.Grades.AsQueryable();
+            var query = _context.Grades
+                .AsNoTracking()
+                .OrderBy(grade => grade.Name)
+                .ThenBy(grade => grade.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
@@ -45,7 +52,9 @@ namespace Transport.Infrastructure.Repositories
         public async Task<List<Grade>> GetBySchoolAsync(Guid schoolId)
         {
             return await _context.Grades
+                .AsNoTracking()
                 .Where(g => g.SchoolId == schoolId)
+                .OrderBy(g => g.Name)
                 .ToListAsync();
         }
 

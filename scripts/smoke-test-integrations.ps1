@@ -70,40 +70,40 @@ $script:Results = New-Object System.Collections.Generic.List[object]
 
 try {
     Write-Host "Base URL: $baseUrl"
-    $login = Invoke-Request -Group "AUTH" -Label "POST /api/auth/login" -Method "POST" -Path "api/auth/login" -Body @{ username = $Username; password = $Password }
+    $login = Invoke-Request -Group "AUTH" -Label "POST /api/v1/auth/login" -Method "POST" -Path "api/v1/auth/login" -Body @{ username = $Username; password = $Password }
     $script:Token = ($login.Content | ConvertFrom-Json).token
     $adminToken = $script:Token
 
-    $me = Invoke-Request -Group "AUTH" -Label "GET /api/me" -Method "GET" -Path "api/me"
+    $me = Invoke-Request -Group "AUTH" -Label "GET /api/v1/me" -Method "GET" -Path "api/v1/me"
     $adminUserId = ($me.Content | ConvertFrom-Json).userId
 
-    Invoke-Request -Label "POST /api/integrations/test-email" -Method "POST" -Path "api/integrations/test-email" -Body @{
+    Invoke-Request -Label "POST /api/v1/integrations/test-email" -Method "POST" -Path "api/v1/integrations/test-email" -Body @{
         to = "smoke.integrations@test.local"
         subject = "Smoke integration email"
         body = "Mock email body"
     } | Out-Null
 
-    Invoke-Request -Label "POST /api/integrations/test-sms" -Method "POST" -Path "api/integrations/test-sms" -Body @{
+    Invoke-Request -Label "POST /api/v1/integrations/test-sms" -Method "POST" -Path "api/v1/integrations/test-sms" -Body @{
         phoneNumber = "8095553001"
         message = "Mock SMS message"
     } | Out-Null
 
-    Invoke-Request -Label "POST /api/integrations/test-whatsapp" -Method "POST" -Path "api/integrations/test-whatsapp" -Body @{
+    Invoke-Request -Label "POST /api/v1/integrations/test-whatsapp" -Method "POST" -Path "api/v1/integrations/test-whatsapp" -Body @{
         phoneNumber = "8095553001"
         message = "Mock WhatsApp message"
     } | Out-Null
 
-    Invoke-Request -Label "POST /api/integrations/test-push" -Method "POST" -Path "api/integrations/test-push" -Body @{
+    Invoke-Request -Label "POST /api/v1/integrations/test-push" -Method "POST" -Path "api/v1/integrations/test-push" -Body @{
         userId = $adminUserId
         title = "Smoke push"
         message = "Mock push message"
     } | Out-Null
 
-    Invoke-Request -Label "GET /api/integrations/test-distance" -Method "GET" -Path "api/integrations/test-distance?originLat=18.4861&originLng=-69.9312&destinationLat=18.5001&destinationLng=-69.9002" | Out-Null
+    Invoke-Request -Label "GET /api/v1/integrations/test-distance" -Method "GET" -Path "api/v1/integrations/test-distance?originLat=18.4861&originLng=-69.9312&destinationLat=18.5001&destinationLng=-69.9002" | Out-Null
 
     $stamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
     $guardianDocument = "ING$stamp"
-    Invoke-Request -Group "SETUP" -Label "POST /api/guardians" -Method "POST" -Path "api/guardians" -Body @{
+    Invoke-Request -Group "SETUP" -Label "POST /api/v1/guardians" -Method "POST" -Path "api/v1/guardians" -Body @{
         documentType = 1
         documentNumber = $guardianDocument
         firstName = "Integration"
@@ -115,10 +115,10 @@ try {
         sectorId = $null
     } | Out-Null
 
-    $guardianLogin = Invoke-Request -Group "AUTH" -Label "POST /api/auth/login (guardian)" -Method "POST" -Path "api/auth/login" -Body @{ username = $guardianDocument; password = $guardianDocument }
+    $guardianLogin = Invoke-Request -Group "AUTH" -Label "POST /api/v1/auth/login (guardian)" -Method "POST" -Path "api/v1/auth/login" -Body @{ username = $guardianDocument; password = $guardianDocument }
     $script:Token = ($guardianLogin.Content | ConvertFrom-Json).token
 
-    Invoke-Request -Group "AUTHZ" -Label "POST /api/integrations/test-email unauthorized" -Method "POST" -Path "api/integrations/test-email" -ExpectedStatusCodes @(403) -Body @{
+    Invoke-Request -Group "AUTHZ" -Label "POST /api/v1/integrations/test-email unauthorized" -Method "POST" -Path "api/v1/integrations/test-email" -ExpectedStatusCodes @(403) -Body @{
         to = "blocked@test.local"
         subject = "Blocked"
         body = "Blocked"
@@ -143,3 +143,5 @@ if ($failed.Count -gt 0) {
     $failed | Select-Object Group, Endpoint, StatusCode, Error | Format-List
     exit 1
 }
+
+

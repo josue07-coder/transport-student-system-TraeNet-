@@ -14,6 +14,7 @@ namespace Transport.Application.Interfaces
         Task<List<Student>> GetByGradeAsync(Guid gradeId);
         Task<List<Student>> GetBySchoolAsync(Guid schoolId);
         Task<List<Student>> GetByGuardianAsync(Guid guardianId);
+        Task<List<Student>> SearchForAttendanceAsync(string query, int maxResults = 20);
         Task<bool> ExistsByCodeAsync(string code);
         Task<bool> ExistsAsync(Guid id);
         Task<bool> HasActiveRouteAssignmentAsync(Guid studentId);

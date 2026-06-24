@@ -42,7 +42,7 @@ function Invoke-Request {
 function Get-Token {
     param([string]$Username, [string]$Password)
 
-    $response = Invoke-Request -Method "POST" -Path "api/auth/login" -Body @{
+    $response = Invoke-Request -Method "POST" -Path "api/v1/auth/login" -Body @{
         username = $Username
         password = $Password
     }
@@ -70,7 +70,7 @@ $script:Results = New-Object System.Collections.Generic.List[object]
 
 try {
     $adminToken = Get-Token -Username $AdminUsername -Password $AdminPassword
-    $rolesResponse = Invoke-Request -Method "GET" -Path "api/roles" -Token $adminToken
+    $rolesResponse = Invoke-Request -Method "GET" -Path "api/v1/roles" -Token $adminToken
     Assert-Status -Check "Admin gets roles" -Response $rolesResponse -Expected @(200)
 
     $roles = $rolesResponse.Content | ConvertFrom-Json
@@ -91,17 +91,17 @@ try {
         profileImageUrl = $null
     }
 
-    $create = Invoke-Request -Method "POST" -Path "api/users" -Token $adminToken -Body $body
+    $create = Invoke-Request -Method "POST" -Path "api/v1/users" -Token $adminToken -Body $body
     Assert-Status -Check "Admin creates supervisor" -Response $create -Expected @(201)
 
     $supervisorToken = Get-Token -Username $username -Password $password
-    $me = Invoke-Request -Method "GET" -Path "api/me" -Token $supervisorToken
+    $me = Invoke-Request -Method "GET" -Path "api/v1/me" -Token $supervisorToken
     Assert-Status -Check "Supervisor gets profile" -Response $me -Expected @(200)
 
-    $duplicate = Invoke-Request -Method "POST" -Path "api/users" -Token $adminToken -Body $body
+    $duplicate = Invoke-Request -Method "POST" -Path "api/v1/users" -Token $adminToken -Body $body
     Assert-Status -Check "Duplicate username is rejected" -Response $duplicate -Expected @(400)
 
-    $forbidden = Invoke-Request -Method "POST" -Path "api/users" -Token $supervisorToken -Body @{
+    $forbidden = Invoke-Request -Method "POST" -Path "api/v1/users" -Token $supervisorToken -Body @{
         username = "forbidden$stamp"
         name = "Forbidden User"
         email = "forbidden$stamp@trae.local"
@@ -126,3 +126,5 @@ try {
 finally {
     $client.Dispose()
 }
+
+

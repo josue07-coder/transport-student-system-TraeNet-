@@ -23,7 +23,8 @@ namespace Transport.Infrastructure.Persistence.Repositories
 
         public async Task<Driver?> GetByIdAsync(Guid id)
         {
-            return await _context.Drivers.FindAsync(id);
+            return await _context.Drivers
+                .FirstOrDefaultAsync(driver => driver.Id == id && driver.IsActive);
         }
 
         public async Task<Driver?> GetByIdIncludingInactiveAsync(Guid id)
@@ -36,20 +37,29 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<Driver?> GetByLicenseNumberAsync(string licenseNumber)
         {
             return await _context.Drivers
-                .FirstOrDefaultAsync(d => d.LicenseNumber.Value == licenseNumber);
+                .FirstOrDefaultAsync(d => d.LicenseNumber.Value == licenseNumber && d.IsActive);
         }
 
         public async Task<List<Driver>> GetByActiveAsync(bool isActive)
         {
             return await _context.Drivers
                 .IgnoreQueryFilters()
+                .AsNoTracking()
                 .Where(d => d.IsActive == isActive)
+                .OrderBy(d => d.LastName)
+                .ThenBy(d => d.FirstName)
+                .ThenBy(d => d.Id)
                 .ToListAsync();
         }
 
         public async Task<PaginatedResponse<Driver>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _context.Drivers.AsQueryable();
+            var query = _context.Drivers
+                .AsNoTracking()
+                .Where(driver => driver.IsActive)
+                .OrderBy(driver => driver.LastName)
+                .ThenBy(driver => driver.FirstName)
+                .ThenBy(driver => driver.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
@@ -62,7 +72,7 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<bool> ExistsAsync(Guid id)
         {
             return await _context.Drivers
-                .AnyAsync(driver => driver.Id == id);
+                .AnyAsync(driver => driver.Id == id && driver.IsActive);
         }
 
         public async Task<bool> ExistsByDocumentAsync(string documentNumber, Guid? excludeId = null)

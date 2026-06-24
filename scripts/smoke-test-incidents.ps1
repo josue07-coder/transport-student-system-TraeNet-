@@ -149,14 +149,14 @@ $script:Results = New-Object System.Collections.Generic.List[object]
 try {
     Write-Host "Base URL: $baseUrl"
 
-    $login = Invoke-SmokeRequest -Client $script:Client -Method "POST" -Path "api/auth/login" -Body @{
+    $login = Invoke-SmokeRequest -Client $script:Client -Method "POST" -Path "api/v1/auth/login" -Body @{
         username = $Username
         password = $Password
     }
 
     $script:Results.Add([pscustomobject]@{
         Group = "AUTH"
-        Endpoint = "POST /api/auth/login"
+        Endpoint = "POST /api/v1/auth/login"
         Ok = $login.Ok
         StatusCode = $login.StatusCode
         Error = $login.Error
@@ -168,10 +168,10 @@ try {
 
     $script:Token = ($login.Content | ConvertFrom-Json).token
 
-    $me = Invoke-Step -Group "AUTH" -Label "GET /api/me" -Method "GET" -Path "api/me"
+    $me = Invoke-Step -Group "AUTH" -Label "GET /api/v1/me" -Method "GET" -Path "api/v1/me"
     $adminUserId = ($me.Content | ConvertFrom-Json).userId
 
-    $incidentId = Invoke-Step -Group "INCIDENTS" -Label "POST /api/incidents" -Method "POST" -Path "api/incidents" -ReturnId -Body @{
+    $incidentId = Invoke-Step -Group "INCIDENTS" -Label "POST /api/v1/incidents" -Method "POST" -Path "api/v1/incidents" -ReturnId -Body @{
         title = "Smoke incident"
         description = "Smoke incident description"
         type = 9
@@ -183,17 +183,17 @@ try {
         transportAssistantId = $null
     }
 
-    Invoke-Step -Group "INCIDENTS" -Label "GET /api/incidents" -Method "GET" -Path "api/incidents?PageNumber=1&PageSize=10" | Out-Null
-    Invoke-Step -Group "INCIDENTS" -Label "GET /api/incidents/{id}" -Method "GET" -Path "api/incidents/$incidentId" | Out-Null
-    Invoke-Step -Group "INCIDENTS" -Label "PUT /api/incidents/{id}/assign/{userId}" -Method "PUT" -Path "api/incidents/$incidentId/assign/$adminUserId" | Out-Null
-    Invoke-Step -Group "INCIDENTS" -Label "PUT /api/incidents/{id}/in-progress" -Method "PUT" -Path "api/incidents/$incidentId/in-progress" | Out-Null
-    Invoke-Step -Group "INCIDENTS" -Label "POST /api/incidents/{id}/comments" -Method "POST" -Path "api/incidents/$incidentId/comments" -Body @{
+    Invoke-Step -Group "INCIDENTS" -Label "GET /api/v1/incidents" -Method "GET" -Path "api/v1/incidents?PageNumber=1&PageSize=10" | Out-Null
+    Invoke-Step -Group "INCIDENTS" -Label "GET /api/v1/incidents/{id}" -Method "GET" -Path "api/v1/incidents/$incidentId" | Out-Null
+    Invoke-Step -Group "INCIDENTS" -Label "PUT /api/v1/incidents/{id}/assign/{userId}" -Method "PUT" -Path "api/v1/incidents/$incidentId/assign/$adminUserId" | Out-Null
+    Invoke-Step -Group "INCIDENTS" -Label "PUT /api/v1/incidents/{id}/in-progress" -Method "PUT" -Path "api/v1/incidents/$incidentId/in-progress" | Out-Null
+    Invoke-Step -Group "INCIDENTS" -Label "POST /api/v1/incidents/{id}/comments" -Method "POST" -Path "api/v1/incidents/$incidentId/comments" -Body @{
         comment = "Smoke follow-up comment"
     } | Out-Null
-    Invoke-Step -Group "INCIDENTS" -Label "PUT /api/incidents/{id}/resolve" -Method "PUT" -Path "api/incidents/$incidentId/resolve" | Out-Null
-    Invoke-Step -Group "INCIDENTS" -Label "PUT /api/incidents/{id}/close" -Method "PUT" -Path "api/incidents/$incidentId/close" | Out-Null
-    Invoke-Step -Group "INCIDENTS" -Label "GET /api/incidents/by-status/{status}" -Method "GET" -Path "api/incidents/by-status/4" | Out-Null
-    Invoke-Step -Group "INCIDENTS" -Label "GET /api/incidents/my-reported" -Method "GET" -Path "api/incidents/my-reported" | Out-Null
+    Invoke-Step -Group "INCIDENTS" -Label "PUT /api/v1/incidents/{id}/resolve" -Method "PUT" -Path "api/v1/incidents/$incidentId/resolve" | Out-Null
+    Invoke-Step -Group "INCIDENTS" -Label "PUT /api/v1/incidents/{id}/close" -Method "PUT" -Path "api/v1/incidents/$incidentId/close" | Out-Null
+    Invoke-Step -Group "INCIDENTS" -Label "GET /api/v1/incidents/by-status/{status}" -Method "GET" -Path "api/v1/incidents/by-status/4" | Out-Null
+    Invoke-Step -Group "INCIDENTS" -Label "GET /api/v1/incidents/my-reported" -Method "GET" -Path "api/v1/incidents/my-reported" | Out-Null
 }
 finally {
     $script:Client.Dispose()
@@ -219,3 +219,5 @@ if ($failed.Count -gt 0) {
     $failed | Select-Object Group, Endpoint, StatusCode, Error | Format-List
     exit 1
 }
+
+

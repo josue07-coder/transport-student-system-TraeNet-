@@ -1,5 +1,7 @@
 using MediatR;
+using System.Data;
 using Transport.Application.Interfaces;
+using Transport.Domain.Entities;
 using Transport.Domain.Enums;
 using Transport.Domain.Exceptions;
 
@@ -12,53 +14,62 @@ namespace Transport.Application.Features.RouteAssignments.Commands.AssignStudent
         private readonly IAuditService _auditService;
         private readonly INotificationService _notificationService;
         private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AssignStudentToRouteAssignmentHandler(
             IRouteAssignmentRepository assignmentRepository,
             IStudentRepository studentRepository,
             IAuditService auditService,
             INotificationService notificationService,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            IUnitOfWork unitOfWork)
         {
             _assignmentRepository = assignmentRepository;
             _studentRepository = studentRepository;
             _auditService = auditService;
             _notificationService = notificationService;
             _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Unit> Handle(AssignStudentToRouteAssignmentCommand request, CancellationToken cancellationToken)
         {
-            var assignment = await _assignmentRepository.GetByIdAsync(request.RouteAssignmentId)
-                ?? throw new DomainException("Asignación de ruta no encontrada");
+            RouteAssignment? assignment = null;
+            Student? student = null;
 
-            var student = await _studentRepository.GetByIdIncludingInactiveAsync(request.StudentId)
-                ?? throw new DomainException("Estudiante no encontrado");
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                assignment = await _assignmentRepository.GetByIdAsync(request.RouteAssignmentId)
+                    ?? throw new DomainException("Asignación de ruta no encontrada");
 
-            if (!student.IsActive)
-                throw new DomainException("El estudiante está inactivo");
+                student = await _studentRepository.GetByIdIncludingInactiveAsync(request.StudentId)
+                    ?? throw new DomainException("Estudiante no encontrado");
 
-            if (assignment.Route.Status != RouteStatus.Active)
-                throw new DomainException("La ruta debe estar activa para asignar estudiantes");
+                if (!student.IsActive)
+                    throw new DomainException("El estudiante está inactivo");
 
-            if (student.SchoolId != assignment.Route.SchoolId)
-                throw new DomainException("El estudiante pertenece a una escuela distinta a la ruta");
+                if (assignment.Route.Status != RouteStatus.Active)
+                    throw new DomainException("La ruta debe estar activa para asignar estudiantes");
 
-            if (assignment.Students.Any(studentAssignment => studentAssignment.StudentId == request.StudentId))
-                throw new DomainException("El estudiante ya está asignado a esta asignación");
+                if (student.SchoolId != assignment.Route.SchoolId)
+                    throw new DomainException("El estudiante pertenece a una escuela distinta a la ruta");
 
-            if (assignment.Students.Count >= assignment.VehicleCapacity)
-                throw new DomainException("Capacidad del vehiculo excedida");
+                if (assignment.Students.Any(studentAssignment => studentAssignment.StudentId == request.StudentId))
+                    throw new DomainException("El estudiante ya está asignado a esta asignación");
 
-            if (await _assignmentRepository.HasStudentScheduleConflictAsync(request.StudentId, assignment.RouteId, assignment.Id))
-                throw new DomainException("El estudiante ya tiene una asignación activa con horario cruzado");
+                if (assignment.Students.Count >= assignment.VehicleCapacity)
+                    throw new DomainException("Capacidad del vehículo excedida");
 
-            assignment.AssignStudent(request.StudentId);
-            await _assignmentRepository.SaveChangesAsync();
+                if (await _assignmentRepository.HasStudentScheduleConflictAsync(request.StudentId, assignment.RouteId, assignment.Id))
+                    throw new DomainException("El estudiante ya tiene una asignación activa con horario cruzado");
 
-            await _auditService.LogAsync("Assigned", "RouteAssignment", assignment.Id.ToString(), null, $"{{\"StudentId\":\"{request.StudentId}\"}}");
+                assignment.AssignStudent(request.StudentId);
+                await _assignmentRepository.SaveChangesAsync();
+            }, IsolationLevel.Serializable, cancellationToken);
+
+            await _auditService.LogAsync("Assigned", "RouteAssignment", assignment!.Id.ToString(), null, $"{{\"StudentId\":\"{request.StudentId}\"}}");
             await NotifyGuardianAsync(
-                student.GuardianId,
+                student!.GuardianId,
                 "Estudiante asignado a ruta",
                 $"El estudiante {student.FirstName} {student.LastName} fue asignado a la ruta {assignment.Route.Name}.",
                 assignment.Id);

@@ -1,4 +1,5 @@
 using MediatR;
+using System.Data;
 using Transport.Application.Interfaces;
 using Transport.Domain.Entities;
 using Transport.Domain.Enums;
@@ -14,6 +15,10 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
         private readonly IAuditService _auditService;
         private readonly INotificationService _notificationService;
         private readonly IUserRepository _userRepository;
+        private readonly ISystemSettingService _systemSettingService;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly ITripOperationAuthorizationService _operationAuthorizationService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public StartTripHandler(
             IRouteAssignmentRepository assignmentRepository,
@@ -21,7 +26,11 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
             ITripStudentAttendanceRepository attendanceRepository,
             IAuditService auditService,
             INotificationService notificationService,
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            ISystemSettingService systemSettingService,
+            ICurrentUserService currentUserService,
+            ITripOperationAuthorizationService operationAuthorizationService,
+            IUnitOfWork unitOfWork)
         {
             _assignmentRepository = assignmentRepository;
             _tripRepository = tripRepository;
@@ -29,6 +38,10 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
             _auditService = auditService;
             _notificationService = notificationService;
             _userRepository = userRepository;
+            _systemSettingService = systemSettingService;
+            _currentUserService = currentUserService;
+            _operationAuthorizationService = operationAuthorizationService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Guid> Handle(StartTripCommand request, CancellationToken cancellationToken)
@@ -44,22 +57,76 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
             if (await _tripRepository.HasActiveTripAsync(assignment.Id))
                 throw new DomainException("Ya hay un viaje activo para esta asignación");
 
+            await _operationAuthorizationService.EnsureCanStartTripAsync(assignment);
             ValidateAssignmentCanStart(assignment);
 
-            trip ??= assignment.StartTrip();
-            if (request.TripId.HasValue)
-                trip.Start();
-            else
-                await _tripRepository.AddAsync(trip);
+            var toleranceMinutes = await _systemSettingService.GetIntAsync("TripStartToleranceMinutes", 5);
+            var currentTime = DateTime.UtcNow;
+            var canForceEarlyStart = IsAdminOrSupervisor();
 
-            await SnapshotPassengersAsync(trip, assignment);
-            await _tripRepository.SaveChangesAsync();
+            if (request.ForceEarlyStart && !canForceEarlyStart)
+                throw new DomainException("Solo Admin o Supervisor pueden autorizar inicio anticipado");
 
-            await _auditService.LogAsync("TripStarted", "Trip", trip.Id.ToString(), null, $"{{\"RouteAssignmentId\":\"{trip.RouteAssignmentId}\"}}");
-            await _auditService.LogAsync("TripPassengersSnapshotted", "Trip", trip.Id.ToString(), null, $"{{\"StudentsCount\":{assignment.Students.Count}}}");
-            await NotifyTripStartedAsync(assignment, trip.Id);
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                if (await _tripRepository.HasActiveTripAsync(assignment.Id))
+                    throw new DomainException("Ya hay un viaje activo para esta asignación");
 
-            return trip.Id;
+                trip ??= assignment.StartTrip();
+                if (request.TripId.HasValue)
+                    trip.Start(currentTime, toleranceMinutes, request.ForceEarlyStart && canForceEarlyStart, request.EarlyStartReason);
+                else
+                    await _tripRepository.AddAsync(trip);
+
+                await SnapshotPassengersAsync(trip, assignment);
+                await _tripRepository.SaveChangesAsync();
+            }, IsolationLevel.Serializable, cancellationToken);
+
+            var startedTrip = trip ?? throw new DomainException("No se pudo iniciar el viaje");
+
+            await AuditTripStartAsync(startedTrip);
+            await _auditService.LogAsync("TripPassengersSnapshotted", "Trip", startedTrip.Id.ToString(), null, $"{{\"StudentsCount\":{assignment.Students.Count}}}");
+            await NotifyTripStartedAsync(assignment, startedTrip.Id);
+
+            return startedTrip.Id;
+        }
+
+        private bool IsAdminOrSupervisor()
+        {
+            return string.Equals(_currentUserService.Role, "Admin", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(_currentUserService.Role, "Supervisor", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private async Task AuditTripStartAsync(Trip trip)
+        {
+            if (trip.StartedEarly)
+            {
+                await _auditService.LogAsync(
+                    "TripStartedEarly",
+                    "Trip",
+                    trip.Id.ToString(),
+                    null,
+                    $"{{\"RouteAssignmentId\":\"{trip.RouteAssignmentId}\",\"EarlyStartReason\":\"{trip.EarlyStartReason}\"}}");
+                return;
+            }
+
+            if (trip.IsLate)
+            {
+                await _auditService.LogAsync(
+                    "TripStartedLate",
+                    "Trip",
+                    trip.Id.ToString(),
+                    null,
+                    $"{{\"RouteAssignmentId\":\"{trip.RouteAssignmentId}\",\"DelayMinutes\":{trip.DelayMinutes}}}");
+                return;
+            }
+
+            await _auditService.LogAsync(
+                "TripStarted",
+                "Trip",
+                trip.Id.ToString(),
+                null,
+                $"{{\"RouteAssignmentId\":\"{trip.RouteAssignmentId}\"}}");
         }
 
         private async Task<Trip> GetScheduledTripAsync(Guid tripId, Guid routeAssignmentId)

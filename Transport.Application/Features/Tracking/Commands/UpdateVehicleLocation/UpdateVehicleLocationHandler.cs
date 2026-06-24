@@ -10,25 +10,25 @@ namespace Transport.Application.Features.Tracking.Commands.UpdateVehicleLocation
     {
         private readonly ITripRepository _tripRepository;
         private readonly IVehicleLocationRepository _locationRepository;
-        private readonly IVisibilityService _visibilityService;
         private readonly ICurrentUserService _currentUserService;
         private readonly INotificationService _notificationService;
         private readonly ISystemSettingService _systemSettingService;
+        private readonly ITripOperationAuthorizationService _operationAuthorizationService;
 
         public UpdateVehicleLocationHandler(
             ITripRepository tripRepository,
             IVehicleLocationRepository locationRepository,
-            IVisibilityService visibilityService,
             ICurrentUserService currentUserService,
             INotificationService notificationService,
-            ISystemSettingService systemSettingService)
+            ISystemSettingService systemSettingService,
+            ITripOperationAuthorizationService operationAuthorizationService)
         {
             _tripRepository = tripRepository;
             _locationRepository = locationRepository;
-            _visibilityService = visibilityService;
             _currentUserService = currentUserService;
             _notificationService = notificationService;
             _systemSettingService = systemSettingService;
+            _operationAuthorizationService = operationAuthorizationService;
         }
 
         public async Task<Guid> Handle(UpdateVehicleLocationCommand request, CancellationToken cancellationToken)
@@ -39,7 +39,7 @@ namespace Transport.Application.Features.Tracking.Commands.UpdateVehicleLocation
             if (trip.Status != TripStatus.InProgress)
                 throw new DomainException("Solo se puede registrar ubicación para un viaje en progreso");
 
-            await TrackingAccess.EnsureCanUpdateTripAsync(trip, _visibilityService);
+            await _operationAuthorizationService.EnsureCanUpdateLocationAsync(trip);
 
             var location = new VehicleLocation(
                 trip.Id,

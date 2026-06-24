@@ -6,11 +6,16 @@ namespace Transport.API.Services
     {
         private readonly IServiceProvider _services;
         private readonly ILogger<RoleSeederHostedService> _logger;
+        private readonly IWebHostEnvironment _environment;
 
-        public RoleSeederHostedService(IServiceProvider services, ILogger<RoleSeederHostedService> logger)
+        public RoleSeederHostedService(
+            IServiceProvider services,
+            ILogger<RoleSeederHostedService> logger,
+            IWebHostEnvironment environment)
         {
             _services = services;
             _logger = logger;
+            _environment = environment;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -19,6 +24,9 @@ namespace Transport.API.Services
             {
                 await RoleSeeder.SeedAsync(_services);
                 await SystemSettingSeeder.SeedAsync(_services);
+
+                if (_environment.IsDevelopment())
+                    await OperationalSeedSeeder.SeedAsync(_services);
             }
             catch (Exception ex)
             {

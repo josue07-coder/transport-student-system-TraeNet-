@@ -29,8 +29,23 @@ namespace Transport.Infrastructure.Persistence.Configurations
             builder.Property(x => x.Notes)
                 .HasMaxLength(500);
 
+            builder.Property(x => x.IsExpectedPassenger)
+                .IsRequired()
+                .HasDefaultValue(true);
+
+            builder.Property(x => x.ExceptionReason)
+                .HasMaxLength(500);
+
+        builder.Property(x => x.AttendanceSource)
+            .IsRequired()
+            .HasConversion<string>()
+            .HasMaxLength(30);
+
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
+
+            builder.Property(x => x.RowVersion)
+                .IsRowVersion();
 
             builder.HasOne(x => x.Trip)
                 .WithMany(x => x.StudentAttendances)
@@ -42,9 +57,23 @@ namespace Transport.Infrastructure.Persistence.Configurations
                 .HasForeignKey(x => x.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(x => x.RegisteredByUser)
+                .WithMany()
+                .HasForeignKey(x => x.RegisteredByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(x => x.MarkedByUser)
+                .WithMany()
+                .HasForeignKey(x => x.MarkedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.HasIndex(x => x.TripId);
             builder.HasIndex(x => x.StudentId);
             builder.HasIndex(x => x.GuardianIdSnapshot);
+            builder.HasIndex(x => x.RegisteredByUserId);
+            builder.HasIndex(x => x.MarkedByUserId);
+            builder.HasIndex(x => new { x.StudentId, x.CreatedAt });
+            builder.HasIndex(x => new { x.TripId, x.Status });
         }
     }
 }

@@ -34,20 +34,29 @@ namespace Transport.Infrastructure.Persistence.Repositories
         public async Task<List<Stop>> GetBySectorAsync(Guid sectorId)
         {
             return await _context.Stops
+                .AsNoTracking()
                 .Where(s => s.SectorId == sectorId)
+                .OrderBy(s => s.Name)
+                .ThenBy(s => s.Id)
                 .ToListAsync();
         }
 
         public async Task<List<Stop>> GetByCityAsync(string city)
         {
             return await _context.Stops
+                .AsNoTracking()
                 .Where(s => s.Address.City == city)
+                .OrderBy(s => s.Name)
+                .ThenBy(s => s.Id)
                 .ToListAsync();
         }
 
         public async Task<PaginatedResponse<Stop>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _context.Stops.AsQueryable();
+            var query = _context.Stops
+                .AsNoTracking()
+                .OrderBy(stop => stop.Name)
+                .ThenBy(stop => stop.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)

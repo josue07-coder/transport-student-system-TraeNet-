@@ -23,7 +23,8 @@ namespace Transport.Infrastructure.Repositories
 
         public async Task<School?> GetByIdAsync(Guid id)
         {
-            return await _context.Schools.FindAsync(id);
+            return await _context.Schools
+                .FirstOrDefaultAsync(school => school.Id == id && school.IsActive);
         }
 
         public async Task<bool> ExistsAsync(Guid id)
@@ -66,12 +67,21 @@ namespace Transport.Infrastructure.Repositories
 
         public async Task<List<School>> GetAllAsync()
         {
-            return await _context.Schools.ToListAsync();
+            return await _context.Schools
+                .AsNoTracking()
+                .Where(school => school.IsActive)
+                .OrderBy(school => school.Name)
+                .ThenBy(school => school.Id)
+                .ToListAsync();
         }
 
         public async Task<PaginatedResponse<School>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _context.Schools.AsQueryable();
+            var query = _context.Schools
+                .AsNoTracking()
+                .Where(school => school.IsActive)
+                .OrderBy(school => school.Name)
+                .ThenBy(school => school.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
@@ -84,7 +94,9 @@ namespace Transport.Infrastructure.Repositories
         public async Task<List<School>> GetBySectorAsync(Guid sectorId)
         {
             return await _context.Schools
-                .Where(s => s.SectorId == sectorId)
+                .AsNoTracking()
+                .Where(s => s.SectorId == sectorId && s.IsActive)
+                .OrderBy(s => s.Name)
                 .ToListAsync();
         }
 

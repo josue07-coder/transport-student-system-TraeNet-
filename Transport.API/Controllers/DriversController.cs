@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Drivers.Commands.CreateDriver;
 using Transport.Application.Features.Drivers.Commands.DeleteDriver;
@@ -11,6 +12,7 @@ using Transport.Application.Features.Drivers.Queries.GetDriversByActive;
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin,Supervisor")]
     [Route("api/[controller]")]
     public class DriversController : ControllerBase
     {
@@ -21,11 +23,12 @@ namespace Transport.API.Controllers
             _mediator = mediator;
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDriverCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
         [HttpGet]
@@ -56,6 +59,7 @@ namespace Transport.API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateDriverCommand command)
         {
@@ -66,6 +70,7 @@ namespace Transport.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Supervisor")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {

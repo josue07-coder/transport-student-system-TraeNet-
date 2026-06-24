@@ -70,21 +70,21 @@ $script:Results = New-Object System.Collections.Generic.List[object]
 
 try {
     Write-Host "Base URL: $baseUrl"
-    $login = Invoke-Request -Group "AUTH" -Label "POST /api/auth/login" -Method "POST" -Path "api/auth/login" -Body @{ username = $Username; password = $Password }
+    $login = Invoke-Request -Group "AUTH" -Label "POST /api/v1/auth/login" -Method "POST" -Path "api/v1/auth/login" -Body @{ username = $Username; password = $Password }
     $script:Token = ($login.Content | ConvertFrom-Json).token
     $adminToken = $script:Token
 
-    $backup = Invoke-Request -Label "POST /api/backups/manual" -Method "POST" -Path "api/backups/manual"
+    $backup = Invoke-Request -Label "POST /api/v1/backups/manual" -Method "POST" -Path "api/v1/backups/manual"
     $backupRecord = $backup.Content | ConvertFrom-Json
 
-    Invoke-Request -Label "GET /api/backups" -Method "GET" -Path "api/backups?PageNumber=1&PageSize=10" | Out-Null
-    Invoke-Request -Label "GET /api/backups/latest" -Method "GET" -Path "api/backups/latest" | Out-Null
-    Invoke-Request -Label "GET /api/backups/{id}" -Method "GET" -Path "api/backups/$($backupRecord.id)" | Out-Null
-    Invoke-Request -Label "POST /api/backups/{id}/restore placeholder" -Method "POST" -Path "api/backups/$($backupRecord.id)/restore" -ExpectedStatusCodes @(400) | Out-Null
+    Invoke-Request -Label "GET /api/v1/backups" -Method "GET" -Path "api/v1/backups?PageNumber=1&PageSize=10" | Out-Null
+    Invoke-Request -Label "GET /api/v1/backups/latest" -Method "GET" -Path "api/v1/backups/latest" | Out-Null
+    Invoke-Request -Label "GET /api/v1/backups/{id}" -Method "GET" -Path "api/v1/backups/$($backupRecord.id)" | Out-Null
+    Invoke-Request -Label "POST /api/v1/backups/{id}/restore placeholder" -Method "POST" -Path "api/v1/backups/$($backupRecord.id)/restore" -ExpectedStatusCodes @(400) | Out-Null
 
     $stamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
     $guardianDocument = "BKG$stamp"
-    Invoke-Request -Group "SETUP" -Label "POST /api/guardians" -Method "POST" -Path "api/guardians" -Body @{
+    Invoke-Request -Group "SETUP" -Label "POST /api/v1/guardians" -Method "POST" -Path "api/v1/guardians" -Body @{
         documentType = 1
         documentNumber = $guardianDocument
         firstName = "Backup"
@@ -96,9 +96,9 @@ try {
         sectorId = $null
     } | Out-Null
 
-    $guardianLogin = Invoke-Request -Group "AUTH" -Label "POST /api/auth/login (guardian)" -Method "POST" -Path "api/auth/login" -Body @{ username = $guardianDocument; password = $guardianDocument }
+    $guardianLogin = Invoke-Request -Group "AUTH" -Label "POST /api/v1/auth/login (guardian)" -Method "POST" -Path "api/v1/auth/login" -Body @{ username = $guardianDocument; password = $guardianDocument }
     $script:Token = ($guardianLogin.Content | ConvertFrom-Json).token
-    Invoke-Request -Group "AUTHZ" -Label "POST /api/backups/manual unauthorized" -Method "POST" -Path "api/backups/manual" -ExpectedStatusCodes @(403) | Out-Null
+    Invoke-Request -Group "AUTHZ" -Label "POST /api/v1/backups/manual unauthorized" -Method "POST" -Path "api/v1/backups/manual" -ExpectedStatusCodes @(403) | Out-Null
 
     $script:Token = $adminToken
 }
@@ -119,3 +119,5 @@ if ($failed.Count -gt 0) {
     $failed | Select-Object Group, Endpoint, StatusCode, Error | Format-List
     exit 1
 }
+
+

@@ -6,5 +6,7 @@ namespace Transport.Application.Features.Trips.Commands.StartTrip
     {
         public Guid? TripId { get; set; }
         public Guid RouteAssignmentId { get; set; }
+        public bool ForceEarlyStart { get; set; }
+        public string? EarlyStartReason { get; set; }
     }
 }

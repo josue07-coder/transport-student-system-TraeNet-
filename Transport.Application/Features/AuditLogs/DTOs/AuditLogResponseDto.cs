@@ -10,6 +10,10 @@ namespace Transport.Application.Features.AuditLogs.DTOs
         public string? EntityId { get; set; }
         public string? IpAddress { get; set; }
         public string? UserAgent { get; set; }
+        public string? CorrelationId { get; set; }
+        public string? TraceId { get; set; }
+        public string? RequestPath { get; set; }
+        public string? HttpMethod { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Transport.Application.Features.Stops.Commands.CreateStop;
 using Transport.Application.Features.Stops.Commands.DeleteStop;
@@ -11,6 +12,7 @@ using Transport.Application.Features.Stops.Queries.GetStopsBySector;
 namespace Transport.API.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin,Supervisor")]
     [Route("api/[controller]")]
     public class StopsController : ControllerBase
     {
@@ -25,7 +27,7 @@ namespace Transport.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateStopCommand command)
         {
             var id = await _mediator.Send(command);
-            return Ok(new { Id = id });
+            return StatusCode(StatusCodes.Status201Created, new { Id = id });
         }
 
         [HttpGet]

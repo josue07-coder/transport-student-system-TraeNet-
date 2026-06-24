@@ -119,12 +119,12 @@ foreach ($url in Get-CandidateUrls) {
 }
 
 if (-not $client) {
-    throw "No se encontró API activa. Levanta Transport.API antes de ejecutar este smoke test."
+    throw "No se encontrÃ³ API activa. Levanta Transport.API antes de ejecutar este smoke test."
 }
 
 Write-Host "API detectada: $baseUrl"
 
-$login = Invoke-JsonRequest -Client $client -Method POST -Path "/api/auth/login" -Body @{
+$login = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/auth/login" -Body @{
     username = $Username
     password = $Password
 }
@@ -135,10 +135,10 @@ if (-not $login.Ok) {
 }
 
 $token = $login.Data.token
-if (-not $token) { throw "Login no devolvió token." }
+if (-not $token) { throw "Login no devolviÃ³ token." }
 
 if ($RouteAssignmentId -eq [Guid]::Empty) {
-    $assignments = Invoke-JsonRequest -Client $client -Method GET -Path "/api/route-assignments?PageNumber=1&PageSize=10" -Token $token
+    $assignments = Invoke-JsonRequest -Client $client -Method GET -Path "/api/v1/route-assignments?PageNumber=1&PageSize=10" -Token $token
     if (-not $assignments.Ok) {
         throw "No se pudieron consultar asignaciones: $($assignments.StatusCode) $($assignments.Content)"
     }
@@ -168,29 +168,31 @@ $scheduleBody = @{
     sunday = $false
 }
 
-$createSchedule = Invoke-JsonRequest -Client $client -Method POST -Path "/api/trip-schedules" -Body $scheduleBody -Token $token
+$createSchedule = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/trip-schedules" -Body $scheduleBody -Token $token
 if (-not $createSchedule.Ok) {
-    throw "Crear schedule falló: $($createSchedule.StatusCode) $($createSchedule.Content)"
+    throw "Crear schedule fallÃ³: $($createSchedule.StatusCode) $($createSchedule.Content)"
 }
 
 $scheduleId = $createSchedule.Data.id
 Write-Host "Schedule creado: $scheduleId"
 
 $materializeBody = @{ operationDate = $operationDate; tripScheduleId = $scheduleId }
-$materialize = Invoke-JsonRequest -Client $client -Method POST -Path "/api/trip-schedules/$scheduleId/materialize" -Body $materializeBody -Token $token
+$materialize = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/trip-schedules/$scheduleId/materialize" -Body $materializeBody -Token $token
 if (-not $materialize.Ok) {
-    throw "Materializar trip falló: $($materialize.StatusCode) $($materialize.Content)"
+    throw "Materializar trip fallÃ³: $($materialize.StatusCode) $($materialize.Content)"
 }
 
 Write-Host "Trip materializado: $($materialize.Data.id) Status=$($materialize.Data.status)"
 if ($materialize.Data.status -ne "Scheduled" -and $materialize.Data.status -ne 1) {
-    throw "El trip materializado no quedó en estado Scheduled."
+    throw "El trip materializado no quedÃ³ en estado Scheduled."
 }
 
-$duplicate = Invoke-JsonRequest -Client $client -Method POST -Path "/api/trip-schedules/$scheduleId/materialize" -Body $materializeBody -Token $token
+$duplicate = Invoke-JsonRequest -Client $client -Method POST -Path "/api/v1/trip-schedules/$scheduleId/materialize" -Body $materializeBody -Token $token
 if ($duplicate.Ok) {
-    throw "Se permitió materializar un duplicado para el mismo schedule/date."
+    throw "Se permitiÃ³ materializar un duplicado para el mismo schedule/date."
 }
 
 Write-Host "Duplicado rechazado correctamente: $($duplicate.StatusCode)"
 Write-Host "smoke-test-trip-schedules OK"
+
+

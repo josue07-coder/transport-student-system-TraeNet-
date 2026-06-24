@@ -24,24 +24,35 @@ namespace Transport.Infrastructure.Repositories
         {
             return await _context.Guardians
                 .Include(g => g.Sector)
-                .FirstOrDefaultAsync(g => g.Id == id);
+                .FirstOrDefaultAsync(g => g.Id == id && g.IsActive);
         }
 
         public async Task<Guardian?> GetByDocumentAsync(string documentNumber)
         {
             return await _context.Guardians
                 .Include(g => g.Sector)
-                .FirstOrDefaultAsync(g => g.DocumentNumber == documentNumber);
+                .FirstOrDefaultAsync(g => g.DocumentNumber == documentNumber && g.IsActive);
         }
 
         public async Task<List<Guardian>> GetAllAsync()
         {
-            return await _context.Guardians.ToListAsync();
+            return await _context.Guardians
+                .AsNoTracking()
+                .Where(g => g.IsActive)
+                .OrderBy(g => g.LastName)
+                .ThenBy(g => g.FirstName)
+                .ThenBy(g => g.Id)
+                .ToListAsync();
         }
 
         public async Task<PaginatedResponse<Guardian>> GetPagedAsync(int pageNumber, int pageSize)
         {
-            var query = _context.Guardians.AsQueryable();
+            var query = _context.Guardians
+                .AsNoTracking()
+                .Where(g => g.IsActive)
+                .OrderBy(g => g.LastName)
+                .ThenBy(g => g.FirstName)
+                .ThenBy(g => g.Id);
             var totalCount = await query.CountAsync();
             var items = await query
                 .Skip((pageNumber - 1) * pageSize)
